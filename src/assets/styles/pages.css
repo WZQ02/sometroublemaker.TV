@@ -1,0 +1,20 @@
+body {
+    background: #eee; 
+    transition: 0.25s;
+    font-family: "HarmonyOS Sans SC","Century Gothic","Noto Sans","Source Han Sans CN","Microsoft YaHei",微软雅黑,"Microsoft JhengHei","Segoe UI","Arial",黑体;
+}
+
+@keyframes stp_page_first_show {
+    from {
+        scale: 0.5
+    }
+    to {
+        scale: 1.0
+    }
+}
+@media (prefers-color-scheme: dark) {
+    body { 
+        background: #222; 
+        color: #eeeeee;
+    }
+}

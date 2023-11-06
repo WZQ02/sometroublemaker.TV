@@ -1,0 +1,30 @@
+.player {
+    position: absolute;
+    left: 50%;
+    top: 16px;
+    width: 1312px;
+    height: 752px;
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+    left: calc(50vw - 656px);
+    overflow: hidden;
+}
+video {
+    position: relative;
+    margin: 16px 16px;
+    width: calc(100% - 32px);
+    height: calc(100% - 32px);
+    border-radius: 8px;
+    box-shadow: 0 0 16px rgba(0,0,0,0.4);
+    animation: playerfall 0.5s cubic-bezier(0, 0.67, 0, 1) 1;
+}
+@media screen and (min-height: 760px) {
+    .player {
+        top: calc(40vh - 288px)
+    }
+}
+@media screen and (max-width: 1344px) {
+    .player {
+        left: 16px;
+    }
+}
