@@ -38,10 +38,6 @@
             }
         }
     })
-
-    onMounted(() => {
-        document.title = "直播间"
-    })
 </script>
 
 <template>

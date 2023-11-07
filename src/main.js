@@ -1,5 +1,4 @@
-//import './assets/styles/pages.css'
-import './assets/styles/pages_text.css'
+import './assets/styles/pages.css'
 
 import { createApp } from 'vue'
 import { createRouter,createWebHashHistory } from 'vue-router'
@@ -12,13 +11,20 @@ import ChatRoom from './pages/chatroom.vue'
 
 const routes = [
     { path: '/', component: Wel, name: Wel },
-    { path: '/home', component: Home, name: Home },
-    { path: '/player', component: LivePlayer, name: LivePlayer },
-    { path: '/chat', component: ChatRoom, name: ChatRoom }
+    { path: '/home', component: Home, name: Home, meta: {title: '概览'} },
+    { path: '/player', component: LivePlayer, name: LivePlayer, meta: {title: '直播间'} },
+    { path: '/chat', component: ChatRoom, name: ChatRoom, meta: {title: '聊天室'} }
 ]
 const router = createRouter({
     history: createWebHashHistory(),
     routes,
+})
+
+router.beforeEach((to,from,next)=>{
+    if (to.meta.title) {
+        document.title = to.meta.title
+    }
+    next()
 })
 
 const app = createApp(main)

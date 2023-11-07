@@ -1,20 +1,175 @@
 body {
+    animation: appear 0.6s ease 1;
     background: #eee; 
-    transition: 0.25s;
     font-family: "HarmonyOS Sans SC","Century Gothic","Noto Sans","Source Han Sans CN","Microsoft YaHei",微软雅黑,"Microsoft JhengHei","Segoe UI","Arial",黑体;
+    color: #333;
+    text-align: left;
+    user-select: none;
 }
-
-@keyframes stp_page_first_show {
-    from {
-        scale: 0.5
-    }
-    to {
-        scale: 1.0
-    }
+#container {
+    background-color: #fff;
+    box-shadow: 0px 0px 32px rgba(0,0,0,0.4);
+    position: absolute;
+    left: calc(50vw - 392px);
+    border-radius: 20px;
+    width: 720px;
+    padding: 32px;
+    overflow: hidden;
+}
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: none;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: rgba(127,127,127,0.6);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(127,127,127,1);
+}
+::-webkit-scrollbar-thumb:active {
+    background-color: rgba(63,63,63,1);
+}
+a {
+    cursor: default;
+    text-decoration: none;
+}
+#c {
+    transition: 0.25s;
+    font-weight: bold;
+    color: #555;
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 6px 8px;
+    border-radius: 8px;
+}
+#c:hover {
+    color: #fff !important;
+    background-color: #555;
+}
+#c:active {
+    filter: brightness(60%);
+    background-color: #555;
+}
+h4 {
+    color: #555;
+    line-height: 150%;
+}
+p {
+    line-height: 150%;
+}
+#largetitle {
+    font-weight: bold;
+    position: fixed;
+    top: 60px;
+    left: calc(50% - 800px);
+    font-size: 384px;
+    animation: appear 0.6s ease 1;
+    color: rgba(0,0,0,0.1);
+    overflow: hidden;
+    z-index: -1;
+}
+s {
+    opacity: 0.4;
 }
 @media (prefers-color-scheme: dark) {
     body { 
-        background: #222; 
+        background: #252525; 
         color: #eeeeee;
     }
+    #container {
+        background-color: #202020;
+    }
+    #c {
+        color: #ddd;
+    }
+    h4 {
+        color: #aaa;
+    }
+    #largetitle {
+        color: rgba(255,255,255,0.1);
+    }
+    ::-webkit-scrollbar-thumb:active {
+        background-color: rgba(191,191,191,1);
+    }
+}
+@media screen and (max-width: 900px) {
+    #container {
+        left: calc(7.5vw - 24px);
+        border-radius: 20px;
+        width: 85vw;
+        padding: 24px;
+    }
+}
+@keyframes appear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes disappear {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+@keyframes zoomin {
+    from {
+        opacity: 0;
+        transform: scale(0.75);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+@keyframes zoomout {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: scale(0.75);
+    }
+}
+@keyframes zoomin2 {
+    from {
+        opacity: 0;
+        transform: translate(-50%,-50%) scale(0.75);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1);
+    }
+}
+@keyframes zoomout2 {
+    from {
+        opacity: 1;
+        transform: translate(-50%,-50%) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%,-50%) scale(0.75);
+    }
+}
+
+.app_trans-enter-active,
+.app_trans-leave-active {
+  transition: all 0.25s cubic-bezier(0.3, 0, 0, 1);
+}
+.app_trans-enter-active {
+  transition-delay: 0.05s;
+}
+.app_trans-enter-from {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.app_trans-leave-to {
+  opacity: 0;
+  transform: scale(1.1);
 }

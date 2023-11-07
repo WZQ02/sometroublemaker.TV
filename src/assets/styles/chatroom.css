@@ -45,13 +45,28 @@ body {
 	background: #999;
 	padding: 3px 5px 3px;
 }
-#chatcontent p.speak .msg {
+#chatcontent p.speak .speak_name {
+    display: block;
+    text-align: left;
+    position: relative;
+    top: 10px;
+}
+#chatcontent p.speak div {
+    text-align: left;
+}
+#chatcontent p.isyou .speak_name {
+    text-align: right;
+}
+#chatcontent p.isyou div {
+    text-align: right;
+}
+#chatcontent p.speak div .speak_cont {
 	font-size: 18px;
 	color: #222;
-    display: block;
-    margin: 24px 0px;
-    box-shadow: 0 0 8px rgba(0,0,0,0.4);
-	text-align: left;
+    display: inline-block;
+    text-align: left;
+    max-width: 100%;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
 	background-color: #fff;
 	padding: 10px;
 	border-radius: 10px;
@@ -100,17 +115,17 @@ input:focus {
 #sendmsg:active {
 	background: #047;
 }
-#panel1 img {
+#panel1 svg {
 	float: right;
     padding: 6px 14px;
-    opacity: 0.65;
+    opacity: 0.25;
     transition: opacity 0.25s;
 }
-#panel1 img:hover {
-	opacity: 1;
+#panel1 svg:hover {
+	opacity: 0.6;
 }
-#panel1 img:active {
-	opacity: 0.35;
+#panel1 svg:active {
+	opacity: 1;
 }
 #quoteselector {
 	-webkit-appearance: none;
@@ -186,6 +201,12 @@ input:focus {
     left: 8px;
     top: 1px;
 }
+.prompt #isshowuserinout {
+    width: 16px;
+    opacity: 0.7;
+    top: 0.5px;
+    left: -4px;
+}
 @media (prefers-color-scheme: dark) {
     #chatroom_container {
         background-color: #282828;
@@ -202,8 +223,8 @@ input:focus {
         color: #222;
         background: #777;
     }
-    #chatcontent p.speak .msg {
-        color: #fff;
+    #chatcontent p.speak div .speak_cont {
+        color: #ccc;
         background-color: #111;
     }
     input {
@@ -219,9 +240,6 @@ input:focus {
     }
     #quoteselector:focus {
         background-color: #111;
-    }
-    #panel1 img {
-        filter: invert(1)
     }
     #sendmsg {
         color: #ccc;

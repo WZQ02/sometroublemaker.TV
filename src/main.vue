@@ -13,5 +13,5 @@
             </keep-alive>
         </router-view>
     </div>
-    <div id="stp_popup"></div>
+    <div id="stp_top_noti"></div>
 </template>

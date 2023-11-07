@@ -2,6 +2,8 @@
     import '../assets/styles/chatroom.css'
     import { onMounted, onUnmounted, ref } from 'vue'
     import ReconnectingWebSocket from'reconnecting-websocket'
+    import SvgIcon from '@jamescoyle/vue-icon'
+    import { mdiInformation } from '@mdi/js'
 
     const ws = new ReconnectingWebSocket('wss://wzq02.cf/websocketchat')
     const usrmsg = ref(null)
@@ -15,8 +17,8 @@
     const currentusername = ref(null)
     const notice = ref(null)
     const quoteselector = ref(null)
-
     const chatroom_container = ref(null)
+    const isshowuserinout = ref(null)
 
     let setCookie = (cname,cvalue,exdays) => {
         let d = new Date();
@@ -64,6 +66,10 @@
 		    askforusername_pmpt.value.style.display = "";
 	    }
     }
+    //存储“是否显示用户进入、退出”的信息到cookie
+    let isshowuserinout_store = () => {
+        setCookie('isshowuserinout',isshowuserinout.value.checked,365);
+    }
     //显示注意事项
     let noticeUser = () => {
 	    notice.value.style.display = "block";
@@ -99,17 +105,37 @@
 	    var roominfo = document.getElementById('roominfo');
 	    if (str.indexOf('{') == 0) {//服务器通知当前用户发出的信息或其他用户的相关信息
 		    let parseStr = JSON.parse(str);
-		    formatted.innerHTML = `<span class="timer">${parseStr.time}</span><br/><span class="msg">${parseStr.msg}</span>`;
+		    //formatted.innerHTML = `<span class="timer">${parseStr.time}</span><br/><span class="msg">${parseStr.msg}</span>`;
+            formatted.innerHTML = `<span class="timer">${parseStr.time}</span><br/>`;
 		    roominfo.innerText = parseStr.online;
 		    switch (parseStr.type) {
 			    case 0://用户离线时formatted的class
-				    formatted.className = "leave";
+                    if (isshowuserinout.value.checked) {
+                        formatted.innerHTML = ""
+                    } else {
+                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${parseStr.msg}</span>`
+                        formatted.className = "leave";
+                    }
 				    break;
 			    case 1://用户加入时
-				    formatted.className = "entry";
+                    if (isshowuserinout.value.checked) {
+                        formatted.innerHTML = ""
+                    } else {
+                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${parseStr.msg}</span>`
+                        formatted.className = "entry";
+                    }
 				    break;
 			    case 2://用户发言时
-				    formatted.className = "speak";
+                    //单独提取用户名和发言信息
+                    let speak_name = parseStr.msg.slice(0,parseStr.msg.indexOf(": "))
+                    let speak_cont = parseStr.msg.slice(parseStr.msg.indexOf(": ")+2)
+                    formatted.innerHTML = formatted.innerHTML + `<span class="speak_name">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span><div>`
+                    //判断是不是自己发言
+                    if (getCookie('chatUserName') == speak_name) {
+                        formatted.className = "speak isyou";
+                    } else {
+                        formatted.className = "speak";
+                    }
 				    break;
 		    }
 	    } else {//服务器通知当前用户已加入聊天室
@@ -152,11 +178,16 @@
         });
         //回车发送
         usrmsg.value.addEventListener('keydown',(e) => {
-	        if (e.code == 13) {
+	        if (e.keyCode == 13) {
 		        sendusrmsg();
 	        }
         });
-        document.title = "聊天室"
+        //读取cookie并设置存储“是否显示用户进入、退出”的信息到cookie
+        if (getCookie('isshowuserinout') == 'true') {
+            isshowuserinout.value.checked = 1;
+        } else {
+            isshowuserinout.value.checked = 0;
+        }
     })
 
     onUnmounted(() => {
@@ -185,7 +216,8 @@
                 <option value="什么意思？">什么意思？</option>
             </select>
             <button id="sendmsg" ref="sendmsg" @click="sendusrmsg();">发送</button>
-            <img src="../assets/icons/links/link_info.webp" @click="displayinfo();" height="24" width="24"/>
+            <!--<img src="../assets/icons/links/link_info.webp"/>-->
+            <svg-icon type="mdi" :path=mdiInformation @click="displayinfo();" height="24" width="24"></svg-icon>
         </div>
         <div id="prompb" ref="prompb"></div>
         <div id="askforusername" ref="askforusername_pmpt" class="prompt">
@@ -204,6 +236,7 @@
         <div id="info" ref="info" class="prompt">
             你的昵称：<span id="currentusername" ref="currentusername" style="font-weight: bold;"></span>&nbsp;&nbsp;<button id="promptbtn" @click="alterusrname();">更改</button><br><br>
             当前聊天室在线人数：<span id="roominfo" style="font-weight: bold;"></span><br><br>
+            <input type="checkbox" id="isshowuserinout" name="isshowuserinout" ref="isshowuserinout" @click="isshowuserinout_store()"><span>不显示用户进入、退出信息</span><br><br>
             <button id="promptbtn" @click="closeprompt();">了解</button>
         </div>
     </div></TransitionGroup>

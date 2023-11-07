@@ -1,9 +1,4 @@
-<script setup lang="ts">
-    import { onMounted } from 'vue'
-
-    onMounted(() => {
-        document.title = "概览"
-    })
+<script>
 </script>
 
 <template>

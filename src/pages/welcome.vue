@@ -1,6 +1,4 @@
-<script setup lang="ts">
-    //import '../assets/styles/pages_text.css'
-    
+<script>
 </script>
 
 <template>
