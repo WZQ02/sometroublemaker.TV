@@ -1,4 +1,5 @@
 <script setup lang="ts">
+    import '../assets/styles/stp_top_bar.css'
     import SvgIcon from '@jamescoyle/vue-icon'
     import { mdiTelevision,mdiChatOutline } from '@mdi/js'
     import { onMounted,ref } from 'vue'

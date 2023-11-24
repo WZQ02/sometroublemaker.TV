@@ -70,6 +70,12 @@ body {
 	background-color: #fff;
 	padding: 10px;
 	border-radius: 10px;
+    line-height: 125%;
+    user-select: text !important;
+}
+#chatcontent p.isyou div .speak_cont {
+    color: #fff;
+    background-color: #48d;
 }
 input {
 	font-size: 14px;
@@ -226,6 +232,10 @@ input:focus {
     #chatcontent p.speak div .speak_cont {
         color: #ccc;
         background-color: #111;
+    }
+    #chatcontent p.isyou div .speak_cont {
+        color: #ddd;
+        background-color: #047;
     }
     input {
         color: #ccc;

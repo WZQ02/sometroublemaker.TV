@@ -1,7 +1,6 @@
 <script setup lang="ts">
-    //import { createApp, onMounted } from 'vue'
-    import './assets/styles/stp_top_bar.css'
     import top_bar from './components/stp_top_bar.vue'
+    import top_noti from './components/stp_noti.vue'
 </script>
 
 <template>
@@ -13,5 +12,5 @@
             </keep-alive>
         </router-view>
     </div>
-    <div id="stp_top_noti"></div>
+    <top_noti />
 </template>

@@ -1,6 +1,6 @@
 <script setup>
     import '../assets/styles/chatroom.css'
-    import { onMounted, onUnmounted, ref } from 'vue'
+    import { onMounted,onUnmounted,ref,getCurrentInstance } from 'vue'
     import ReconnectingWebSocket from'reconnecting-websocket'
     import SvgIcon from '@jamescoyle/vue-icon'
     import { mdiInformation } from '@mdi/js'
@@ -20,6 +20,8 @@
     const chatroom_container = ref(null)
     const isshowuserinout = ref(null)
 
+    const gCI = getCurrentInstance()
+
     let setCookie = (cname,cvalue,exdays) => {
         let d = new Date();
         d.setTime(d.getTime()+(exdays*24*60*60*1000));
@@ -37,7 +39,9 @@
     }
     let sendusrmsg = () => {
 	    if (usrmsg.value.value.length <= 0) {
-		    alert(dystr(str1c));
+		    //alert(dystr(str1c));
+            gCI.proxy?.$bus.emit('trigger_popup',dystr(str1c))
+
 	    } else {
 		    ws.send(usrmsg.value.value);
 		    usrmsg.value.value = "";
@@ -57,7 +61,8 @@
     let chgusername = () => {
         let usrNameValue = usrName.value.value;
 	    if (usrNameValue == '') {
-		    alert(dystr(str2c));
+		    //alert(dystr(str2c));
+            gCI.proxy?.$bus.emit('trigger_popup',dystr(str2c))
 	    } else {
 		    setCookie('chatUserName',usrNameValue,365);
 		    var RealusrName = getCookie('chatUserName');
@@ -216,7 +221,6 @@
                 <option value="什么意思？">什么意思？</option>
             </select>
             <button id="sendmsg" ref="sendmsg" @click="sendusrmsg();">发送</button>
-            <!--<img src="../assets/icons/links/link_info.webp"/>-->
             <svg-icon type="mdi" :path=mdiInformation @click="displayinfo();" height="24" width="24"></svg-icon>
         </div>
         <div id="prompb" ref="prompb"></div>

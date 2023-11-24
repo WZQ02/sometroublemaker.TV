@@ -35,7 +35,7 @@ a {
     cursor: default;
     text-decoration: none;
 }
-#c {
+.c {
     transition: 0.25s;
     font-weight: bold;
     color: #555;
@@ -43,11 +43,11 @@ a {
     padding: 6px 8px;
     border-radius: 8px;
 }
-#c:hover {
+.c:hover {
     color: #fff !important;
     background-color: #555;
 }
-#c:active {
+.c:active {
     filter: brightness(60%);
     background-color: #555;
 }
@@ -80,7 +80,7 @@ s {
     #container {
         background-color: #202020;
     }
-    #c {
+    .c {
         color: #ddd;
     }
     h4 {

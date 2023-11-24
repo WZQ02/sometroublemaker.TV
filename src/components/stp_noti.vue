@@ -1,0 +1,49 @@
+<script setup>
+    import { ref,getCurrentInstance } from 'vue'
+    import '../assets/styles/stp_noti.css'
+
+    const stp_noti_main = ref(null)
+    const stp_noti_timer = ref(null)
+    const stp_noti_content = ref("测试通知")
+    const s_n_show = ref(0)
+
+    const gCI = getCurrentInstance()
+    let s_n_show_timeout
+
+    let stp_noti_popup = (content) => {
+        if (s_n_show.value == 1) {
+            clearTimeout(s_n_show_timeout)
+            stp_noti_timer.value.style.animation = "none"
+            setTimeout(()=>{stp_noti_timer.value.style.animation = null},1)
+        }
+        s_n_show.value = 1;
+        stp_noti_content.value = content;
+        s_n_show_timeout = setTimeout(()=>{s_n_show.value = 0;},3250)
+    }
+
+    gCI.proxy?.$bus.on('trigger_popup',(content)=>{
+        stp_noti_popup(content)
+    })
+</script>
+
+<template>
+    <Transition>
+        <div id="stp_noti_main" ref="stp_noti_main" v-if="s_n_show">
+            <div id="stp_noti_timer" ref="stp_noti_timer"></div>
+            <div id="stp_noti_content">{{stp_noti_content}}</div>
+        </div>
+    </Transition>
+</template>
+
+<style>
+.v-enter-active,
+.v-leave-active {
+  transition: all 0.25s cubic-bezier(0.3, 0, 0, 1);
+}
+.v-enter-from {
+    opacity: 0;
+}
+.v-leave-to {
+    opacity: 0;
+}
+</style>

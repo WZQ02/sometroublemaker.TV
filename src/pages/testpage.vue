@@ -1,25 +1,25 @@
-<script setup lang="ts">
-    import { ref } from 'vue'
+<script setup>
+    import { ref,getCurrentInstance } from 'vue'
     const num = ref(114514)
     const test_1 = ref("")
+    const gCI = getCurrentInstance()
 </script>
 
 <template>
     <div id="container">
-        <h1>test</h1>
+        <h1>简单功能测试页</h1>
         <h4>{{ num }}</h4>
         <h4>{{ test_1 }}</h4>
-        <p><input v-model="test_1"></p>
-        <a @click="num++">数字加1</a>
+        <p><input id="testpge_input" v-model="test_1"></p>
+        <a class="c" @click="num++">数字加1</a><br><br>
+        <a class="c" @click="gCI.proxy?.$bus.emit('trigger_popup','这是一个测试通知，啊呃呃呃呃鹅鹅鹅饿')">弹出通知</a>
     </div>
 </template>
 
 <style>
-input {
+#testpge_input {
     font-size: 16px;
     width: 264px;
-    line-height: 32px;
-    border: 1px #aaa;
-    border-radius: 6px;
+    line-height: 28px;
 }
 </style>
