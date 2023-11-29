@@ -6,14 +6,15 @@
 </script>
 
 <template>
-    <div id="container">
-        <h1>简单功能测试页</h1>
+    <TransitionGroup name="app_trans"><div id="container" key="test_container">
+        <h1>{{ $t("testpage.title.fun_test") }}</h1>
         <h4>{{ num }}</h4>
         <h4>{{ test_1 }}</h4>
-        <p><input id="testpge_input" v-model="test_1"></p>
-        <a class="c" @click="num++">数字加1</a><br><br>
-        <a class="c" @click="gCI.proxy?.$bus.emit('trigger_popup','这是一个测试通知，啊呃呃呃呃鹅鹅鹅饿')">弹出通知</a>
-    </div>
+        <h4>{{ $t("testpage.message.test") }}</h4>
+        <p><input id="testpge_input" class="text_input" v-model="test_1"></p>
+        <a class="c" @click="num++">{{ $t("testpage.button.num_plus_1") }}</a><br><br>
+        <a class="c" @click="gCI.proxy?.$bus.emit('trigger_popup','这是一个测试通知，啊呃呃呃呃鹅鹅鹅饿')">{{ $t("testpage.button.popup_test") }}</a>
+    </div></TransitionGroup>
 </template>
 
 <style>

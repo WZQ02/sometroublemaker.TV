@@ -77,7 +77,7 @@ body {
     color: #fff;
     background-color: #48d;
 }
-input {
+.text_input {
 	font-size: 14px;
     position: relative;
 	width: calc(100% - 24px);
@@ -90,7 +90,7 @@ input {
     background-color: #ddd;
     transition: 0.25s;
 }
-input:focus {
+.text_input:focus {
     background-color: #fff;
 }
 #chatroom_container input {
@@ -208,9 +208,9 @@ input:focus {
     top: 1px;
 }
 .prompt #isshowuserinout {
-    width: 16px;
+    position: relative;
     opacity: 0.7;
-    top: 0.5px;
+    top: 1px;
     left: -4px;
 }
 @media (prefers-color-scheme: dark) {
@@ -237,11 +237,11 @@ input:focus {
         color: #ddd;
         background-color: #047;
     }
-    input {
+    .text_input {
         color: #ccc;
         background-color: #333;
     }
-    input:focus {
+    .text_input:focus {
         background-color: #111;
     }
     #quoteselector {

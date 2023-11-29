@@ -3,8 +3,8 @@
 
 <template>
     <TransitionGroup name="app_trans"><div id="container" key="wel_container">
-        <span id="stp_wel_title1" class="stp_wel_title"><p>你来到了<br>sometroublemaker's playground。</p></span>
-        <span id="stp_wel_title2" class="stp_wel_title"><p>↑ 使用顶栏以进行导航</p></span>
+        <span id="stp_wel_title1" class="stp_wel_title"><p>{{ $t("wel.title1.1") }}<br>{{ $t("wel.title1.2") }}</p></span>
+        <span id="stp_wel_title2" class="stp_wel_title"><p>{{ $t("wel.title2") }}</p></span>
     </div></TransitionGroup>
 </template>
 

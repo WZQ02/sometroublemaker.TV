@@ -1,17 +1,18 @@
 <script setup lang="ts">
     import '../assets/styles/stp_top_bar.css'
     import SvgIcon from '@jamescoyle/vue-icon'
-    import { mdiTelevision,mdiChatOutline } from '@mdi/js'
+    import { mdiTelevision,mdiChatOutline,mdiCog } from '@mdi/js'
     import { onMounted,ref } from 'vue'
     import '@material/ripple'
 
     const isselected_1 = ref(0)
     const isselected_2 = ref(0)
     const isselected_3 = ref(0)
+    const isselected_4 = ref(0)
     const tb_show = ref(0)
 
-    let tb_select = (selected) => {
-        let tb_btn = [isselected_1,isselected_2,isselected_3]
+    let tb_select = (selected) => {//指定顶栏上哪个项目高亮显示
+        let tb_btn = [isselected_1,isselected_2,isselected_3,isselected_4]
         for (let i=0; i<tb_btn.length; i++) {
             if (i+1 == selected) {
                 tb_btn[i].value = 1
@@ -22,12 +23,12 @@
     }
 
     var hide_tb;
-    let tb_autohide = () => {
+    let tb_autohide = () => {//鼠标移出2.5秒后，隐藏顶栏
         hide_tb = setTimeout(() => {
             tb_show.value = 0;
         },2500)
     }
-    let tb_reshow = () => {
+    let tb_reshow = () => {//鼠标移入，顶栏重新显示
         clearTimeout(hide_tb)
         tb_show.value = 1;
     }
@@ -47,6 +48,9 @@
             </div></router-link>
             <router-link to="/chat"><div class="stp_tb_button mdc-ripple-surface" id="stp_t_b_3" v-bind:class="{selected:isselected_3}" @click="tb_select(3)" title="聊天室">
                 <svg-icon type="mdi" :path=mdiChatOutline></svg-icon>
+            </div></router-link>
+            <router-link to="/settings"><div class="stp_tb_button mdc-ripple-surface" id="stp_t_b_4" v-bind:class="{selected:isselected_4}" @click="tb_select(4)" title="设置">
+                <svg-icon type="mdi" :path=mdiCog></svg-icon>
             </div></router-link>
         </div>
     </div>

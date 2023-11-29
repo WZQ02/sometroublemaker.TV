@@ -4,6 +4,7 @@
     import ReconnectingWebSocket from'reconnecting-websocket'
     import SvgIcon from '@jamescoyle/vue-icon'
     import { mdiInformation } from '@mdi/js'
+    import { setCookie,getCookie } from '../scripts/cookie.js'
 
     const ws = new ReconnectingWebSocket('wss://wzq02.cf/websocketchat')
     const usrmsg = ref(null)
@@ -22,21 +23,6 @@
 
     const gCI = getCurrentInstance()
 
-    let setCookie = (cname,cvalue,exdays) => {
-        let d = new Date();
-        d.setTime(d.getTime()+(exdays*24*60*60*1000));
-        let expires = "expires="+d.toString();
-        document.cookie = cname + "=" + cvalue + "; " + expires;
-    }
-    let getCookie = (cname) => {
-        let name = cname + "=";
-        let ca = document.cookie.split(';');
-        for (let i=0; i<ca.length; i++) {
-            let c = ca[i].trim();
-            if (c.indexOf(name)==0) return c.substring(name.length,c.length);
-        }
-        return "";
-    }
     let sendusrmsg = () => {
 	    if (usrmsg.value.value.length <= 0) {
 		    //alert(dystr(str1c));
@@ -110,12 +96,11 @@
 	    var roominfo = document.getElementById('roominfo');
 	    if (str.indexOf('{') == 0) {//服务器通知当前用户发出的信息或其他用户的相关信息
 		    let parseStr = JSON.parse(str);
-		    //formatted.innerHTML = `<span class="timer">${parseStr.time}</span><br/><span class="msg">${parseStr.msg}</span>`;
             formatted.innerHTML = `<span class="timer">${parseStr.time}</span><br/>`;
 		    roominfo.innerText = parseStr.online;
 		    switch (parseStr.type) {
 			    case 0://用户离线时formatted的class
-                    if (isshowuserinout.value.checked) {
+                    if (isshowuserinout.value.checked) {//根据是否选中“不显示用户进入退出信息”决定是否呈现相关信息
                         formatted.innerHTML = ""
                     } else {
                         formatted.innerHTML = formatted.innerHTML + `<span class="msg">${parseStr.msg}</span>`
@@ -204,7 +189,7 @@
 <template>
     <TransitionGroup name="app_trans"><div id="chatroom_container" ref="chatroom_container" key="chatroom_container">
         <div id="chatcontent" ref="content" name="chatcontent"></div>
-        <input type="text" placeholder="说点什么..." id="usrmsg" ref="usrmsg">
+        <input type="text" class="text_input" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg">
         <div id="panel1">
             <select id="quoteselector" @change="quotechange();" ref="quoteselector">
                 <option value="(=・ω・=)">(=・ω・=)</option>
@@ -220,28 +205,27 @@
                 <option value="呵呵">呵呵</option>
                 <option value="什么意思？">什么意思？</option>
             </select>
-            <button id="sendmsg" ref="sendmsg" @click="sendusrmsg();">发送</button>
+            <button id="sendmsg" ref="sendmsg" @click="sendusrmsg();">{{ $t("chatroom.button.send") }}</button>
             <svg-icon type="mdi" :path=mdiInformation @click="displayinfo();" height="24" width="24"></svg-icon>
         </div>
         <div id="prompb" ref="prompb"></div>
         <div id="askforusername" ref="askforusername_pmpt" class="prompt">
-            <input type="text" placeholder="敢问在下贵姓？" id="usrName" ref="usrName">
-            <button id="promptbtn" @click="chgusername();" ref="chgUsrName">确定</button>
+            <input type="text" class="text_input" v-bind:placeholder="$t('chatroom.input.2')" id="usrName" ref="usrName">
+            <button id="promptbtn" @click="chgusername();" ref="chgUsrName">{{ $t("chatroom.button.confirm") }}</button>
         </div>
         <div id="notice" ref="notice" class="prompt">
             <span>
-                以下为本聊天室的一些注意事项：<p>你的昵称已存储于浏览器的 cookie 中，可随时更改。</p><p>
-                由于启用了掉线重连机制，你可能会看到有人连续多次进出聊天室。</p><p>如果遇到无法发送信息的情况，可能是你和聊天服务器断开连接了，请刷新页面再试。</p><p>
-                本聊天室对发言内容不做限制，但请尽量别在本页面魔怔瞎骂或发表敏感言论，
-                谢谢！</p>
+                {{ $t("chatroom.message.1") }}<p>{{ $t("chatroom.message.2") }}</p><p>
+                {{ $t("chatroom.message.3") }}</p><p>{{ $t("chatroom.message.4") }}</p><p>
+                {{ $t("chatroom.message.5") }}</p>
             </span>
-            <button id="promptbtn" @click="closeprompt();">好，知道了</button>
+            <button id="promptbtn" @click="closeprompt();">{{ $t("chatroom.button.ok_got_it") }}</button>
         </div>
         <div id="info" ref="info" class="prompt">
-            你的昵称：<span id="currentusername" ref="currentusername" style="font-weight: bold;"></span>&nbsp;&nbsp;<button id="promptbtn" @click="alterusrname();">更改</button><br><br>
-            当前聊天室在线人数：<span id="roominfo" style="font-weight: bold;"></span><br><br>
-            <input type="checkbox" id="isshowuserinout" name="isshowuserinout" ref="isshowuserinout" @click="isshowuserinout_store()"><span>不显示用户进入、退出信息</span><br><br>
-            <button id="promptbtn" @click="closeprompt();">了解</button>
+            {{ $t("chatroom.message.6") }}<span id="currentusername" ref="currentusername" style="font-weight: bold;"></span>&nbsp;&nbsp;<button id="promptbtn" @click="alterusrname();">{{ $t("chatroom.button.change") }}</button><br><br>
+            {{ $t("chatroom.message.7") }}<span id="roominfo" style="font-weight: bold;"></span><br><br>
+            <input type="checkbox" id="isshowuserinout" name="isshowuserinout" ref="isshowuserinout" @click="isshowuserinout_store()"><span>{{ $t("chatroom.message.8") }}</span><br><br>
+            <button id="promptbtn" @click="closeprompt();">{{ $t("chatroom.button.got_it") }}</button>
         </div>
     </div></TransitionGroup>
 </template>

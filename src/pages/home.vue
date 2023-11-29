@@ -3,15 +3,15 @@
 
 <template>
     <TransitionGroup name="app_trans"><div id="container" key="home_container">
-        <h1>sometroublemaker's playground 概览</h1>
-        <p>sometroublemaker's playground 作为 wzq02.cf 的一个扩充而存在。目前该站点整合了 wzq02.cf 的直播页和聊天室功能，以后会考虑整合更多东西进来。</p>
-        <p>本站也用于笔者上手 Vue 3 框架上的网站开发。</p>
-        <p>你仍可通过以下链接访问原先使用的直播页和聊天页：</p>
-        <a class="c" href="https://wzq02.cf/player/livewithchat">直播页 (带聊天室)</a>&nbsp;
-        <a class="c" href="https://wzq02.cf/chatroom1">聊天室</a>
+        <h1>sometroublemaker's playground {{$t("home.title.overview")}}</h1>
+        <p>{{$t("home.message.1")}}</p>
+        <p>{{$t("home.message.2")}}</p>
+        <p>{{$t("home.message.3")}}</p>
+        <a class="c" href="https://wzq02.cf/player/livewithchat">{{$t("home.button.1")}}</a>&nbsp;
+        <a class="c" href="https://wzq02.cf/chatroom1">{{$t("home.button.2")}}</a>
         <br><br>
         <p></p>
-        <a class="c" href="https://wzq02.cf/?secquery=wzqtv">返回主站</a>
+        <a class="c" href="https://wzq02.cf/?secquery=wzqtv">{{$t("home.button.3")}}</a>
     </div></TransitionGroup>
 </template>
 

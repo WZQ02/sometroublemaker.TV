@@ -4,14 +4,14 @@
 
     const stp_noti_main = ref(null)
     const stp_noti_timer = ref(null)
-    const stp_noti_content = ref("测试通知")
+    const stp_noti_content = ref("")//提示内容
     const s_n_show = ref(0)
 
     const gCI = getCurrentInstance()
     let s_n_show_timeout
 
     let stp_noti_popup = (content) => {
-        if (s_n_show.value == 1) {
+        if (s_n_show.value == 1) {//如果之前已经触发过提示，重置计时和动画
             clearTimeout(s_n_show_timeout)
             stp_noti_timer.value.style.animation = "none"
             setTimeout(()=>{stp_noti_timer.value.style.animation = null},1)
@@ -21,7 +21,7 @@
         s_n_show_timeout = setTimeout(()=>{s_n_show.value = 0;},3250)
     }
 
-    gCI.proxy?.$bus.on('trigger_popup',(content)=>{
+    gCI.proxy?.$bus.on('trigger_popup',(content)=>{//触发提示
         stp_noti_popup(content)
     })
 </script>
