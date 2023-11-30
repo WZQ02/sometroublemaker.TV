@@ -15,7 +15,7 @@
 }
 #stp_tb_main {
     background-color: #eee;
-    width: 256px;
+    width: 224px;
     height: 72px;
     border-radius: 12px;
     padding: 6px 6px;
@@ -25,7 +25,7 @@
 .stp_tb_button {
     display: inline-block;
     border-radius: 6px;
-    width: 64px;
+    width: 56px;
     height: 72px;
     transition: background-color 0.15s ease;
 }

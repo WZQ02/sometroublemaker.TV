@@ -51,6 +51,7 @@ if (stp_lang == 1) {
 }
 
 const i18n = createI18n({
+    legacy: false,
     locale: navi_lang.split('-')[0],
     fallbackLocale: 'zh',
     messages: stp_glob_i18n,

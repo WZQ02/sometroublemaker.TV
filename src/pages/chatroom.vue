@@ -1,12 +1,10 @@
 <script setup>
     import '../assets/styles/chatroom.css'
-    import { onMounted,onUnmounted,ref,getCurrentInstance } from 'vue'
-    import ReconnectingWebSocket from'reconnecting-websocket'
+    import { onMounted,ref,getCurrentInstance,onActivated, onDeactivated } from 'vue'
     import SvgIcon from '@jamescoyle/vue-icon'
     import { mdiInformation } from '@mdi/js'
     import { setCookie,getCookie } from '../scripts/cookie.js'
 
-    const ws = new ReconnectingWebSocket('wss://wzq02.cf/websocketchat')
     const usrmsg = ref(null)
     const sendmsg = ref(null)
     const content = ref(null)
@@ -20,16 +18,14 @@
     const quoteselector = ref(null)
     const chatroom_container = ref(null)
     const isshowuserinout = ref(null)
-
+    const roominfo = ref(null)
     const gCI = getCurrentInstance()
 
     let sendusrmsg = () => {
-	    if (usrmsg.value.value.length <= 0) {
-		    //alert(dystr(str1c));
+        if (usrmsg.value.value.length <= 0) {
             gCI.proxy?.$bus.emit('trigger_popup',dystr(str1c))
-
 	    } else {
-		    ws.send(usrmsg.value.value);
+            gCI.proxy?.$bus.emit('chatroom_send',usrmsg.value.value)
 		    usrmsg.value.value = "";
 	    }
     }
@@ -47,12 +43,11 @@
     let chgusername = () => {
         let usrNameValue = usrName.value.value;
 	    if (usrNameValue == '') {
-		    //alert(dystr(str2c));
             gCI.proxy?.$bus.emit('trigger_popup',dystr(str2c))
 	    } else {
 		    setCookie('chatUserName',usrNameValue,365);
 		    var RealusrName = getCookie('chatUserName');
-		    ws.send(`setUsrName=${RealusrName}`);
+            gCI.proxy?.$bus.emit('chatroom_chgusrname',RealusrName)
 		    noticeUser();
 		    askforusername_pmpt.value.style.display = "";
 	    }
@@ -60,6 +55,7 @@
     //存储“是否显示用户进入、退出”的信息到cookie
     let isshowuserinout_store = () => {
         setCookie('isshowuserinout',isshowuserinout.value.checked,365);
+        gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',isshowuserinout.value.checked)
     }
     //显示注意事项
     let noticeUser = () => {
@@ -90,49 +86,6 @@
 	    info.value.style.display = "none";
 	    askforusername();
     }
-
-    let format = (str) => {
-	    const formatted = document.createElement('p');
-	    var roominfo = document.getElementById('roominfo');
-	    if (str.indexOf('{') == 0) {//服务器通知当前用户发出的信息或其他用户的相关信息
-		    let parseStr = JSON.parse(str);
-            formatted.innerHTML = `<span class="timer">${parseStr.time}</span><br/>`;
-		    roominfo.innerText = parseStr.online;
-		    switch (parseStr.type) {
-			    case 0://用户离线时formatted的class
-                    if (isshowuserinout.value.checked) {//根据是否选中“不显示用户进入退出信息”决定是否呈现相关信息
-                        formatted.innerHTML = ""
-                    } else {
-                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${parseStr.msg}</span>`
-                        formatted.className = "leave";
-                    }
-				    break;
-			    case 1://用户加入时
-                    if (isshowuserinout.value.checked) {
-                        formatted.innerHTML = ""
-                    } else {
-                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${parseStr.msg}</span>`
-                        formatted.className = "entry";
-                    }
-				    break;
-			    case 2://用户发言时
-                    //单独提取用户名和发言信息
-                    let speak_name = parseStr.msg.slice(0,parseStr.msg.indexOf(": "))
-                    let speak_cont = parseStr.msg.slice(parseStr.msg.indexOf(": ")+2)
-                    formatted.innerHTML = formatted.innerHTML + `<span class="speak_name">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span><div>`
-                    //判断是不是自己发言
-                    if (getCookie('chatUserName') == speak_name) {
-                        formatted.className = "speak isyou";
-                    } else {
-                        formatted.className = "speak";
-                    }
-				    break;
-		    }
-	    } else {//服务器通知当前用户已加入聊天室
-		    formatted.innerText = str;
-	    }
-	    return formatted;
-    }
     //语录选择器
     let quotechange = () => {
         let selector = quoteselector.value
@@ -144,28 +97,33 @@
     }
 
     //生成随机数改变chatroom页面的部分字符串
-    const str1c = ["消息不能为空", "你咋不说话啊", "空消息是发不出来的，别试啦"];
-    const str2c = ["用户名不能为空，怕你不知道跟你说一下", "起个昵称吧", "你不起名字，别人咋认得你是谁啊"];
+    const str1c = [gCI.proxy?.$t("toasts.1.1"), gCI.proxy?.$t("toasts.1.2"), gCI.proxy?.$t("toasts.1.3")];
+    const str2c = [gCI.proxy?.$t("toasts.1.4"), gCI.proxy?.$t("toasts.1.5"), gCI.proxy?.$t("toasts.1.6")];
     let dystr = (strxc) => {return strxc[Math.floor(Math.random()*3)];}
 
+    //根据接收的信息更改roominfo（在线人数）数值
+    gCI.proxy?.$bus.on('chatroomchgroominfo',(e)=>{
+        roominfo.value.innerText = e
+    })
+
+    //呈现接受的消息
+    gCI.proxy?.$bus.on('chatroomdisplaymsg',(e)=>{
+        content.value.appendChild(e);
+        goBottom()
+    })
+
     onMounted(() => {
-        //通知控制台已连接到服务器，并检查cookie里面的用户名
-        ws.addEventListener('open', (e) => {
-	        console.log("已连接到聊天服务器。");
-	        var RealusrName = getCookie('chatUserName');
+        gCI.proxy?.$bus.emit('req_chatserverbknd')
+        gCI.proxy?.$bus.on('chatserverconnected',()=>{
+            var RealusrName = getCookie('chatUserName');
 	        if (RealusrName == "") {
 		        askforusername();
 	        } else {
-	            ws.send(`setUsrName=${RealusrName}`);
+	            //ws.send(`setUsrName=${RealusrName}`);
+                gCI.proxy?.$bus.emit('chatroom_send',`setUsrName=${RealusrName}`)
 	        }
 	        goBottom();
-        });
-        //接受服务器发送的信息，并呈现于chatcontent
-        ws.addEventListener('message', (e) => {
-        	console.log(e.data);
-	        content.value.appendChild(format(e.data));
-	        goBottom();
-        });
+        })
         //回车发送
         usrmsg.value.addEventListener('keydown',(e) => {
 	        if (e.keyCode == 13) {
@@ -174,22 +132,26 @@
         });
         //读取cookie并设置存储“是否显示用户进入、退出”的信息到cookie
         if (getCookie('isshowuserinout') == 'true') {
+            gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',1)
             isshowuserinout.value.checked = 1;
         } else {
+            gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',0)
             isshowuserinout.value.checked = 0;
         }
     })
-
-    onUnmounted(() => {
-        //退出聊天室前关闭连接
-        ws.close();
+    onDeactivated(() => {
+        gCI.proxy?.$bus.emit('chatroomdeactivated')
+    })
+    onActivated(() => {
+        gCI.proxy?.$bus.emit('chatroomactivated');
+        goBottom()
     })
 </script>
 
 <template>
     <TransitionGroup name="app_trans"><div id="chatroom_container" ref="chatroom_container" key="chatroom_container">
         <div id="chatcontent" ref="content" name="chatcontent"></div>
-        <input type="text" class="text_input" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg">
+        <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg">
         <div id="panel1">
             <select id="quoteselector" @change="quotechange();" ref="quoteselector">
                 <option value="(=・ω・=)">(=・ω・=)</option>
@@ -210,7 +172,7 @@
         </div>
         <div id="prompb" ref="prompb"></div>
         <div id="askforusername" ref="askforusername_pmpt" class="prompt">
-            <input type="text" class="text_input" v-bind:placeholder="$t('chatroom.input.2')" id="usrName" ref="usrName">
+            <input type="text" v-bind:placeholder="$t('chatroom.input.2')" id="usrName" ref="usrName">
             <button id="promptbtn" @click="chgusername();" ref="chgUsrName">{{ $t("chatroom.button.confirm") }}</button>
         </div>
         <div id="notice" ref="notice" class="prompt">
@@ -223,7 +185,7 @@
         </div>
         <div id="info" ref="info" class="prompt">
             {{ $t("chatroom.message.6") }}<span id="currentusername" ref="currentusername" style="font-weight: bold;"></span>&nbsp;&nbsp;<button id="promptbtn" @click="alterusrname();">{{ $t("chatroom.button.change") }}</button><br><br>
-            {{ $t("chatroom.message.7") }}<span id="roominfo" style="font-weight: bold;"></span><br><br>
+            {{ $t("chatroom.message.7") }}<span id="roominfo" ref="roominfo" style="font-weight: bold;"></span><br><br>
             <input type="checkbox" id="isshowuserinout" name="isshowuserinout" ref="isshowuserinout" @click="isshowuserinout_store()"><span>{{ $t("chatroom.message.8") }}</span><br><br>
             <button id="promptbtn" @click="closeprompt();">{{ $t("chatroom.button.got_it") }}</button>
         </div>

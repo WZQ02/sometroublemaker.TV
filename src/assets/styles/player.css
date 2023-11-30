@@ -9,7 +9,10 @@
     left: calc(50vw - 656px);
     overflow: hidden;
 }
-video {
+video.nodisplay {
+    width: 0px;
+}
+video.inpage {
     position: relative;
     margin: 16px 16px;
     width: calc(100% - 32px);

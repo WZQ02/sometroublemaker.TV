@@ -77,22 +77,6 @@ body {
     color: #fff;
     background-color: #48d;
 }
-.text_input {
-	font-size: 14px;
-    position: relative;
-	width: calc(100% - 24px);
-	line-height: 24px;
-	padding: 6px 12px;
-	outline: none;
-	border: 0px;
-	transition: border .25s;
-	border-radius: 14px;
-    background-color: #ddd;
-    transition: 0.25s;
-}
-.text_input:focus {
-    background-color: #fff;
-}
 #chatroom_container input {
     top: 16px;
 }
@@ -210,8 +194,10 @@ body {
 .prompt #isshowuserinout {
     position: relative;
     opacity: 0.7;
-    top: 1px;
-    left: -4px;
+    width: 20px;
+    height: 16px;
+    top: 2px;
+    left: -6px;
 }
 @media (prefers-color-scheme: dark) {
     #chatroom_container {
@@ -236,13 +222,6 @@ body {
     #chatcontent p.isyou div .speak_cont {
         color: #ddd;
         background-color: #047;
-    }
-    .text_input {
-        color: #ccc;
-        background-color: #333;
-    }
-    .text_input:focus {
-        background-color: #111;
     }
     #quoteselector {
         color: #aaa;

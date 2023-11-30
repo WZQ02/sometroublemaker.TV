@@ -1,12 +1,14 @@
 <script setup>
     import '../assets/styles/player.css'
-    import { onMounted,ref } from 'vue'
+    import { onMounted,ref,getCurrentInstance, onActivated, onDeactivated } from 'vue'
     import Hls from 'hls.js'
     import { getCookie } from '../scripts/cookie.js'
 
     const video = ref(null);
     const prompb = ref(null)
     const nolive_pmpt = ref(null);
+
+    const gCI = getCurrentInstance()
 
     let promptthereisnolive = () => {
         prompb.value.style.display = "block";
@@ -15,13 +17,28 @@
     let oncl_hyperl = (url) => {
         window.location.href = url
     }
+    let play = () => {
+        video.value.muted = true;
+        video.value.play();
+        //检测是否允许自动播放
+        const ctx = new AudioContext();
+        const canautoplay = ctx.state == 'running';
+        ctx.close();
+        if (canautoplay) {
+            video.value.muted = false;
+        } else {
+            gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.2"))
+        }
+    }
+    let vid_allow_teleport = 0
+    const vid_tele_disabled = ref(1)
 
     onMounted(() => {
-        let videoUrl = '';
+        let videoUrl = '/hls/index.m3u8';
         let stp_live_lin = getCookie('stp_live_lin');
-        if (stp_live_lin == 1) {
+        if (stp_live_lin == 2) {
             videoUrl = 'https://www.wzq02.cf/hls/index.m3u8';
-        } else {
+        } else if (stp_live_lin == 1) {
             videoUrl = 'https://wzq02.cf/hls/index.m3u8';
         }
         let load_stream = () => {
@@ -30,7 +47,8 @@
                 hls.loadSource(videoUrl);
                 hls.attachMedia(video.value);
                 hls.on(Hls.Events.MANIFEST_PARSED,() => {
-                    video.value.play();
+                    //video.value.play();
+                    play();
                 });
             }
         }
@@ -40,16 +58,26 @@
         request.send(null);
         request.onload = () => {
             if (request.status == 200) {
+                vid_allow_teleport = 1
             } else {
-                setTimeout(()=>{promptthereisnolive()},250);
+                setTimeout(()=>{promptthereisnolive()},250)
             }
         }
+    })
+    onDeactivated(() => {
+        if (vid_allow_teleport) {
+            vid_tele_disabled.value = 0
+        }
+    })
+    onActivated(() => {
+        vid_tele_disabled.value = 1
+        video.value.play()
     })
 </script>
 
 <template>
     <TransitionGroup name="app_trans"><div class="player" key="player">
-        <video id="video" ref="video" controls autoplay muted></video>
+        <Teleport to="body" :disabled="vid_tele_disabled"><video id="video" ref="video" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0}" controls></video></Teleport>
     </div>
     <div id="prompb" ref="prompb" key="prompb"></div>
     <div id="nolive_pmpt" ref="nolive_pmpt" class="prompt" key="nolive_pmpt">

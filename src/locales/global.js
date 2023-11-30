@@ -64,12 +64,13 @@ const stp_glob_i18n = {
             title: '设置',
             message: {
                 1: '语言：',
-                2: '浏览器语言（默认）',
+                2: '跟随系统（默认）',
                 3: '直播间线路：',
-                4: '直连（默认）',
-                5: 'CloudFlare 代理线路',
-                6: '部分设置需重载站点后才可生效。',
-                7: '重载站点'
+                4: '跟随域名（默认）',
+                5: '直连 ',
+                6: 'CloudFlare 代理线路',
+                7: '部分设置需重载站点后才可生效。',
+                8: '重载站点'
             }
         },
         testpage: {
@@ -83,6 +84,17 @@ const stp_glob_i18n = {
                 num_plus_1: '数字加1',
                 popup_test: '弹出通知',
             }
+        },
+        toasts: {
+            1: {
+                1: '消息不能为空',
+                2: '你咋不说话啊',
+                3: '空消息是发不出来的，别试啦',
+                4: '用户名不能为空，怕你不知道跟你说一下',
+                5: '起个昵称吧',
+                6: '你不起名字，别人咋认得你是谁啊',
+            },
+            2: '提示：视频已被静音，请手动取消视频静音状态。'
         }
     },
     en: {
@@ -133,6 +145,11 @@ const stp_glob_i18n = {
                 change: 'Change'
             },
             message: {
+                1: 'Things to know about this chatroom: ',
+                2: 'Your nickname had been stored in your browser\'s cookie and can be changed at any time.',
+                3: 'Due to the reconnection mechanism, you might see several users constantly drop out and reconnect.',
+                4: 'If you cannot send any message, that means you\'re probably disconnected to the server, in that case, please refresh the page and try again.',
+                5: 'This chatroom does not limit what you say in here, but you should always be responsible of what you say.',
                 6: 'Your nickname: ',
                 7: 'Online: ',
                 8: 'Do not show user enter and leave message'
@@ -142,12 +159,13 @@ const stp_glob_i18n = {
             title: 'Settings',
             message: {
                 1: 'Language: ',
-                2: 'Browser Language (Default) ',
+                2: 'System Language (Default) ',
                 3: 'Livestream line: ',
-                4: 'Direct (Default) ',
-                5: 'CloudFlare Proxy',
-                6: 'Some of the settings will require reloading the site to apply.',
-                7: 'Reload'
+                4: 'Follow Domain (Default) ',
+                5: 'Direct',
+                6: 'CloudFlare Proxy',
+                7: 'Some of the settings will require reloading the site to apply.',
+                8: 'Reload'
             }
         },
         testpage: {
@@ -161,6 +179,17 @@ const stp_glob_i18n = {
                 num_plus_1: 'Number plus 1',
                 popup_test: 'Notification test',
             }
+        },
+        toasts: {
+            1: {
+                1: 'You haven\'t typed in anything...',
+                2: 'Are you pushing the send button for fun?',
+                3: 'Come on, what\'re you trying to say?',
+                4: 'But you haven\'t entered your name...',
+                5: 'What\'s your nickname?',
+                6: 'Name yourself plz',
+            },
+            2: 'Hint: The video is muted now. You will need to unmute the video manually.'
         }
     }
 }

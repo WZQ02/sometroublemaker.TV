@@ -72,6 +72,28 @@ p {
 s {
     opacity: 0.4;
 }
+input[type="text"] {
+	font-size: 14px;
+    position: relative;
+	width: calc(100% - 24px);
+	line-height: 24px;
+	padding: 6px 12px;
+	outline: none;
+	border: 0px;
+	transition: border .25s;
+	border-radius: 14px;
+    background-color: #ddd;
+    transition: 0.25s;
+}
+input[type="text"]:focus {
+    background-color: #fff;
+}
+input[type="radio"] {
+    position: relative;
+    width: 24px;
+    height: 20px;
+    top: 4px;
+}
 @media (prefers-color-scheme: dark) {
     body { 
         background: #252525; 
@@ -91,6 +113,13 @@ s {
     }
     ::-webkit-scrollbar-thumb:active {
         background-color: rgba(191,191,191,1);
+    }
+    input[type="text"] {
+        color: #ccc;
+        background-color: #333;
+    }
+    input[type="text"]:focus {
+        background-color: #111;
     }
 }
 @media screen and (max-width: 900px) {

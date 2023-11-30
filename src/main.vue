@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import top_bar from './components/stp_top_bar.vue'
     import top_noti from './components/stp_noti.vue'
+    import chat_backend from './components/stp_chat_bknd.vue'
 </script>
 
 <template>
@@ -13,4 +14,5 @@
         </router-view>
     </div>
     <top_noti />
+    <chat_backend />
 </template>
