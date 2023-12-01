@@ -15,6 +15,7 @@ body {
     width: 720px;
     padding: 32px;
     overflow: hidden;
+    animation: zoomin3 0.25s cubic-bezier(0.3, 0, 0, 1);
 }
 ::-webkit-scrollbar {
     width: 6px;
@@ -89,6 +90,12 @@ input[type="text"]:focus {
     background-color: #fff;
 }
 input[type="radio"] {
+    position: relative;
+    width: 24px;
+    height: 20px;
+    top: 4px;
+}
+.settings_checkbox {
     position: relative;
     width: 24px;
     height: 20px;
@@ -184,6 +191,16 @@ input[type="radio"] {
     to {
         opacity: 0;
         transform: translate(-50%,-50%) scale(0.75);
+    }
+}
+@keyframes zoomin3 {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }
 

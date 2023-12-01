@@ -32,14 +32,23 @@
     }
     let vid_allow_teleport = 0
     const vid_tele_disabled = ref(1)
+    let allow_pip = 0
+
+    gCI.proxy?.$bus.on('change_pip_setting',function(e){
+        allow_pip = e
+    })
 
     onMounted(() => {
         let videoUrl = '/hls/index.m3u8';
         let stp_live_lin = getCookie('stp_live_lin');
+        let stp_allow_pip = getCookie('stp_allow_pip');
         if (stp_live_lin == 2) {
             videoUrl = 'https://www.wzq02.cf/hls/index.m3u8';
         } else if (stp_live_lin == 1) {
             videoUrl = 'https://wzq02.cf/hls/index.m3u8';
+        }
+        if (stp_allow_pip == 1) {
+            allow_pip = 1;
         }
         let load_stream = () => {
             if (Hls.isSupported()) {
@@ -67,11 +76,16 @@
     onDeactivated(() => {
         if (vid_allow_teleport) {
             vid_tele_disabled.value = 0
+            if (allow_pip) {
+                video.value.requestPictureInPicture()//调用浏览器视频画中画功能
+            }
         }
     })
     onActivated(() => {
         vid_tele_disabled.value = 1
-        video.value.play()
+        if (document.pictureInPictureElement) {//退出画中画
+            document.exitPictureInPicture();
+        }
     })
 </script>
 

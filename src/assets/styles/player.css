@@ -8,6 +8,7 @@
     max-height: calc(100vh - 32px);
     left: calc(50vw - 656px);
     overflow: hidden;
+    animation: zoomin3 0.25s cubic-bezier(0.3, 0, 0, 1);
 }
 video.nodisplay {
     width: 0px;

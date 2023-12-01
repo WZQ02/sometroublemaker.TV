@@ -20,6 +20,7 @@ body {
     box-shadow: 0 0 48px rgba(0,0,0,0.2);
 	padding: 16px;
     top: 12px;
+    animation: zoomin3 0.25s cubic-bezier(0.3, 0, 0, 1);
 }
 #chatcontent {
     box-shadow: 0 0 48px rgba(0,0,0,0.07) inset;

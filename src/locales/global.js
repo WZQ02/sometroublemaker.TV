@@ -70,7 +70,8 @@ const stp_glob_i18n = {
                 5: '直连 ',
                 6: 'CloudFlare 代理线路',
                 7: '部分设置需重载站点后才可生效。',
-                8: '重载站点'
+                8: '重载站点',
+                9: '自动启用视频画中画：'
             }
         },
         testpage: {
@@ -165,7 +166,8 @@ const stp_glob_i18n = {
                 5: 'Direct',
                 6: 'CloudFlare Proxy',
                 7: 'Some of the settings will require reloading the site to apply.',
-                8: 'Reload'
+                8: 'Reload',
+                9: 'Allow Picture-in-Picture for video: '
             }
         },
         testpage: {
