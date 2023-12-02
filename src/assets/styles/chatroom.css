@@ -15,7 +15,8 @@ body {
 	width: 720px;
 	height: 882px;
     max-width: calc(100vw - 80px);
-	max-height: calc(100vh - 78px);
+    max-height: calc(100vh - 78px);
+	max-height: calc(100dvh - 78px);
     border-radius: 32px;
     box-shadow: 0 0 48px rgba(0,0,0,0.2);
 	padding: 16px;
@@ -259,7 +260,8 @@ body {
 }
 @media screen and (min-height: 960px) {
     #chatroom_container {
-        top: calc(50vh - 468px)
+        top: calc(50vh - 468px);
+        top: calc(50dvh - 468px);
     }
 }
 @media screen and (max-width: 800px) {

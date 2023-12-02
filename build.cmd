@@ -1,2 +1,3 @@
 npm run build
-pause
+mkdir dist\playgrnd
+copy dist\index.html dist\playgrnd
