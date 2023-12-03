@@ -29,6 +29,12 @@
     height: 72px;
     transition: background-color 0.15s ease;
 }
+.stp_tb_button div{
+    display: inline-block;
+    border-radius: 6px;
+    width: 56px;
+    height: 72px;
+}
 .stp_tb_button:hover {
     background-color: rgba(0,0,0,0.2);
 }

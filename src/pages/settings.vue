@@ -92,6 +92,7 @@
             {{$t("settings.message.9")}}
             <input type="checkbox" ref="ipt7" class="settings_checkbox" @click="ipt7_select">
         </p>
+        <!--<a class="c" @click="gCI.proxy?.$bus.emit('live_reload')">重载直播流</a>-->
         <p>{{$t("settings.message.7")}}</p>
         <!--<a class="c" @click="this.$router.go(0)">{{$t("settings.message.8")}}</a>-->
     </div></TransitionGroup>

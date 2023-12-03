@@ -9,18 +9,19 @@
   },
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",
-    "@material/ripple": "^14.0.0",
     "@mdi/js": "^7.3.67",
     "hls.js": "^1.4.12",
     "mitt": "^3.0.1",
     "reconnecting-websocket": "^4.4.0",
     "vue": "^3.3.4",
     "vue-i18n": "^9.7.1",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue-touch-ripple": "^4.1.1"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^5.2.0",
     "@vitejs/plugin-vue": "^4.4.0",
+    "sass": "^1.69.5",
     "vite": "^5.0.0"
   }
 }

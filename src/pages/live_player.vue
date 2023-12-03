@@ -10,9 +10,15 @@
 
     const gCI = getCurrentInstance()
 
-    let promptthereisnolive = () => {
-        prompb.value.style.display = "block";
-        nolive_pmpt.value.style.display = "block";
+    let promptthereisnolive = (cancel) => {
+        let e
+        if (cancel) {
+            e = ''
+        } else {
+            e = 'block'
+        }
+        prompb.value.style.display = e;
+        nolive_pmpt.value.style.display = e;
     }
     let oncl_hyperl = (url) => {
         window.location.href = url
@@ -34,44 +40,61 @@
     const vid_tele_disabled = ref(1)
     let allow_pip = 0
 
+    //let live_reload=()=>{}
+
     gCI.proxy?.$bus.on('change_pip_setting',function(e){
         allow_pip = e
     })
+    //gCI.proxy?.$bus.on('live_reload',live_reload())
 
     onMounted(() => {
-        let videoUrl = '/hls/index.m3u8';
+        let videoUrl = '';
         let stp_live_lin = getCookie('stp_live_lin');
         let stp_allow_pip = getCookie('stp_allow_pip');
-        if (stp_live_lin == 2) {
-            videoUrl = 'https://www.wzq02.cf/hls/index.m3u8';
-        } else if (stp_live_lin == 1) {
-            videoUrl = 'https://wzq02.cf/hls/index.m3u8';
+        let get_live_url=()=>{
+            if (stp_live_lin == 2) {
+                videoUrl = 'https://www.wzq02.cf/hls/index.m3u8';
+            } else if (stp_live_lin == 1) {
+                videoUrl = 'https://wzq02.cf/hls/index.m3u8';
+            } else {
+                videoUrl = '/hls/index.m3u8';
+            }
         }
+        get_live_url();
         if (stp_allow_pip == 1) {
             allow_pip = 1;
         }
+        let hls
+        if (Hls.isSupported()) {
+            hls = new Hls();
+        }
         let load_stream = () => {
-            if (Hls.isSupported()) {
-                let hls = new Hls();
-                hls.loadSource(videoUrl);
-                hls.attachMedia(video.value);
-                hls.on(Hls.Events.MANIFEST_PARSED,() => {
-                    //video.value.play();
-                    play();
-                });
+            hls.loadSource(videoUrl);
+            hls.attachMedia(video.value);
+            hls.on(Hls.Events.MANIFEST_PARSED,() => {
+                play();
+            });
+        }
+        let detect_live_status=()=>{
+            var request = new XMLHttpRequest();
+            request.open("get", videoUrl);
+            request.send(null);
+            request.onload = () => {
+                if (request.status == 200) {
+                    vid_allow_teleport = 1
+                } else {
+                    setTimeout(()=>{promptthereisnolive()},250)
+                }
             }
         }
+        detect_live_status();
         load_stream();
-        var request = new XMLHttpRequest();
-        request.open("get", videoUrl);
-        request.send(null);
-        request.onload = () => {
-            if (request.status == 200) {
-                vid_allow_teleport = 1
-            } else {
-                setTimeout(()=>{promptthereisnolive()},250)
-            }
-        }
+        /*live_reload=()=>{
+            promptthereisnolive(cancel);
+            get_live_url();
+            detect_live_status();
+            load_stream();
+        }*/
     })
     onDeactivated(() => {
         if (vid_allow_teleport) {
