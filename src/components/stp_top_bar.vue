@@ -42,7 +42,7 @@
     <div id="stp_tb_container" v-bind:class="{tb_show:tb_show}" v-on:mouseover="tb_reshow" v-on:mouseout="tb_autohide">
         <div id="stp_tb_main">
             <router-link to="/home">
-                <div class="stp_tb_button" id="stp_t_b_1" v-bind:class="{selected:isselected_1}" @click="tb_select(1)" title="概览">
+                <div class="stp_tb_button" id="stp_t_b_1" v-bind:class="{selected:isselected_1}" @click="tb_select(1)" v-bind:title="$t('item_title.topbar.1')">
                     <touch-ripple color="#fff" :opacity="0.2" transition="ease-out" :duration="250" :keep-last-ripple="false">
                         <div>
                             <img src="../assets/images/sometroublemaker.webp">
@@ -51,7 +51,7 @@
                 </div>
             </router-link>
             <router-link to="/player">
-                <div class="stp_tb_button" id="stp_t_b_2" v-bind:class="{selected:isselected_2}" @click="tb_select(2)" title="直播间">
+                <div class="stp_tb_button" id="stp_t_b_2" v-bind:class="{selected:isselected_2}" @click="tb_select(2)" v-bind:title="$t('item_title.topbar.2')">
                     <touch-ripple color="#fff" :opacity="0.2" transition="ease-out" :duration="250" :keep-last-ripple="false">
                         <div>
                             <svg-icon type="mdi" :path=mdiTelevision></svg-icon>
@@ -60,7 +60,7 @@
                 </div>
             </router-link>
             <router-link to="/chat">
-                <div class="stp_tb_button" id="stp_t_b_3" v-bind:class="{selected:isselected_3}" @click="tb_select(3)" title="聊天室">
+                <div class="stp_tb_button" id="stp_t_b_3" v-bind:class="{selected:isselected_3}" @click="tb_select(3)" v-bind:title="$t('item_title.topbar.3')">
                     <touch-ripple color="#fff" :opacity="0.2" transition="ease-out" :duration="250" :keep-last-ripple="false">
                         <div>
                             <svg-icon type="mdi" :path=mdiChatOutline></svg-icon>
@@ -69,7 +69,7 @@
                 </div>
             </router-link>
             <router-link to="/settings">
-                <div class="stp_tb_button" id="stp_t_b_4" v-bind:class="{selected:isselected_4}" @click="tb_select(4)" title="设置">
+                <div class="stp_tb_button" id="stp_t_b_4" v-bind:class="{selected:isselected_4}" @click="tb_select(4)" v-bind:title="$t('item_title.topbar.4')">
                     <touch-ripple color="#fff" :opacity="0.2" transition="ease-out" :duration="250" :keep-last-ripple="false">
                         <div>
                             <svg-icon type="mdi" :path=mdiCog></svg-icon>

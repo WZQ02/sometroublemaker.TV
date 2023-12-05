@@ -34,11 +34,6 @@
 	    usrName.value.value = getCookie('chatUserName');
 	    prompb.value.style.display = "block";
 	    askforusername_pmpt.value.style.display = "block";
-	    usrName.value.addEventListener('keydown',(e) => {
-		    if (e.keyCode == 13) {
-			    chgusername();
-		    }
-	    });
     }
     let chgusername = () => {
         let usrNameValue = usrName.value.value;
@@ -130,6 +125,12 @@
 		        sendusrmsg();
 	        }
         });
+        //回车更改用户名
+        usrName.value.addEventListener('keydown',(e) => {
+		    if (e.keyCode == 13) {
+			    chgusername();
+		    }
+	    });
         //读取cookie并设置存储“是否显示用户进入、退出”的信息到cookie
         if (getCookie('isshowuserinout') == 'true') {
             gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',1)

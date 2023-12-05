@@ -96,6 +96,15 @@ const stp_glob_i18n = {
                 6: '你不起名字，别人咋认得你是谁啊',
             },
             2: '提示：视频已被静音，请手动取消视频静音状态。'
+        },
+        item_title: {
+            topbar: {
+                1: '概览',
+                2: '直播间',
+                3: '聊天室',
+                4: '设置'
+            },
+            player_underline: '重载视频流'
         }
     },
     en: {
@@ -192,6 +201,15 @@ const stp_glob_i18n = {
                 6: 'Name yourself plz',
             },
             2: 'Hint: The video is muted now. You will need to unmute the video manually.'
+        },
+        item_title: {
+            topbar: {
+                1: 'Overview',
+                2: 'Player',
+                3: 'Chatroom',
+                4: 'Settings'
+            },
+            player_underline: 'Reload video'
         }
     }
 }

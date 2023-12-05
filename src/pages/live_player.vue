@@ -10,12 +10,15 @@
 
     const gCI = getCurrentInstance()
 
+    let promptthereisnolive_loaded = 0;
     let promptthereisnolive = (cancel) => {
         let e
         if (cancel) {
             e = ''
+            promptthereisnolive_loaded = 0;
         } else {
             e = 'block'
+            promptthereisnolive_loaded = 1;
         }
         prompb.value.style.display = e;
         nolive_pmpt.value.style.display = e;
@@ -39,8 +42,11 @@
     let vid_allow_teleport = 0
     const vid_tele_disabled = ref(1)
     let allow_pip = 0
+    let detect_live_status_interval;
+    let detect_live_status_when_playing_interval;
+    let should_trigger_live_reload = 0;
 
-    //let live_reload=()=>{}
+    let live_reload;
 
     gCI.proxy?.$bus.on('change_pip_setting',function(e){
         allow_pip = e
@@ -49,9 +55,11 @@
 
     onMounted(() => {
         let videoUrl = '';
-        let stp_live_lin = getCookie('stp_live_lin');
-        let stp_allow_pip = getCookie('stp_allow_pip');
+        let stp_live_lin;
+        let stp_allow_pip;
         let get_live_url=()=>{
+            stp_live_lin = getCookie('stp_live_lin');
+            stp_allow_pip = getCookie('stp_allow_pip');
             if (stp_live_lin == 2) {
                 videoUrl = 'https://www.wzq02.cf/hls/index.m3u8';
             } else if (stp_live_lin == 1) {
@@ -75,26 +83,64 @@
                 play();
             });
         }
-        let detect_live_status=()=>{
+        let detect_live_status=(reload_if_back_online)=>{
             var request = new XMLHttpRequest();
             request.open("get", videoUrl);
             request.send(null);
             request.onload = () => {
                 if (request.status == 200) {
+                    console.log("连接直播服务器成功。")
                     vid_allow_teleport = 1
-                } else {
+                    if (reload_if_back_online) {
+                        live_reload();
+                    }
+                    if (detect_live_status_interval) {
+                        clearInterval(detect_live_status_interval)
+                    }
+                    if (detect_live_status_when_playing_interval) {} else {
+                        detect_live_status_when_playing_interval = setInterval(()=>{detect_live_status_when_playing()},5000)
+                    }
+                } else if (promptthereisnolive_loaded) {} else {
+                    console.log("无法连接到直播服务器，当前可能无人推送视频流。")
                     setTimeout(()=>{promptthereisnolive()},250)
+                    if (detect_live_status_when_playing_interval) {
+                        clearInterval(detect_live_status_when_playing_interval)
+                    }
+                    detect_live_status_interval = setInterval(()=>{detect_live_status(1)},10000)
                 }
             }
         }
         detect_live_status();
         load_stream();
-        /*live_reload=()=>{
-            promptthereisnolive(cancel);
+        live_reload = (redetect) => {
+            promptthereisnolive(1);
             get_live_url();
-            detect_live_status();
+            if (redetect) {
+                detect_live_status();
+            }
             load_stream();
-        }*/
+        }
+        let time_minus_buffered;
+        let detect_live_status_when_playing = () => {
+            if (video.value.buffered.length) {
+                time_minus_buffered = video.value.buffered.end(0) - video.value.currentTime;
+                if (time_minus_buffered <= 0.2) {
+                    should_trigger_live_reload++;
+                    if (should_trigger_live_reload >= 7) {
+                        should_trigger_live_reload = 0;
+                        clearTimeout(detect_live_status_when_playing_interval);
+                        detect_live_status_when_playing_interval = 0;
+                        detect_live_status(1);
+                    } else {
+                        console.log("视频连接似乎已断开。若在 "+(35 - should_trigger_live_reload*5)+" 秒后不恢复，则将尝试重连服务器...")
+                    }
+                } else {
+                    should_trigger_live_reload = 0;
+                }
+            } else {
+                return;
+            }
+        }
     })
     onDeactivated(() => {
         if (vid_allow_teleport) {
@@ -113,9 +159,13 @@
 </script>
 
 <template>
-    <TransitionGroup name="app_trans"><div class="player" key="player">
-        <Teleport to="body" :disabled="vid_tele_disabled"><video id="video" ref="video" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0}" controls></video></Teleport>
-    </div>
+    <TransitionGroup name="app_trans"> 
+        <div class="player" key="player">
+            <Teleport to="body" :disabled="vid_tele_disabled">
+                <video id="video" ref="video" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0}" controls></video>
+            </Teleport>
+            <div id="player_underline" v-bind:title="$t('item_title.player_underline')" @click="live_reload(1)"></div>
+        </div>
     <div id="prompb" ref="prompb" key="prompb"></div>
     <div id="nolive_pmpt" ref="nolive_pmpt" class="prompt" key="nolive_pmpt">
         <div style="position: relative; top: -8px;">

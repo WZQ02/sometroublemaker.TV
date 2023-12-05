@@ -23,6 +23,23 @@ video.inpage {
     box-shadow: 0 0 16px rgba(0,0,0,0.4);
     animation: playerfall 0.5s cubic-bezier(0, 0.67, 0, 1) 1;
 }
+#player_underline {
+    position: relative;
+    width: 64px;
+    height: 8px;
+    margin: 0 calc(50% - 32px);
+    border-radius: 4px;
+    top: -12px;
+    background-color: #000;
+    opacity: 0.15;
+    transition: 0.25s;
+}
+#player_underline:hover {
+    opacity: 0.5;
+}
+#player_underline:active {
+    opacity: 1;
+}
 @media screen and (min-height: 760px) {
     .player {
         top: calc(40vh - 288px);
@@ -32,5 +49,10 @@ video.inpage {
 @media screen and (max-width: 1344px) {
     .player {
         left: 16px;
+    }
+}
+@media (prefers-color-scheme: dark) {
+    #player_underline {
+        background-color: #fff;
     }
 }
