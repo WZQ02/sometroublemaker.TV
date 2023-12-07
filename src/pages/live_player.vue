@@ -171,7 +171,7 @@
         <div style="position: relative; top: -8px;">
             <h2>{{$t("live_player.nolive_pmpt.message.1")}}</h2>
         <span>{{$t("live_player.nolive_pmpt.message.2")}}</span><br><br>
-        <button id="promptbtn" @click="oncl_hyperl('https://wzq02.cf/?secquery=wzqtv')">{{$t("live_player.nolive_pmpt.button.1")}}</button>
+        <button id="promptbtn" @click="oncl_hyperl('https://wzq02.cf/#/tv')">{{$t("live_player.nolive_pmpt.button.1")}}</button>
         <button id="promptbtn" @click="oncl_hyperl('https://live.bilibili.com/956821')" style="float: right;">{{$t("live_player.nolive_pmpt.button.2")}}</button>
         </div>
     </div></TransitionGroup>

@@ -11,7 +11,7 @@
         <a class="c" href="https://wzq02.cf/chatroom1">{{$t("home.button.2")}}</a>
         <br><br>
         <p></p>
-        <a class="c" href="https://wzq02.cf/?secquery=wzqtv">{{$t("home.button.3")}}</a>
+        <a class="c" href="https://wzq02.cf/#/tv">{{$t("home.button.3")}}</a>
     </div></TransitionGroup>
 </template>
 
