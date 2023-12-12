@@ -3,7 +3,6 @@
     import { onMounted,ref,getCurrentInstance,onActivated, onDeactivated } from 'vue'
     import SvgIcon from '@jamescoyle/vue-icon'
     import { mdiInformation } from '@mdi/js'
-    import { setCookie,getCookie } from '../scripts/cookie.js'
 
     const usrmsg = ref(null)
     const sendmsg = ref(null)
@@ -31,7 +30,8 @@
     }
     let askforusername = () => {
 	    //更改用户名并刷新本页后，再次修改用户名时把原先用户名自动填写在usrname区
-	    usrName.value.value = getCookie('chatUserName');
+	    //usrName.value.value = getCookie('chatUserName');
+        usrName.value.value = localStorage.getItem('chatUserName');
 	    prompb.value.style.display = "block";
 	    askforusername_pmpt.value.style.display = "block";
     }
@@ -40,8 +40,10 @@
 	    if (usrNameValue == '') {
             gCI.proxy?.$bus.emit('trigger_popup',dystr(str2c))
 	    } else {
-		    setCookie('chatUserName',usrNameValue,365);
-		    var RealusrName = getCookie('chatUserName');
+		    //setCookie('chatUserName',usrNameValue,365);
+            localStorage.setItem('chatUserName',usrNameValue);
+		    //var RealusrName = getCookie('chatUserName');
+            let RealusrName = localStorage.getItem('chatUserName');
             gCI.proxy?.$bus.emit('chatroom_chgusrname',RealusrName)
 		    noticeUser();
 		    askforusername_pmpt.value.style.display = "";
@@ -49,7 +51,8 @@
     }
     //存储“是否显示用户进入、退出”的信息到cookie
     let isshowuserinout_store = () => {
-        setCookie('isshowuserinout',isshowuserinout.value.checked,365);
+        //setCookie('isshowuserinout',isshowuserinout.value.checked,365);
+        localStorage.setItem('isshowuserinout',isshowuserinout.value.checked);
         gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',isshowuserinout.value.checked)
     }
     //显示注意事项
@@ -71,7 +74,8 @@
     }
     //显示信息
     let displayinfo = () => {
-	    var RealusrName = getCookie('chatUserName');
+	    //var RealusrName = getCookie('chatUserName');
+        let RealusrName = localStorage.getItem('chatUserName');
 	    prompb.value.style.display = "block";
 	    info.value.style.display = "block";
 	    currentusername.value.innerText = RealusrName
@@ -110,8 +114,9 @@
     onMounted(() => {
         gCI.proxy?.$bus.emit('req_chatserverbknd')
         gCI.proxy?.$bus.on('chatserverconnected',()=>{
-            var RealusrName = getCookie('chatUserName');
-	        if (RealusrName == "") {
+            //var RealusrName = getCookie('chatUserName');
+            let RealusrName = localStorage.getItem('chatUserName');
+	        if (RealusrName == null) {
 		        askforusername();
 	        } else {
 	            //ws.send(`setUsrName=${RealusrName}`);
@@ -132,7 +137,8 @@
 		    }
 	    });
         //读取cookie并设置存储“是否显示用户进入、退出”的信息到cookie
-        if (getCookie('isshowuserinout') == 'true') {
+        //if (getCookie('isshowuserinout') == 'true') {
+        if (localStorage.getItem('isshowuserinout') == 'true') {
             gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',1)
             isshowuserinout.value.checked = 1;
         } else {

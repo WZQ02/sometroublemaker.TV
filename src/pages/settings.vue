@@ -1,6 +1,6 @@
 <script setup>
     import { onMounted, ref, getCurrentInstance } from 'vue'
-    import { setCookie,getCookie } from '../scripts/cookie.js'
+    //import { setCookie,getCookie } from '../scripts/cookie.js'
 
     import { useI18n } from 'vue-i18n'
     const { locale } = useI18n()
@@ -16,7 +16,8 @@
     const gCI = getCurrentInstance()
 
     let init = () => {
-        let stp_lang = getCookie('stp_lang');
+        //let stp_lang = getCookie('stp_lang');
+        let stp_lang = localStorage.getItem('stp_lang');
         if (stp_lang == 1) {
             ipt2.value.checked = 1;
         } else if (stp_lang == 2) {
@@ -24,7 +25,8 @@
         } else {
             ipt1.value.checked = 1;
         }
-        let stp_live_lin = getCookie('stp_live_lin');
+        //let stp_live_lin = getCookie('stp_live_lin');
+        let stp_live_lin = localStorage.getItem('stp_live_lin');
         if (stp_live_lin == 1) {
             ipt5.value.checked = 1;
         } else if (stp_live_lin == 2) {
@@ -32,7 +34,8 @@
         } else {
             ipt4.value.checked = 1;
         }
-        let stp_allow_pip = getCookie('stp_allow_pip');
+        //let stp_allow_pip = getCookie('stp_allow_pip');
+        let stp_allow_pip = localStorage.getItem('stp_allow_pip');
         if (stp_allow_pip == 1) {
             ipt7.value.checked = 1;
         }
@@ -40,31 +43,39 @@
 
     let ipt1_select = () => {
         locale.value = (navigator.language || 'zh').toLocaleLowerCase().split('-')[0]
-        setCookie('stp_lang',0,365)
+        //setCookie('stp_lang',0,365)
+        localStorage.setItem('stp_lang',0)
     }
     let ipt2_select = () => {
         locale.value = 'zh'
-        setCookie('stp_lang',1,365)
+        //setCookie('stp_lang',1,365)
+        localStorage.setItem('stp_lang',1)
     }
     let ipt3_select = () => {
         locale.value = 'en'
-        setCookie('stp_lang',2,365)
+        //setCookie('stp_lang',2,365)
+        localStorage.setItem('stp_lang',2)
     }
     let ipt4_select = () => {
-        setCookie('stp_live_lin',0,365)
+        //setCookie('stp_live_lin',0,365)
+        localStorage.setItem('stp_live_lin',0)
     }
     let ipt5_select = () => {
-        setCookie('stp_live_lin',1,365)
+        //setCookie('stp_live_lin',1,365)
+        localStorage.setItem('stp_live_lin',1)
     }
     let ipt6_select = () => {
-        setCookie('stp_live_lin',2,365)
+        //setCookie('stp_live_lin',2,365)
+        localStorage.setItem('stp_live_lin',2)
     }
     let ipt7_select = () => {
         gCI.proxy?.$bus.emit('change_pip_setting',ipt7.value.checked)//告知video组件画中画设置发生变更
         if (ipt7.value.checked == 1) {
-            setCookie('stp_allow_pip',1,365)
+            //setCookie('stp_allow_pip',1,365)
+            localStorage.setItem('stp_allow_pip',1)
         } else {
-            setCookie('stp_allow_pip',0,365)
+            //setCookie('stp_allow_pip',0,365)
+            localStorage.setItem('stp_allow_pip',0)
         }
     }
 

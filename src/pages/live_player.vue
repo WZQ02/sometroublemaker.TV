@@ -2,7 +2,7 @@
     import '../assets/styles/player.css'
     import { onMounted,ref,getCurrentInstance, onActivated, onDeactivated } from 'vue'
     import Hls from 'hls.js'
-    import { getCookie } from '../scripts/cookie.js'
+    //import { getCookie } from '../scripts/cookie.js'
 
     const video = ref(null);
     const prompb = ref(null)
@@ -58,8 +58,10 @@
         let stp_live_lin;
         let stp_allow_pip;
         let get_live_url=()=>{
-            stp_live_lin = getCookie('stp_live_lin');
-            stp_allow_pip = getCookie('stp_allow_pip');
+            //stp_live_lin = getCookie('stp_live_lin');
+            //stp_allow_pip = getCookie('stp_allow_pip');
+            stp_live_lin = localStorage.getItem('stp_live_lin');
+            stp_allow_pip = localStorage.getItem('stp_allow_pip');
             if (stp_live_lin == 2) {
                 videoUrl = 'https://www.wzq02.cf/hls/index.m3u8';
             } else if (stp_live_lin == 1) {
@@ -146,7 +148,9 @@
         if (vid_allow_teleport) {
             vid_tele_disabled.value = 0
             if (allow_pip) {
-                video.value.requestPictureInPicture()//调用浏览器视频画中画功能
+                if (video.value.buffered.length) {
+                    video.value.requestPictureInPicture()//调用浏览器视频画中画功能
+                }
             }
         }
     })

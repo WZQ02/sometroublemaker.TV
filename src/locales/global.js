@@ -48,7 +48,7 @@ const stp_glob_i18n = {
             },
             message: {
                 1: '以下为本聊天室的一些注意事项：',
-                2: '你的昵称已存储于浏览器的 cookie 中，可随时更改。',
+                2: '你的昵称已存储于浏览器的本地存储中，可随时更改。',
                 3: '由于启用了掉线重连机制，你可能会看到有人连续多次进出聊天室。',
                 4: '如果遇到无法发送信息的情况，可能是你和聊天服务器断开连接了，请刷新页面再试。',
                 5: '本聊天室对发言内容不做限制，但请尽量别在本页面魔怔瞎骂或发表敏感言论，谢谢！',
@@ -156,7 +156,7 @@ const stp_glob_i18n = {
             },
             message: {
                 1: 'Things to know about this chatroom: ',
-                2: 'Your nickname had been stored in your browser\'s cookie and can be changed at any time.',
+                2: 'Your nickname had been stored in your browser\'s localStorage and can be changed at any time.',
                 3: 'Due to the reconnection mechanism, you might see several users constantly drop out and reconnect.',
                 4: 'If you cannot send any message, that means you\'re probably disconnected to the server, in that case, please refresh the page and try again.',
                 5: 'This chatroom does not limit what you say in here, but you should always be responsible of what you say.',

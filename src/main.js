@@ -7,7 +7,7 @@ import main from './main.vue'
 import { createI18n } from 'vue-i18n'
 
 import { stp_glob_i18n } from './locales/global.js'
-import { getCookie } from './scripts/cookie.js'
+//import { getCookie } from './scripts/cookie.js'
 
 import Wel from './pages/welcome.vue'
 import Home from './pages/home.vue'
@@ -40,7 +40,8 @@ router.beforeEach((to,from,next)=>{
 })
 
 let navi_lang = ''
-let stp_lang = getCookie('stp_lang');
+//let stp_lang = getCookie('stp_lang');
+let stp_lang = localStorage.getItem('stp_lang');
 if (stp_lang == 1) {
     navi_lang = 'zh'
 } else if (stp_lang == 2) {

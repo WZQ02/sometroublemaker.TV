@@ -13,5 +13,12 @@ const getCookie = (cname) => {
     }
     return "";
 }
+const C2Stransfer = (cname) => {
+    let olddata = getCookie(cname);
+    if (olddata != "") {
+        localStorage.setItem(cname,olddata)
+        setCookie(cname,"",-1)
+    }
+}
 
-export { setCookie,getCookie };
+export { setCookie,getCookie,C2Stransfer };
