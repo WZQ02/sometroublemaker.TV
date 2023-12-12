@@ -13,8 +13,7 @@ const stp_glob_i18n = {
             },
             message: {
                 1: 'sometroublemaker\'s playground 作为 wzq02.cf 的一个扩充而存在。目前该站点整合了 wzq02.cf 的直播页和聊天室功能，以后会考虑整合更多东西进来。',
-                2: '本站也用于笔者上手 Vue 3 框架上的网站开发。',
-                3: '你仍可通过以下链接访问原先使用的直播页和聊天页：'
+                2: '本站也用于笔者上手 Vue 3 框架上的网站开发。'
             },
             button: {
                 1: '直播页 (带聊天室)',
@@ -121,8 +120,7 @@ const stp_glob_i18n = {
             },
             message: {
                 1: 'sometroublemaker\'s playground exists as an extension to wzq02.cf. For now this project had integrated the livestream player and chatroom of wzq02.cf. I might add more features to this thing later.',
-                2: 'This project exists also for me to get my hands on the Vue framework.',
-                3: 'You can still access the old version of the livestream player and chatroom down there:'
+                2: 'This project exists also for me to get my hands on the Vue framework.'
             },
             button: {
                 1: 'Livestream Player',
