@@ -87,27 +87,30 @@
 <template>
     <TransitionGroup name="app_trans"><div id="container" key="home_container">
         <h1>{{$t("settings.title")}}</h1>
-        <p>
-            {{$t("settings.message.1")}}
-            <input type="radio" ref="ipt1" name="lang_setting" value="1" @click="ipt1_select">{{$t("settings.message.2")}}
-            <input type="radio" ref="ipt2" name="lang_setting" value="2" @click="ipt2_select">简体中文&nbsp;
-            <input type="radio" ref="ipt3" value="3" name="lang_setting" @click="ipt3_select">English
-        </p>
-        <p>
-            {{$t("settings.message.3")}}
-            <input type="radio" ref="ipt4" name="live_lin" value="1" @click="ipt4_select">{{$t("settings.message.4")}}
-            <input type="radio" ref="ipt5" name="live_lin" value="2" @click="ipt5_select">{{$t("settings.message.5")}}&nbsp;
-            <input type="radio" ref="ipt6" name="live_lin" value="3" @click="ipt6_select">{{$t("settings.message.6")}}
-        </p>
-        <p>
-            {{$t("settings.message.9")}}
-            <input type="checkbox" ref="ipt7" class="settings_checkbox" @click="ipt7_select">
-        </p>
-        <!--<a class="c" @click="gCI.proxy?.$bus.emit('live_reload')">重载直播流</a>-->
-        <p>{{$t("settings.message.7")}}</p>
-        <!--<a class="c" @click="this.$router.go(0)">{{$t("settings.message.8")}}</a>-->
+        <div id="settings_options">
+            <p>
+                {{$t("settings.message.1")}}
+                <input type="radio" ref="ipt1" name="lang_setting" value="1" @click="ipt1_select">{{$t("settings.message.2")}}
+                <input type="radio" ref="ipt2" name="lang_setting" value="2" @click="ipt2_select">简体中文&nbsp;
+                <input type="radio" ref="ipt3" value="3" name="lang_setting" @click="ipt3_select">English
+            </p>
+            <p>
+                {{$t("settings.message.3")}}
+                <input type="radio" ref="ipt4" name="live_lin" value="1" @click="ipt4_select">{{$t("settings.message.4")}}
+                <input type="radio" ref="ipt5" name="live_lin" value="2" @click="ipt5_select">{{$t("settings.message.5")}}&nbsp;
+                <input type="radio" ref="ipt6" name="live_lin" value="3" @click="ipt6_select">{{$t("settings.message.6")}}
+            </p>
+            <p>
+                {{$t("settings.message.9")}}
+                <input type="checkbox" ref="ipt7" class="settings_checkbox" @click="ipt7_select">
+            </p>
+            <p>{{$t("settings.message.7")}}</p>
+        </div>
     </div></TransitionGroup>
 </template>
 
-<style>
+<style scoped>
+#settings_options {
+    animation: appear .6s ease 1;
+}
 </style>

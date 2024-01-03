@@ -1,10 +1,14 @@
+* {
+	font-family: "HarmonyOS Sans SC","Century Gothic","Noto Sans","Source Han Sans CN","Microsoft YaHei",微软雅黑,"Microsoft JhengHei","Segoe UI","Arial",黑体;
+}
 body {
     animation: appear 0.6s ease 1;
     background: #eee; 
-    font-family: "HarmonyOS Sans SC","Century Gothic","Noto Sans","Source Han Sans CN","Microsoft YaHei",微软雅黑,"Microsoft JhengHei","Segoe UI","Arial",黑体;
     color: #333;
     text-align: left;
     user-select: none;
+    overflow: scroll;
+	overflow-x: hidden;
 }
 #container {
     background-color: #fff;
@@ -20,6 +24,7 @@ body {
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
+    display: none;
     background-color: none;
 }
 ::-webkit-scrollbar-thumb {
@@ -100,6 +105,17 @@ input[type="radio"] {
     width: 24px;
     height: 20px;
     top: 4px;
+}
+#prompb {
+    display: none;
+    width: 175vw;
+    height: 175vh;
+    position: fixed;
+    left: -50vw;
+    top: -50vh;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.5);
+    animation: appear 0.2s ease 1;
 }
 @media (prefers-color-scheme: dark) {
     body { 

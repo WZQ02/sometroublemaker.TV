@@ -10,6 +10,7 @@
   "dependencies": {
     "@jamescoyle/vue-icon": "^0.1.2",
     "@mdi/js": "^7.3.67",
+    "hammerjs": "^2.0.8",
     "hls.js": "^1.4.12",
     "mitt": "^3.0.1",
     "reconnecting-websocket": "^4.4.0",

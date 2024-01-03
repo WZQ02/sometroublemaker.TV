@@ -23,7 +23,7 @@ console.log("sometroublemaker's playground version "+stp_app_version+". Last upd
 const routes = [
     { path: '/', component: Wel, name: Wel },
     { path: '/home', component: Home, name: Home, meta: {title: '概览 / Overview'} },
-    { path: '/player', component: LivePlayer, name: LivePlayer, meta: {title: '直播间 / Player'} },
+    { path: '/player', component: LivePlayer, name: LivePlayer, meta: {title: '放映厅 / Player'} },
     { path: '/chat', component: ChatRoom, name: ChatRoom, meta: {title: '聊天室 / Chatroom'} },
     { path: '/settings', component: Settings, name: Settings, meta: {title: '设置 / Settings'} }
 ]
