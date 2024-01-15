@@ -60,7 +60,7 @@
     max-width: 100%;
     box-shadow: 0 0 8px rgba(0,0,0,0.2);
 	background-color: #fff;
-	padding: 10px;
+	padding: 10px 10px;
 	border-radius: 10px;
     line-height: 125%;
     user-select: text !important;
@@ -68,6 +68,22 @@
 #chatcontent p.isyou div .speak_cont {
     color: #fff;
     background-color: #48d;
+}
+#chatcontent p div .speak_cont p{
+    font-size: 18px;
+    margin: 0;
+}
+#chatcontent p.isyou div .speak_cont p{
+    color: #fff;
+}
+#chatcontent img,video {
+    max-width: 100%;
+    border-radius: 8px;
+}
+#chatcontent a {
+    color: currentColor;
+    cursor: pointer;
+    text-decoration: underline;
 }
 #chatroom_container input {
     top: 16px;
@@ -172,12 +188,12 @@
     left: 8px;
     top: 1px;
 }
-.prompt #isshowuserinout {
+.prompt .chat_infochkbx {
     position: relative;
     opacity: 0.7;
     width: 20px;
     height: 16px;
-    top: 2px;
+    top: 2px !important;
     left: -6px;
 }
 @media (prefers-color-scheme: dark) {

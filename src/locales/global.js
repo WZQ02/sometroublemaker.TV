@@ -13,12 +13,12 @@ const stp_glob_i18n = {
             },
             message: {
                 1: 'sometroublemaker\'s playground 作为 wzq02.cf 的一个扩充而存在。目前该站点整合了 wzq02.cf 的直播页和聊天室功能，以后会考虑整合更多东西进来。',
-                2: '本站也用于笔者上手 Vue 3 框架上的网站开发。'
+                2: '本项目也用于笔者上手 Vue 3 框架上的单页面应用开发。'
             },
             button: {
                 1: '直播页 (带聊天室)',
                 2: '聊天室',
-                3: '返回主站'
+                3: '返回 WZQ\'02 的小站'
             }
         },
         live_player: {
@@ -53,7 +53,8 @@ const stp_glob_i18n = {
                 5: '本聊天室对发言内容不做限制，但请尽量别在本页面魔怔瞎骂或发表敏感言论，谢谢！',
                 6: '你的昵称：',
                 7: '当前聊天室在线人数：',
-                8: '不显示用户进入、退出信息'
+                8: '不显示用户进入、退出信息',
+                9: '禁用 Markdown 语法'
             },
             string: {
                 1: ''
@@ -70,7 +71,19 @@ const stp_glob_i18n = {
                 6: 'CloudFlare 代理线路',
                 7: '部分设置需重载站点后才可生效。',
                 8: '重载站点',
-                9: '自动启用视频画中画：'
+                9: '自动启用视频画中画：',
+                10: '以下设置将会覆盖上方的线路设置，不建议自行修改。',
+                11: '启用高级设置：',
+                12: '自定义放映厅视频流地址（重载视频流后生效）：',
+                13: '自定义聊天室地址（刷新后生效）：',
+                14: '使用 mpegts.js 播放器（实验性）'
+            },
+            button: {
+                1: '显示 / 隐藏高级设置',
+            },
+            input: {
+                1: 'HLS 视频流地址，如 https://example.com/hls/index.m3u8',
+                2: 'WebSocket 服务器地址，如 wss://example.com/chat'
             }
         },
         testpage: {
@@ -120,12 +133,12 @@ const stp_glob_i18n = {
             },
             message: {
                 1: 'sometroublemaker\'s playground exists as an extension to wzq02.cf. For now this project had integrated the livestream player and chatroom of wzq02.cf. I might add more features to this thing later.',
-                2: 'This project exists also for me to get my hands on the Vue framework.'
+                2: 'This project exists also for me to get my hands on SPA development on the Vue framework.'
             },
             button: {
                 1: 'Livestream Player',
                 2: 'Chatroom',
-                3: 'Back to main site'
+                3: 'Back to WZQ\'02\'s site'
             }
         },
         live_player: {
@@ -160,7 +173,8 @@ const stp_glob_i18n = {
                 5: 'This chatroom does not limit what you say in here, but you should always be responsible of what you say.',
                 6: 'Your nickname: ',
                 7: 'Online: ',
-                8: 'Do not show user enter and leave message'
+                8: 'Do not show user enter and leave message',
+                9: 'Disable Markdown'
             }
         },
         settings: {
@@ -174,7 +188,19 @@ const stp_glob_i18n = {
                 6: 'CloudFlare Proxy',
                 7: 'Some of the settings will require reloading the site to apply.',
                 8: 'Reload',
-                9: 'Allow Picture-in-Picture for video: '
+                9: 'Allow Picture-in-Picture for video: ',
+                10: 'The following settings will override the line setting above. It\'s usually not recommended to change these settings.',
+                11: 'Enable Advanced Settings： ',
+                12: 'Custom livestream video url (applies after reloading video): ',
+                13: 'Custom chatroom url (applies after refreshing page)',
+                14: 'Use mpegts.js Player (experimental)'
+            },
+            button: {
+                1: 'Display / Hide Advanced Settings',
+            },
+            input: {
+                1: 'HLS video stream url, such as https://example.com/hls/index.m3u8',
+                2: 'WebSocket server url, such as wss://example.com/chat'
             }
         },
         testpage: {

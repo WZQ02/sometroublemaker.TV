@@ -2,6 +2,8 @@
     import '../assets/styles/player.css'
     import { onMounted,ref,getCurrentInstance, onActivated, onDeactivated } from 'vue'
     import Hls from 'hls.js'
+    //import flvjs from 'flv.js'
+    import mpegts from 'mpegts.js'
     //import { getCookie } from '../scripts/cookie.js'
 
     const video = ref(null);
@@ -9,6 +11,9 @@
     const nolive_pmpt = ref(null);
 
     const gCI = getCurrentInstance()
+
+    const vid_domain = ['https://www.wzq02.cf/','https://wzq02.cf/','']
+    const vid_src = ['/live/livestream.m3u8','/live/livestream.flv']
 
     let promptthereisnolive_loaded = 0;
     let promptthereisnolive = (cancel) => {
@@ -57,33 +62,61 @@
         let videoUrl = '';
         let stp_live_lin;
         let stp_allow_pip;
+        let player_type;//0为hls播放器，1为mpegts
         let get_live_url=()=>{
             //stp_live_lin = getCookie('stp_live_lin');
             //stp_allow_pip = getCookie('stp_allow_pip');
             stp_live_lin = localStorage.getItem('stp_live_lin');
             stp_allow_pip = localStorage.getItem('stp_allow_pip');
-            if (stp_live_lin == 2) {
-                videoUrl = 'https://www.wzq02.cf/hls/index.m3u8';
-            } else if (stp_live_lin == 1) {
-                videoUrl = 'https://wzq02.cf/hls/index.m3u8';
+            if (localStorage.getItem('adv_set_enabled') == 1 && localStorage.getItem('enable_mpegts_player') == 1) {
+                player_type = 1;
             } else {
-                videoUrl = '/hls/index.m3u8';
+                player_type = 0;
+            }
+            if (localStorage.getItem('adv_set_enabled') == 1 && localStorage.getItem('custom_hls_url')) {
+                videoUrl = localStorage.getItem('custom_hls_url');
+            } else {
+                if (stp_live_lin == 2) {
+                    videoUrl = vid_domain[0];
+                } else if (stp_live_lin == 1) {
+                    videoUrl = vid_domain[1];
+                } else {
+                    videoUrl = vid_domain[2];
+                }
+                if (player_type) {
+                    videoUrl += vid_src[1]
+                } else {
+                    videoUrl += vid_src[0]
+                }
             }
         }
         get_live_url();
         if (stp_allow_pip == 1) {
             allow_pip = 1;
         }
-        let hls
+        let hls,mpegtsplayer,mpegtsplayer_canbedestroyed
         if (Hls.isSupported()) {
             hls = new Hls();
         }
         let load_stream = () => {
-            hls.loadSource(videoUrl);
-            hls.attachMedia(video.value);
-            hls.on(Hls.Events.MANIFEST_PARSED,() => {
-                play();
-            });
+            if (player_type) {
+                if (mpegts.getFeatureList().mseLivePlayback) {
+                    mpegtsplayer_canbedestroyed = 1;
+                    mpegtsplayer = mpegts.createPlayer({
+                        type: 'flv',
+                        url: videoUrl
+                    });
+                    mpegtsplayer.attachMediaElement(video.value);
+                    mpegtsplayer.load();
+                    play();
+                }
+            } else {
+                hls.loadSource(videoUrl);
+                hls.attachMedia(video.value);
+                hls.on(Hls.Events.MANIFEST_PARSED,() => {
+                    play();
+                });
+            }
         }
         let detect_live_status=(reload_if_back_online)=>{
             var request = new XMLHttpRequest();
@@ -115,6 +148,10 @@
         detect_live_status();
         load_stream();
         live_reload = (redetect) => {
+            if (mpegtsplayer_canbedestroyed) {
+                mpegtsplayer.destroy();
+                mpegtsplayer_canbedestroyed = 0
+            }
             promptthereisnolive(1);
             get_live_url();
             if (redetect) {

@@ -17,6 +17,7 @@
     const quoteselector = ref(null)
     const chatroom_container = ref(null)
     const isshowuserinout = ref(null)
+    const ismarkdown = ref(null)
     const roominfo = ref(null)
     const gCI = getCurrentInstance()
 
@@ -49,11 +50,15 @@
 		    askforusername_pmpt.value.style.display = "";
 	    }
     }
-    //存储“是否显示用户进入、退出”的信息到cookie
+    //存储“是否显示用户进入、退出”的信息到本地存储
     let isshowuserinout_store = () => {
         //setCookie('isshowuserinout',isshowuserinout.value.checked,365);
         localStorage.setItem('isshowuserinout',isshowuserinout.value.checked);
         gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',isshowuserinout.value.checked)
+    }
+    let ismarkdown_store = () => {
+        localStorage.setItem('ismarkdown',ismarkdown.value.checked);
+        gCI.proxy?.$bus.emit('chatroomismarkdown_onchange',ismarkdown.value.checked)
     }
     //显示注意事项
     let noticeUser = () => {
@@ -120,7 +125,8 @@
 		        askforusername();
 	        } else {
 	            //ws.send(`setUsrName=${RealusrName}`);
-                gCI.proxy?.$bus.emit('chatroom_send',`setUsrName=${RealusrName}`)
+                //gCI.proxy?.$bus.emit('chatroom_send',`setUsrName=${RealusrName}`)
+                gCI.proxy?.$bus.emit('chatroom_chgusrname',RealusrName)
 	        }
 	        goBottom();
         })
@@ -141,9 +147,10 @@
         if (localStorage.getItem('isshowuserinout') == 'true') {
             gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',1)
             isshowuserinout.value.checked = 1;
-        } else {
-            gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',0)
-            isshowuserinout.value.checked = 0;
+        }
+        if (localStorage.getItem('ismarkdown') == 'true') {
+            gCI.proxy?.$bus.emit('chatroomismarkdown_onchange',1)
+            ismarkdown.value.checked = 1;
         }
     })
     onDeactivated(() => {
@@ -193,7 +200,8 @@
         <div id="info" ref="info" class="prompt">
             {{ $t("chatroom.message.6") }}<span id="currentusername" ref="currentusername" style="font-weight: bold;"></span>&nbsp;&nbsp;<button id="promptbtn" @click="alterusrname();">{{ $t("chatroom.button.change") }}</button><br><br>
             {{ $t("chatroom.message.7") }}<span id="roominfo" ref="roominfo" style="font-weight: bold;"></span><br><br>
-            <input type="checkbox" id="isshowuserinout" name="isshowuserinout" ref="isshowuserinout" @click="isshowuserinout_store()"><span>{{ $t("chatroom.message.8") }}</span><br><br>
+            <input type="checkbox" class="chat_infochkbx" name="isshowuserinout" ref="isshowuserinout" @click="isshowuserinout_store()"><span>{{ $t("chatroom.message.8") }}</span><br><br>
+            <input type="checkbox" class="chat_infochkbx" name="ismarkdown" ref="ismarkdown" @click="ismarkdown_store()"><span>{{ $t("chatroom.message.9") }}</span><br><br>
             <button id="promptbtn" @click="closeprompt();">{{ $t("chatroom.button.got_it") }}</button>
         </div>
     </div></TransitionGroup>
