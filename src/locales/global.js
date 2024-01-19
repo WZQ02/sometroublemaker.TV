@@ -31,6 +31,13 @@ const stp_glob_i18n = {
                     1: '返回主站',
                     2: '前往 B 站直播间'
                 }
+            },
+            menu: {
+                1: '重载视频流',
+                2: '发送弹幕',
+                3: '网页全屏',
+                4: '静音',
+                5: '取消静音'
             }
         },
         chatroom: {
@@ -71,19 +78,24 @@ const stp_glob_i18n = {
                 6: 'CloudFlare 代理线路',
                 7: '部分设置需重载站点后才可生效。',
                 8: '重载站点',
-                9: '自动启用视频画中画：',
-                10: '以下设置将会覆盖上方的线路设置，不建议自行修改。',
-                11: '启用高级设置：',
-                12: '自定义放映厅视频流地址（重载视频流后生效）：',
+                9: '自动启用视频画中画',
+                10: '以下为高级设置，一般不建议自行修改。',
+                11: '启用高级设置',
+                12: '自定义放映厅视频流地址（将覆盖上方的线路设置，重载视频流后生效）：',
                 13: '自定义聊天室地址（刷新后生效）：',
-                14: '使用 mpegts.js 播放器（实验性）'
+                14: '使用 mpegts.js 播放器（实验性）',
+                15: '禁用自动重载视频',
+                16: '聊天室内容允许 HTML 标签（不安全）',
+                17: '不显示弹幕',
+                18: '启用原生播放器控制'
             },
             button: {
                 1: '显示 / 隐藏高级设置',
             },
             input: {
                 1: 'HLS 视频流地址，如 https://example.com/hls/index.m3u8',
-                2: 'WebSocket 服务器地址，如 wss://example.com/chat'
+                2: 'WebSocket 服务器地址，如 wss://example.com/chat',
+                3: 'FLV/MPEG-TS/MP4 视频流地址，如 https://example.com/1.flv'
             }
         },
         testpage: {
@@ -106,6 +118,7 @@ const stp_glob_i18n = {
                 4: '用户名不能为空，怕你不知道跟你说一下',
                 5: '起个昵称吧',
                 6: '你不起名字，别人咋认得你是谁啊',
+                7: '已清空消息历史记录。'
             },
             2: '提示：视频已被静音，请手动取消视频静音状态。'
         },
@@ -116,7 +129,7 @@ const stp_glob_i18n = {
                 3: '聊天室',
                 4: '设置'
             },
-            player_underline: '重载视频流'
+            player_underline: '放映厅菜单'
         }
     },
     en: {
@@ -151,6 +164,13 @@ const stp_glob_i18n = {
                     1: 'Go Back',
                     2: 'Bilibili'
                 }
+            },
+            menu: {
+                1: 'Reload video',
+                2: 'Send comment',
+                3: 'Fullscreen',
+                4: 'Mute',
+                5: 'Unmute'
             }
         },
         chatroom: {
@@ -188,19 +208,24 @@ const stp_glob_i18n = {
                 6: 'CloudFlare Proxy',
                 7: 'Some of the settings will require reloading the site to apply.',
                 8: 'Reload',
-                9: 'Allow Picture-in-Picture for video: ',
-                10: 'The following settings will override the line setting above. It\'s usually not recommended to change these settings.',
-                11: 'Enable Advanced Settings： ',
-                12: 'Custom livestream video url (applies after reloading video): ',
-                13: 'Custom chatroom url (applies after refreshing page)',
-                14: 'Use mpegts.js Player (experimental)'
+                9: 'Automatic Picture-in-Picture for video',
+                10: 'The following are advanced settings. It\'s usually not recommended to change these settings.',
+                11: 'Enable Advanced Settings',
+                12: 'Custom livestream video url (will override the line setting above, applies after reloading video): ',
+                13: 'Custom chatroom url (applies after refreshing page): ',
+                14: 'Use mpegts.js Player (experimental)',
+                15: 'Disable automatic video reload',
+                16: 'Allow HTML tags in chatroom content (not secure)',
+                17: 'Don\'t show comments in video',
+                18: 'Enable native video player controls'
             },
             button: {
                 1: 'Display / Hide Advanced Settings',
             },
             input: {
                 1: 'HLS video stream url, such as https://example.com/hls/index.m3u8',
-                2: 'WebSocket server url, such as wss://example.com/chat'
+                2: 'WebSocket server url, such as wss://example.com/chat',
+                3: 'FLV/MPEG-TS/MP4 stream url, such as https://example.com/1.flv'
             }
         },
         testpage: {
@@ -223,6 +248,7 @@ const stp_glob_i18n = {
                 4: 'But you haven\'t entered your name...',
                 5: 'What\'s your nickname?',
                 6: 'Name yourself plz',
+                7: 'Message history has been cleared.'
             },
             2: 'Hint: The video is muted now. You will need to unmute the video manually.'
         },
@@ -233,7 +259,7 @@ const stp_glob_i18n = {
                 3: 'Chatroom',
                 4: 'Settings'
             },
-            player_underline: 'Reload video'
+            player_underline: 'Player Menu'
         }
     }
 }

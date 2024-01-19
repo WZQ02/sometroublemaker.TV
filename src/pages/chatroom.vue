@@ -24,7 +24,11 @@
     let sendusrmsg = () => {
         if (usrmsg.value.value.length <= 0) {
             gCI.proxy?.$bus.emit('trigger_popup',dystr(str1c))
-	    } else {
+	    } else if (usrmsg.value.value == "~!@#$%^&*()_+") {
+            gCI.proxy?.$bus.emit('chatroom_clean_history');
+            usrmsg.value.value = "";
+            content.value.innerHTML = "";
+        } else {
             gCI.proxy?.$bus.emit('chatroom_send',usrmsg.value.value)
 		    usrmsg.value.value = "";
 	    }
@@ -126,7 +130,8 @@
 	        } else {
 	            //ws.send(`setUsrName=${RealusrName}`);
                 //gCI.proxy?.$bus.emit('chatroom_send',`setUsrName=${RealusrName}`)
-                gCI.proxy?.$bus.emit('chatroom_chgusrname',RealusrName)
+                //gCI.proxy?.$bus.emit('chatroom_chgusrname',RealusrName)
+                //已由bknd更新用户名信息，这里什么都不用做
 	        }
 	        goBottom();
         })

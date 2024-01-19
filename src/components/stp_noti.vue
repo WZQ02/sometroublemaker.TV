@@ -20,6 +20,10 @@
         stp_noti_content.value = content;
         s_n_show_timeout = setTimeout(()=>{s_n_show.value = 0;},3250)
     }
+    let hide_s_n = () => {
+        clearTimeout(s_n_show_timeout)
+        s_n_show.value = 0
+    }
 
     gCI.proxy?.$bus.on('trigger_popup',(content)=>{//触发提示
         stp_noti_popup(content)
@@ -27,23 +31,10 @@
 </script>
 
 <template>
-    <Transition>
-        <div id="stp_noti_main" ref="stp_noti_main" v-if="s_n_show">
+    <Transition name="fade">
+        <div id="stp_noti_main" ref="stp_noti_main" v-if="s_n_show" @click="hide_s_n()">
             <div id="stp_noti_timer" ref="stp_noti_timer"></div>
             <div id="stp_noti_content">{{stp_noti_content}}</div>
         </div>
     </Transition>
 </template>
-
-<style>
-.v-enter-active,
-.v-leave-active {
-  transition: all 0.25s cubic-bezier(0.3, 0, 0, 1);
-}
-.v-enter-from {
-    opacity: 0;
-}
-.v-leave-to {
-    opacity: 0;
-}
-</style>

@@ -14,9 +14,14 @@
     const ipt7 = ref(null)
     const ipt8 = ref(null)
     const ipt9 = ref(null)
+    const ipt10 = ref(null)
+    const ipt11 = ref(null)
+    const ipt12 = ref(null)
+    const ipt13 = ref(null)
     const advanced_settings = ref(null)
     const custom_hls_url = ref("")
     const custom_ws_url = ref("")
+    const custom_hls_url_type = ref(0)
 
     const gCI = getCurrentInstance()
 
@@ -56,6 +61,23 @@
         let enable_mpegts_player = localStorage.getItem('enable_mpegts_player');
         if (enable_mpegts_player == 1) {
             ipt9.value.checked = 1;
+            custom_hls_url_type.value = 1;
+        }
+        let disallow_auto_reload_video = localStorage.getItem('disallow_auto_reload_video');
+        if (disallow_auto_reload_video == 1) {
+            ipt10.value.checked = 1;
+        }
+        let allow_html_in_chat_content = localStorage.getItem('allow_html_in_chat_content');
+        if (allow_html_in_chat_content == 1) {
+            ipt11.value.checked = 1;
+        }
+        let danmaku_disabled = localStorage.getItem('danmaku_disabled');
+        if (danmaku_disabled == 1) {
+            ipt12.value.checked = 1;
+        }
+        let player_native_controls = localStorage.getItem('player_native_controls');
+        if (player_native_controls == 1) {
+            ipt13.value.checked = 1;
         }
         custom_hls_url.value = localStorage.getItem('custom_hls_url');
         custom_ws_url.value = localStorage.getItem('custom_ws_url');
@@ -99,6 +121,7 @@
         }
     }
     let ipt8_select = () => {
+        gCI.proxy?.$bus.emit('toggle_native_controls',(ipt8.value.checked && ipt13.value.checked))
         if (ipt8.value.checked == 1) {
             localStorage.setItem('adv_set_enabled',1)
             adv_options_editable.value = 1;
@@ -110,8 +133,39 @@
     let ipt9_select = () => {
         if (ipt9.value.checked == 1) {
             localStorage.setItem('enable_mpegts_player',1)
+            custom_hls_url_type.value = 1;
         } else {
             localStorage.setItem('enable_mpegts_player',0)
+            custom_hls_url_type.value = 0;
+        }
+    }
+    let ipt10_select = () => {
+        if (ipt10.value.checked == 1) {
+            localStorage.setItem('disallow_auto_reload_video',1)
+        } else {
+            localStorage.setItem('disallow_auto_reload_video',0)
+        }
+    }
+    let ipt11_select = () => {
+        if (ipt11.value.checked == 1) {
+            localStorage.setItem('allow_html_in_chat_content',1)
+        } else {
+            localStorage.setItem('allow_html_in_chat_content',0)
+        }
+    }
+    let ipt12_select = () => {
+        if (ipt12.value.checked == 1) {
+            localStorage.setItem('danmaku_disabled',1)
+        } else {
+            localStorage.setItem('danmaku_disabled',0)
+        }
+    }
+    let ipt13_select = () => {
+        gCI.proxy?.$bus.emit('toggle_native_controls',ipt13.value.checked)//告知video组件是否启用原生控制
+        if (ipt13.value.checked == 1) {
+            localStorage.setItem('player_native_controls',1)
+        } else {
+            localStorage.setItem('player_native_controls',0)
         }
     }
     function display_adv_settings() {
@@ -155,8 +209,12 @@
                 <input type="radio" ref="ipt6" name="live_lin" value="3" @click="ipt6_select">{{$t("settings.message.6")}}
             </p>
             <p>
-                {{$t("settings.message.9")}}
                 <input type="checkbox" ref="ipt7" class="settings_checkbox" @click="ipt7_select">
+                &nbsp;{{$t("settings.message.9")}}
+            </p>
+            <p>
+                <input type="checkbox" ref="ipt12" class="settings_checkbox" @click="ipt12_select">
+                &nbsp;{{$t("settings.message.17")}}
             </p>
             <p>{{$t("settings.message.7")}}</p>
             <br>
@@ -165,16 +223,31 @@
         <div id="advanced_settings" ref="advanced_settings">
             <p>{{$t("settings.message.10")}}</p>
             <p>
-                {{$t("settings.message.11")}}
                 <input type="checkbox" ref="ipt8" class="settings_checkbox" @click="ipt8_select">
+                &nbsp;{{$t("settings.message.11")}}
             </p>
             <p v-bind:class="{uneditable:adv_options_editable==0}">
-                {{$t("settings.message.14")}}
+                <input type="checkbox" ref="ipt10" class="settings_checkbox" @click="ipt10_select" v-bind:disabled="adv_options_editable==0">
+                &nbsp;{{$t("settings.message.15")}}
+            </p>
+            <p v-bind:class="{uneditable:adv_options_editable==0}">
                 <input type="checkbox" ref="ipt9" class="settings_checkbox" @click="ipt9_select" v-bind:disabled="adv_options_editable==0">
+                &nbsp;{{$t("settings.message.14")}}
+            </p>
+            <p v-bind:class="{uneditable:adv_options_editable==0}">
+                <input type="checkbox" ref="ipt13" class="settings_checkbox" @click="ipt13_select" v-bind:disabled="adv_options_editable==0">
+                &nbsp;{{$t("settings.message.18")}}
+            </p>
+            <p v-bind:class="{uneditable:adv_options_editable==0}">
+                <input type="checkbox" ref="ipt11" class="settings_checkbox" @click="ipt11_select" v-bind:disabled="adv_options_editable==0">
+                &nbsp;{{$t("settings.message.16")}}
             </p>
             <p v-bind:class="{uneditable:adv_options_editable==0}">
                 {{$t("settings.message.12")}}
-                <p><input type="text" v-bind:placeholder="$t('settings.input.1')" v-model="custom_hls_url" v-bind:disabled="adv_options_editable==0"></p>
+                <p>
+                    <input type="text" v-show="custom_hls_url_type==0" v-bind:placeholder="$t('settings.input.1')" v-model="custom_hls_url" v-bind:disabled="adv_options_editable==0">
+                    <input type="text" v-show="custom_hls_url_type" v-bind:placeholder="$t('settings.input.3')" v-model="custom_hls_url" v-bind:disabled="adv_options_editable==0">
+                </p>
             </p>
             <p v-bind:class="{uneditable:adv_options_editable==0}">
                 {{$t("settings.message.13")}}
@@ -186,9 +259,6 @@
 <style scoped>
 #settings_options,#advanced_settings {
     animation: appear .6s ease 1;
-}
-#container {
-    transition: height .6s ease;
 }
 #advanced_settings p {
     transition: 0.25s;

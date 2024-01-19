@@ -20,15 +20,17 @@
 	padding: 16px;
 	box-sizing: border-box;
 	background-color: #ccc;
-	overflow: auto;
+    overflow-x: hidden;
+	overflow-y: auto;
 	border-radius: 12px;
 }
-#chatcontent p {
+#chatcontent div {
 	font-size: 14px;
 	text-align: center;
 	color: #555;
+    padding: 4px 0;
 }
-#chatcontent p .timer {
+#chatcontent div .timer {
     font-weight: bold;
 	display: inline-block;
 	border-radius: 10px;
@@ -37,22 +39,26 @@
 	background: #999;
 	padding: 3px 5px 3px;
 }
-#chatcontent p.speak .speak_name {
+#chatcontent div .msg {
+    display: inline-block;
+    margin: 4px 0;
+}
+#chatcontent div.speak .speak_name {
     display: block;
     text-align: left;
     position: relative;
     top: 10px;
 }
-#chatcontent p.speak div {
+#chatcontent div.speak div {
     text-align: left;
 }
-#chatcontent p.isyou .speak_name {
+#chatcontent div.isyou .speak_name {
     text-align: right;
 }
-#chatcontent p.isyou div {
+#chatcontent div.isyou div {
     text-align: right;
 }
-#chatcontent p.speak div .speak_cont {
+#chatcontent div.speak div .speak_cont {
 	font-size: 18px;
 	color: #222;
     display: inline-block;
@@ -65,25 +71,38 @@
     line-height: 125%;
     user-select: text !important;
 }
-#chatcontent p.isyou div .speak_cont {
+#chatcontent div.isyou div .speak_cont {
     color: #fff;
     background-color: #48d;
 }
-#chatcontent p div .speak_cont p{
+#chatcontent div div .speak_cont p{
     font-size: 18px;
     margin: 0;
 }
-#chatcontent p.isyou div .speak_cont p{
+#chatcontent div.isyou div .speak_cont p{
     color: #fff;
 }
 #chatcontent img,video {
     max-width: 100%;
     border-radius: 8px;
 }
+#chatcontent h1,#chatcontent h2,#chatcontent h3,#chatcontent h4,#chatcontent h5,#chatcontent h6 {
+    margin: 0;
+}
+#chatcontent h1,#chatcontent h2,#chatcontent h3 {
+    line-height: 125%;
+}
 #chatcontent a {
     color: currentColor;
     cursor: pointer;
     text-decoration: underline;
+}
+#chatcontent code {
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 16px;
+    background-color: #111;
+    padding: 6px;
+    border-radius: 4px;
 }
 #chatroom_container input {
     top: 16px;
@@ -107,11 +126,8 @@
 	border-radius: 16px;
 	position: relative;
 }
-#sendmsg:hover {
-	background: #6ae;
-}
 #sendmsg:active {
-	background: #047;
+	background: #047 !important;
 }
 #panel1 svg {
 	float: right;
@@ -119,11 +135,8 @@
     opacity: 0.25;
     transition: opacity 0.25s;
 }
-#panel1 svg:hover {
-	opacity: 0.6;
-}
 #panel1 svg:active {
-	opacity: 1;
+	opacity: 1 !important;
 }
 #quoteselector {
 	-webkit-appearance: none;
@@ -173,12 +186,9 @@
 	border-radius: 8px;
 	position: relative;
 }
-#promptbtn:hover {
-    background-color: rgba(0,0,0,0.15);
-}
 #promptbtn:active {
     color: #fff;
-    background-color: rgba(0,0,0,0.45);
+    background-color: rgba(0,0,0,0.45) !important;
 }
 #askforusername input {
     width: 177px;
@@ -205,18 +215,18 @@
         box-shadow: 0 0 48px rgba(0,0,0,0.25) inset;
         background-color: #222;
     }
-    #chatcontent p {
+    #chatcontent div {
         color: #999;
     }
-    #chatcontent p .timer {
+    #chatcontent div .timer {
         color: #222;
         background: #777;
     }
-    #chatcontent p.speak div .speak_cont {
+    #chatcontent div.speak div .speak_cont {
         color: #ccc;
         background-color: #111;
     }
-    #chatcontent p.isyou div .speak_cont {
+    #chatcontent div.isyou div .speak_cont {
         color: #ddd;
         background-color: #047;
     }
@@ -231,12 +241,8 @@
         color: #ccc;
         background: #047;
     }
-    #sendmsg:hover {
-        color: #fff;
-        background: #6ae;
-    }
     #sendmsg:active {
-        background: #024;
+        background: #024 !important;
     }
     .prompt {
         color: #ddd;
@@ -246,11 +252,8 @@
         color: #999;
         background-color: rgba(255,255,255,0);
     }
-    #promptbtn:hover {
-        background-color: rgba(255,255,255,0.15);
-    }
     #promptbtn:active {
-        background-color: rgba(255,255,255,0.45);
+        background-color: rgba(255,255,255,0.45) !important;
     }
 }
 @media screen and (min-height: 960px) {
@@ -262,5 +265,25 @@
 @media screen and (max-width: 800px) {
     #chatroom_container {
         left: 24px;
+    }
+}
+@media (any-hover: hover) {
+    #sendmsg:hover {
+        background: #6ae;
+    }
+    #panel1 svg:hover {
+        opacity: 0.6;
+    }
+    #promptbtn:hover {
+        background-color: rgba(0,0,0,0.15);
+    }
+}
+@media (prefers-color-scheme: dark) and (any-hover: hover) {
+    #sendmsg:hover {
+        color: #fff;
+        background: #6ae;
+    }
+    #promptbtn:hover {
+        background-color: rgba(255,255,255,0.15);
     }
 }
