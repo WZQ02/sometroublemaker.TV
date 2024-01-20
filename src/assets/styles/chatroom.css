@@ -114,21 +114,6 @@
 	height: 36px;
 	user-select: none;
 }
-#sendmsg {
-	font-size: 15px;
-	color: #fff;
-	padding: 6px 16px;
-    float: right;
-    top: 2px;
-	background: #48d;
-	border: 0px;
-	transition: all .25s;
-	border-radius: 16px;
-	position: relative;
-}
-#sendmsg:active {
-	background: #047 !important;
-}
 #panel1 svg {
 	float: right;
     padding: 6px 14px;
@@ -156,39 +141,6 @@
 }
 #quoteselector:focus {
 	background-color: #fff;
-}
-.prompt {
-	display: none;
-	position: absolute;
-	top: 50%;
-	left: 50%;
-    transform: translate(-50%,-50%);
-	padding: 18px;
-	box-sizing: border-box;
-	font-size: 16px;
-	color: #000;
-    width: 300px;
-    background-color: rgba(255,255,255,0.6);
-    backdrop-filter: blur(8px);
-    border-radius: 16px;
-    box-shadow: 0 0 24px rgba(0,0,0,0.4);
-    animation: zoomin2 0.4s cubic-bezier(0, 0.67, 0, 1) 1;
-    user-select: none;
-}
-#promptbtn {
-	font-size: 16px;
-    font-weight: bold;
-	color: #555;
-    background-color: rgba(0,0,0,0);
-	padding: 7px 12px;
-	border: 0px;
-	transition: all .25s;
-	border-radius: 8px;
-	position: relative;
-}
-#promptbtn:active {
-    color: #fff;
-    background-color: rgba(0,0,0,0.45) !important;
 }
 #askforusername input {
     width: 177px;
@@ -237,24 +189,6 @@
     #quoteselector:focus {
         background-color: #111;
     }
-    #sendmsg {
-        color: #ccc;
-        background: #047;
-    }
-    #sendmsg:active {
-        background: #024 !important;
-    }
-    .prompt {
-        color: #ddd;
-        background-color: rgba(0,0,0,0.6);
-    }
-    #promptbtn {
-        color: #999;
-        background-color: rgba(255,255,255,0);
-    }
-    #promptbtn:active {
-        background-color: rgba(255,255,255,0.45) !important;
-    }
 }
 @media screen and (min-height: 960px) {
     #chatroom_container {
@@ -268,22 +202,7 @@
     }
 }
 @media (any-hover: hover) {
-    #sendmsg:hover {
-        background: #6ae;
-    }
     #panel1 svg:hover {
         opacity: 0.6;
-    }
-    #promptbtn:hover {
-        background-color: rgba(0,0,0,0.15);
-    }
-}
-@media (prefers-color-scheme: dark) and (any-hover: hover) {
-    #sendmsg:hover {
-        color: #fff;
-        background: #6ae;
-    }
-    #promptbtn:hover {
-        background-color: rgba(255,255,255,0.15);
     }
 }

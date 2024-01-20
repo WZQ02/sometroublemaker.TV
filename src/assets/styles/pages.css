@@ -7,32 +7,34 @@ body {
     color: #333;
     text-align: left;
     user-select: none;
-    overflow: scroll;
+    overflow-y: scroll;
 	overflow-x: hidden;
 }
 #container {
     background-color: #fff;
     box-shadow: 0px 0px 32px rgba(0,0,0,0.4);
     position: absolute;
-    left: calc(50vw - 392px);
+    left: calc(50vw - 414.5px);
     border-radius: 20px;
-    width: 720px;
+    width: 765px;
+    max-height: calc(100vh - 80px);
+    max-height: calc(100dvh - 80px);
     padding: 32px;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
     animation: zoomin3 0.25s cubic-bezier(0.3, 0, 0, 1);
 }
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
-    display: none;
     background-color: none;
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 3px;
-    background-color: rgba(127,127,127,0.6);
+    background-color: rgba(0,0,0,.15);
 }
 ::-webkit-scrollbar-thumb:active {
-    background-color: rgba(63,63,63,1) !important;
+    background-color: rgba(0,0,0,.75) !important;
 }
 a {
     cursor: default;
@@ -110,6 +112,54 @@ input[type="radio"] {
     background: rgba(0, 0, 0, 0.5);
     animation: appear 0.2s ease 1;
 }
+.prompt {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+    transform: translate(-50%,-50%);
+	padding: 18px;
+	box-sizing: border-box;
+	font-size: 16px;
+	color: #000;
+    width: 300px;
+    background-color: rgba(255,255,255,0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 16px;
+    box-shadow: 0 0 24px rgba(0,0,0,0.4);
+    animation: zoomin2 0.4s cubic-bezier(0, 0.67, 0, 1) 1;
+    user-select: none;
+}
+#promptbtn {
+	font-size: 16px;
+    font-weight: bold;
+	color: #555;
+    background-color: rgba(0,0,0,0);
+	padding: 7px 12px;
+	border: 0px;
+	transition: all .25s;
+	border-radius: 8px;
+	position: relative;
+}
+#promptbtn:active {
+    color: #fff;
+    background-color: rgba(0,0,0,0.45) !important;
+}
+#sendmsg {
+	font-size: 15px;
+	color: #fff;
+	padding: 6px 16px;
+    float: right;
+    top: 2px;
+	background: #48d;
+	border: 0px;
+	transition: all .25s;
+	border-radius: 16px;
+	position: relative;
+}
+#sendmsg:active {
+	background: #047 !important;
+}
 @media (prefers-color-scheme: dark) {
     body { 
         background: #252525; 
@@ -127,8 +177,11 @@ input[type="radio"] {
     #largetitle {
         color: rgba(255,255,255,0.1);
     }
+    ::-webkit-scrollbar-thumb {
+        background-color: rgba(255,255,255,.15);
+    }
     ::-webkit-scrollbar-thumb:active {
-        background-color: rgba(191,191,191,1);
+        background-color: rgba(255,255,255,.75) !important;
     }
     input[type="text"] {
         color: #ccc;
@@ -137,6 +190,24 @@ input[type="radio"] {
     input[type="text"]:focus {
         background-color: #111;
     }
+    .prompt {
+        color: #ddd;
+        background-color: rgba(0,0,0,0.6);
+    }
+    #promptbtn {
+        color: #999;
+        background-color: rgba(255,255,255,0);
+    }
+    #promptbtn:active {
+        background-color: rgba(255,255,255,0.45) !important;
+    }
+    #sendmsg {
+        color: #ccc;
+        background: #047;
+    }
+    #sendmsg:active {
+        background: #024 !important;
+    }
 }
 @media screen and (max-width: 900px) {
     #container {
@@ -144,15 +215,35 @@ input[type="radio"] {
         border-radius: 20px;
         width: 85vw;
         padding: 24px;
+        max-height: calc(100vh - 64px);
+        max-height: calc(100dvh - 64px);
     }
 }
 @media (any-hover: hover) {
     ::-webkit-scrollbar-thumb:hover {
-        background-color: rgba(127,127,127,1);
+        background-color: rgba(0,0,0,.5);
     }
     .c:hover {
         color: #fff !important;
         background-color: #555;
+    }
+    #promptbtn:hover {
+        background-color: rgba(0,0,0,0.15);
+    }
+    #sendmsg:hover {
+        background: #6ae;
+    }
+}
+@media (prefers-color-scheme: dark) and (any-hover: hover) {
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(255,255,255,.5);
+    }
+    #promptbtn:hover {
+        background-color: rgba(255,255,255,0.15);
+    }
+    #sendmsg:hover {
+        color: #fff;
+        background: #6ae;
     }
 }
 @keyframes appear {

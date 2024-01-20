@@ -58,6 +58,9 @@ video.inpage {
     box-shadow: 0 8px 12px rgba(0,0,0,0.45);
     transition: 0.4s cubic-bezier(0.5, 0, 0, 1);
 }
+.prompt {
+    transform: translate(-50%,-50%);
+}
 @media screen and (min-height: 760px) {
     .player {
         top: calc(40vh - 288px);

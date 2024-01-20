@@ -9,12 +9,17 @@ import { createI18n } from 'vue-i18n'
 import { stp_glob_i18n } from './locales/global.js'
 //import { getCookie } from './scripts/cookie.js'
 
-import Wel from './pages/welcome.vue'
-import Home from './pages/home.vue'
-import LivePlayer from './pages/live_player.vue'
-import ChatRoom from './pages/chatroom.vue'
-import Settings from './pages/settings.vue'
+//import Wel from './pages/welcome.vue'
+//import Home from './pages/home.vue'
+//import LivePlayer from './pages/live_player.vue'
+//import ChatRoom from './pages/chatroom.vue'
+//import Settings from './pages/settings.vue'
 //import Test1 from './pages/testpage.vue'
+const Wel = () => import('./pages/welcome.vue')
+const Home = () => import('./pages/home.vue')
+const LivePlayer = () => import('./pages/live_player.vue')
+const ChatRoom = () => import('./pages/chatroom.vue')
+const Settings = () => import('./pages/settings.vue')
 
 import mitt from 'mitt'
 

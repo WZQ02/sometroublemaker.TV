@@ -12,7 +12,7 @@ const stp_glob_i18n = {
                 overview: '概览'
             },
             message: {
-                1: 'sometroublemaker\'s playground 作为 wzq02.cf 的一个扩充而存在。目前该站点整合了 wzq02.cf 的直播页和聊天室功能，以后会考虑整合更多东西进来。',
+                1: 'sometroublemaker\'s playground 作为 wzq02.cf 的一个扩充而存在。目前该项目整合了 wzq02.cf 的直播页和聊天室功能，以后会考虑整合更多东西进来。',
                 2: '本项目也用于笔者上手 Vue 3 框架上的单页面应用开发。'
             },
             button: {
