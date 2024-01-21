@@ -7,8 +7,7 @@ body {
     color: #333;
     text-align: left;
     user-select: none;
-    overflow-y: scroll;
-	overflow-x: hidden;
+    overflow: hidden;
 }
 #container {
     background-color: #fff;
@@ -27,7 +26,6 @@ body {
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
-    background-color: none;
 }
 ::-webkit-scrollbar-thumb {
     border-radius: 3px;

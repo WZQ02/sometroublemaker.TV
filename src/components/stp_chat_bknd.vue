@@ -18,6 +18,8 @@
     let is_last_msg_from_user = 0
     //上一次从服务器接收到的时间码
     let last_received_time = 0
+    //chatroom ws服务的地址
+    const chatroom_defualt_url = 'wss://wzq02.cf/websocketchat'
 
     //向服务器发送信息
     gCI.proxy?.$bus.on('chatroom_send',(e)=>{
@@ -194,7 +196,7 @@
         if (localStorage.getItem('adv_set_enabled') == 1 && localStorage.getItem('custom_ws_url')) {
             ws = new ReconnectingWebSocket(localStorage.getItem('custom_ws_url'), null, ws_options)
         } else {
-            ws = new ReconnectingWebSocket('wss://wzq02.cf/websocketchat', null, ws_options)
+            ws = new ReconnectingWebSocket(chatroom_defualt_url, null, ws_options)
         }
         ws.addEventListener('open', (e) => {
             //告知chatroom组件，已连接服务器
