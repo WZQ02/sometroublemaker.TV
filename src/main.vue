@@ -13,6 +13,7 @@
             </keep-alive>
         </router-view>
     </div>
+    <div id="pseudo_background"></div>
     <top_noti />
     <chat_backend />
 </template>

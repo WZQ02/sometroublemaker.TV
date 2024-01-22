@@ -7,7 +7,8 @@
     import Danmaku from 'danmaku'
     //import { getCookie } from '../scripts/cookie.js'
     import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiSend,mdiReload,mdiFullscreen,mdiFullscreenExit,mdiVolumeHigh,mdiVolumeMute } from '@mdi/js';
+    import { mdiSend,mdiReload,mdiFullscreen,mdiFullscreenExit,mdiVolumeHigh,mdiVolumeMute, mdiConsoleNetwork } from '@mdi/js';
+    import { stp_store } from '../store.js'
 
     const video = ref(null);
     const video_container = ref(null);
@@ -87,7 +88,7 @@
         }
     }
     let get_if_reload_isallowed = () => {
-        if (localStorage.getItem('adv_set_enabled') != 1 || localStorage.getItem('disallow_auto_reload_video') != 1) {return 1} else {return 0}
+        return (stp_store.settings.adv_set_enabled.value && stp_store.adv_settings.disallow_auto_reload_video.value)?0:1
     }
     let danmaku;
     let enabledanmaku = () => {
@@ -120,12 +121,21 @@
     }
     let toggle_fullscreen = () => {
         if (player_switching_fullscrn.value != 1) {
-            player_switching_fullscrn.value = 1;
-            setTimeout(()=>{player_switching_fullscrn.value = 0;danmaku.resize();},700);
+            if (!stp_store.settings.browser_fullscreen.value) {
+                player_switching_fullscrn.value = 1;
+                setTimeout(()=>{player_switching_fullscrn.value = 0;danmaku.resize();},700);
+            }
+            stp_store.session.player_fullscreen.toggle();
             if (fullscreen.value) {
                 fullscreen.value = 0;
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
             } else {
                 fullscreen.value = 1;
+                if (stp_store.settings.browser_fullscreen.value) {
+                    document.body.querySelector('#app').requestFullscreen()
+                }
             }
         }
     } 
@@ -163,31 +173,17 @@
 
     const audio_muted_status = ref(0)
 
-    /*watch(() => video.value,() => {
-        if (video.value.muted) {
-            audio_muted_status.value = 1;
-        } else {
-            audio_muted_status.value = 0;
-        }
-    })*/
-
     onMounted(() => {
         let videoUrl = '';
         let stp_live_lin;
         let stp_allow_pip;
         let player_type;//0为hls播放器，1为mpegts
         let get_live_url=()=>{
-            //stp_live_lin = getCookie('stp_live_lin');
-            //stp_allow_pip = getCookie('stp_allow_pip');
-            stp_live_lin = localStorage.getItem('stp_live_lin');
-            stp_allow_pip = localStorage.getItem('stp_allow_pip');
-            if (localStorage.getItem('adv_set_enabled') == 1 && localStorage.getItem('enable_mpegts_player') == 1) {
-                player_type = 1;
-            } else {
-                player_type = 0;
-            }
-            if (localStorage.getItem('adv_set_enabled') == 1 && localStorage.getItem('custom_hls_url')) {
-                videoUrl = localStorage.getItem('custom_hls_url');
+            stp_live_lin = stp_store.settings.stp_live_lin.value;
+            stp_allow_pip = stp_store.settings.stp_allow_pip.value;
+            player_type = (stp_store.settings.adv_set_enabled.value && stp_store.adv_settings.enable_mpegts_player.value)?1:0
+            if (stp_store.settings.adv_set_enabled.value && stp_store.adv_settings.custom_hls_url.value) {
+                videoUrl = stp_store.adv_settings.custom_hls_url.value;
             } else {
                 if (stp_live_lin == 2) {
                     videoUrl = vid_domain[0];
@@ -234,9 +230,9 @@
             }
         }
         let detect_live_status=(reload_if_back_online)=>{
-            var request = new XMLHttpRequest();
-            request.open("get", videoUrl);
-            request.send(null);
+            let request = new XMLHttpRequest();
+            request.open("head", videoUrl);
+            request.send();
             request.onload = () => {
                 if (request.status == 200) {
                     console.log("连接直播服务器成功。")
@@ -250,6 +246,12 @@
                     if (detect_live_status_when_playing_interval) {} else {
                         detect_live_status_when_playing_interval = setInterval(()=>{detect_live_status_when_playing()},5000)
                     }
+                    if (player_type) {
+                        console.log("当前播放器类型：mpegts.js")
+                    } else {
+                        console.log("当前播放器类型：hls.js")
+                    }
+                    request.abort();
                 } else if (promptthereisnolive_loaded) {} else {
                     console.log("无法连接到直播服务器，当前可能无人推送视频流。")
                     setTimeout(()=>{promptthereisnolive()},250)
@@ -304,10 +306,10 @@
             }
         }
         enabledanmaku();
-        if (localStorage.getItem('danmaku_disabled') == 1) {
+        if (stp_store.settings.danmaku_disabled.value) {
             danmaku.hide();
         }
-        if (localStorage.getItem('adv_set_enabled') == 1 && localStorage.getItem('player_native_controls') == 1) {
+        if (stp_store.settings.adv_set_enabled.value && stp_store.adv_settings.player_native_controls.value) {
             native_controls_enabled.value = 1;
         }
         gCI.proxy?.$bus.emit('req_chatserverbknd',1)//为使弹幕功能一开始就起作用，在播放器初始化chat组件
@@ -341,7 +343,7 @@
         }
     })
     onActivated(() => {
-        if (localStorage.getItem('danmaku_disabled') != 1) {
+        if (!stp_store.settings.danmaku_disabled.value) {
             danmaku.show();
         }
         vid_tele_disabled.value = 1
@@ -371,9 +373,11 @@
                 <button id="toggle_sound" @click="toggle_sound()" class="player_controls_component sound iconbutton" v-bind:title="$t('live_player.menu.5')" v-if="audio_muted_status">
                     <svg-icon type="mdi" :path=mdiVolumeMute></svg-icon>
                 </button>
-                <button id="toggle_fullscrn" @click="toggle_fullscreen();" class="player_controls_component fullscrn iconbutton" v-bind:title="$t('live_player.menu.3')">
-                    <svg-icon type="mdi" :path=mdiFullscreen v-if="!fullscreen"></svg-icon>
-                    <svg-icon type="mdi" :path=mdiFullscreenExit v-if="fullscreen"></svg-icon>
+                <button id="toggle_fullscrn" @click="toggle_fullscreen();" class="player_controls_component fullscrn iconbutton" v-bind:title="$t('live_player.menu.3')" v-if="!fullscreen">
+                    <svg-icon type="mdi" :path=mdiFullscreen></svg-icon>
+                </button>
+                <button id="toggle_fullscrn" @click="toggle_fullscreen();" class="player_controls_component fullscrn iconbutton" v-bind:title="$t('live_player.menu.6')" v-if="fullscreen">
+                    <svg-icon type="mdi" :path=mdiFullscreenExit></svg-icon>
                 </button>
                 <button id="sendmsg" ref="sendmsg" class="player_controls_component send" @click="sendusrmsg();" v-bind:title="$t('live_player.menu.2')">
                     <svg-icon type="mdi" :path=mdiSend></svg-icon>
@@ -416,7 +420,7 @@
 }
 #player_controls.fullscreen.folded {
     top: calc(100% - 16px);
-    opacity: .6;
+    opacity: .4;
 }
 .player_controls_component.usrmsg {
     position: absolute;

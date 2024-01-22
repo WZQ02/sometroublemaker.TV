@@ -6,12 +6,14 @@
     import { TouchRipple } from 'vue-touch-ripple'
     import 'vue-touch-ripple/style.css'
     import Hammer from 'hammerjs'
+    import { stp_store } from '../store.js'
 
     const isselected_1 = ref(0)
     const isselected_2 = ref(0)
     const isselected_3 = ref(0)
     const isselected_4 = ref(0)
     const tb_show = ref(0)
+    const tb_fullscrn = ref(0)
     const stp_tb_cont = ref(0)
 
     const tb_btn = [isselected_1,isselected_2,isselected_3,isselected_4]
@@ -63,11 +65,14 @@
         swipeshowtb.on('swipeup', function() {
             tb_show.value = 0;//触屏设备上，向上滑动，则隐藏顶栏
         });
+        watch(() => stp_store.session.player_fullscreen.value,() => {
+            tb_fullscrn.value = stp_store.session.player_fullscreen.value
+        })
     })
 </script>
 
 <template>
-    <div id="stp_tb_container" ref="stp_tb_cont" v-bind:class="{tb_show:tb_show}" v-on:mouseover="tb_reshow" v-on:mouseout="tb_autohide">
+    <div id="stp_tb_container" ref="stp_tb_cont" v-bind:class="{tb_show:tb_show,fullscrn:tb_fullscrn}" v-on:mouseover="tb_reshow" v-on:mouseout="tb_autohide">
         <div id="stp_tb_main">
             <router-link to="/home">
                 <div class="stp_tb_button" id="stp_t_b_1" v-bind:class="{selected:isselected_1}" v-bind:title="$t('item_title.topbar.1')">

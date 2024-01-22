@@ -3,11 +3,16 @@
 }
 body {
     animation: appear 0.6s ease 1;
-    background: #eee; 
     color: #333;
     text-align: left;
     user-select: none;
     overflow: hidden;
+}
+body,#pseudo_background {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background-color: #eee;
 }
 #container {
     background-color: #fff;
@@ -159,9 +164,11 @@ input[type="radio"] {
 	background: #047 !important;
 }
 @media (prefers-color-scheme: dark) {
-    body { 
-        background: #252525; 
+    body {
         color: #eeeeee;
+    }
+    body,#pseudo_background {
+        background-color: #252525; 
     }
     #container {
         background-color: #202020;

@@ -3,6 +3,7 @@
     import { onMounted,ref,getCurrentInstance,onActivated, onDeactivated } from 'vue'
     import SvgIcon from '@jamescoyle/vue-icon'
     import { mdiInformation } from '@mdi/js'
+    import { stp_store } from '../store.js'
 
     const usrmsg = ref(null)
     const sendmsg = ref(null)
@@ -35,8 +36,7 @@
     }
     let askforusername = () => {
 	    //更改用户名并刷新本页后，再次修改用户名时把原先用户名自动填写在usrname区
-	    //usrName.value.value = getCookie('chatUserName');
-        usrName.value.value = localStorage.getItem('chatUserName');
+        usrName.value.value = stp_store.chatroom.username.value;
 	    prompb.value.style.display = "block";
 	    askforusername_pmpt.value.style.display = "block";
     }
@@ -45,10 +45,8 @@
 	    if (usrNameValue == '') {
             gCI.proxy?.$bus.emit('trigger_popup',dystr(str2c))
 	    } else {
-		    //setCookie('chatUserName',usrNameValue,365);
-            localStorage.setItem('chatUserName',usrNameValue);
-		    //var RealusrName = getCookie('chatUserName');
-            let RealusrName = localStorage.getItem('chatUserName');
+            stp_store.chatroom.username.change(usrNameValue);
+            let RealusrName = stp_store.chatroom.username.value;
             gCI.proxy?.$bus.emit('chatroom_chgusrname',RealusrName)
 		    noticeUser();
 		    askforusername_pmpt.value.style.display = "";
@@ -56,12 +54,11 @@
     }
     //存储“是否显示用户进入、退出”的信息到本地存储
     let isshowuserinout_store = () => {
-        //setCookie('isshowuserinout',isshowuserinout.value.checked,365);
-        localStorage.setItem('isshowuserinout',isshowuserinout.value.checked);
+        stp_store.chatroom.dont_show_userinout.toggle();
         gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',isshowuserinout.value.checked)
     }
     let ismarkdown_store = () => {
-        localStorage.setItem('ismarkdown',ismarkdown.value.checked);
+        stp_store.chatroom.markdown_disabled.toggle();
         gCI.proxy?.$bus.emit('chatroomismarkdown_onchange',ismarkdown.value.checked)
     }
     //显示注意事项
@@ -83,8 +80,7 @@
     }
     //显示信息
     let displayinfo = () => {
-	    //var RealusrName = getCookie('chatUserName');
-        let RealusrName = localStorage.getItem('chatUserName');
+        let RealusrName = stp_store.chatroom.username.value;
 	    prompb.value.style.display = "block";
 	    info.value.style.display = "block";
 	    currentusername.value.innerText = RealusrName
@@ -123,8 +119,7 @@
     onMounted(() => {
         gCI.proxy?.$bus.emit('req_chatserverbknd')
         gCI.proxy?.$bus.on('chatserverconnected',()=>{
-            //var RealusrName = getCookie('chatUserName');
-            let RealusrName = localStorage.getItem('chatUserName');
+            let RealusrName = stp_store.chatroom.username.value;
 	        if (RealusrName == null) {
 		        askforusername();
 	        } else {
@@ -147,13 +142,12 @@
 			    chgusername();
 		    }
 	    });
-        //读取cookie并设置存储“是否显示用户进入、退出”的信息到cookie
-        //if (getCookie('isshowuserinout') == 'true') {
-        if (localStorage.getItem('isshowuserinout') == 'true') {
+        //读取本地存储并设置存储“是否显示用户进入、退出”的信息
+        if (stp_store.chatroom.dont_show_userinout.value) {
             gCI.proxy?.$bus.emit('chatroomisshowuserinout_onchange',1)
             isshowuserinout.value.checked = 1;
         }
-        if (localStorage.getItem('ismarkdown') == 'true') {
+        if (stp_store.chatroom.markdown_disabled.value) {
             gCI.proxy?.$bus.emit('chatroomismarkdown_onchange',1)
             ismarkdown.value.checked = 1;
         }

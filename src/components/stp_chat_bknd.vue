@@ -2,6 +2,7 @@
     import { getCurrentInstance } from 'vue'
     import ReconnectingWebSocket from'reconnecting-websocket'
     import { marked } from 'marked'
+    import { stp_store } from '../store.js'
 
     let ws,chat_sendheartbeat,init_finished
     const gCI = getCurrentInstance()
@@ -104,7 +105,7 @@
                     }
                     formatted.innerHTML = formatted.innerHTML + `<span class="speak_name" title="${parseStr.time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
                     //判断是不是自己发言
-                    if (localStorage.getItem('chatUserName') && replaceHTMLtags(localStorage.getItem('chatUserName')) == speak_name) {
+                    if (stp_store.chatroom.username.value && replaceHTMLtags(stp_store.chatroom.username.value) == speak_name) {
                         formatted.className = "speak isyou";
                     } else {
                         formatted.className = "speak";
@@ -134,7 +135,7 @@
                                 formatted_prev_msg.innerHTML = `<span class="timer" title="${speak_time}">${speak_time}</span><br/>`;
                             }
                             formatted_prev_msg.innerHTML += `<span class="speak_name" title="${speak_time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
-                            if (localStorage.getItem('chatUserName') && replaceHTMLtags(localStorage.getItem('chatUserName')) == speak_name) {
+                            if (stp_store.chatroom.username.value && replaceHTMLtags(stp_store.chatroom.username.value) == speak_name) {
                                 formatted_prev_msg.className = "speak isyou";
                             } else {
                                 formatted_prev_msg.className = "speak";
@@ -165,7 +166,7 @@
     }
     //防止用户输入的html标签和脚本生效（防xss）
     let replaceHTMLtags = (e) => {
-        if (localStorage.getItem('adv_set_enabled') == 1 && localStorage.getItem('allow_html_in_chat_content') == 1) {
+        if (stp_store.settings.adv_set_enabled.value == 1 && stp_store.adv_settings.allow_html_in_chat_content.value == 1) {
             return e;
         } else {
             return e.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -193,8 +194,8 @@
     function chatroom_init(by_player) {
         init_finished = 1;
         let ws_options = {debug: false};
-        if (localStorage.getItem('adv_set_enabled') == 1 && localStorage.getItem('custom_ws_url')) {
-            ws = new ReconnectingWebSocket(localStorage.getItem('custom_ws_url'), null, ws_options)
+        if (stp_store.settings.adv_set_enabled.value == 1 && stp_store.adv_settings.custom_ws_url.value) {
+            ws = new ReconnectingWebSocket(stp_store.adv_settings.custom_ws_url.value, null, ws_options)
         } else {
             ws = new ReconnectingWebSocket(chatroom_defualt_url, null, ws_options)
         }
@@ -203,7 +204,7 @@
             if (by_player) {} else {
                 gCI.proxy?.$bus.emit('chatserverconnected')
             }
-            let RealusrName = localStorage.getItem('chatUserName');
+            let RealusrName = stp_store.chatroom.username.value;
             if (RealusrName) {//如果存在用户名，更新用户名信息
                 gCI.proxy?.$bus.emit('chatroom_chgusrname',RealusrName)
             }

@@ -35,9 +35,10 @@ const stp_glob_i18n = {
             menu: {
                 1: '重载视频流',
                 2: '发送弹幕',
-                3: '网页全屏',
+                3: '进入全屏',
                 4: '静音',
-                5: '取消静音'
+                5: '取消静音',
+                6: '退出全屏'
             }
         },
         chatroom: {
@@ -87,10 +88,12 @@ const stp_glob_i18n = {
                 15: '禁用自动重载视频',
                 16: '聊天室内容允许 HTML 标签（不安全）',
                 17: '不显示弹幕',
-                18: '启用原生播放器控制'
+                18: '启用原生播放器控制',
+                19: '启用浏览器全屏'
             },
             button: {
-                1: '显示 / 隐藏高级设置',
+                1: '显示高级设置',
+                2: '隐藏高级设置'
             },
             input: {
                 1: 'HLS 视频流地址，如 https://example.com/hls/index.m3u8',
@@ -170,7 +173,8 @@ const stp_glob_i18n = {
                 2: 'Send comment',
                 3: 'Fullscreen',
                 4: 'Mute',
-                5: 'Unmute'
+                5: 'Unmute',
+                6: 'Exit fullscreen'
             }
         },
         chatroom: {
@@ -217,10 +221,12 @@ const stp_glob_i18n = {
                 15: 'Disable automatic video reload',
                 16: 'Allow HTML tags in chatroom content (not secure)',
                 17: 'Don\'t show comments in video',
-                18: 'Enable native video player controls'
+                18: 'Enable native video player controls',
+                19: 'Enable browser fullscreen'
             },
             button: {
-                1: 'Display / Hide Advanced Settings',
+                1: 'Display Advanced Settings',
+                2: 'Hide Advanced Settings'
             },
             input: {
                 1: 'HLS video stream url, such as https://example.com/hls/index.m3u8',
