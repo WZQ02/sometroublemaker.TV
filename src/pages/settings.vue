@@ -163,7 +163,7 @@
                 <input type="checkbox" ref="ipt12" class="settings_checkbox" @click="ipt_select(12)">
                 &nbsp;{{$t("settings.message.17")}}
             </p>
-            <p>{{$t("settings.message.7")}}</p>
+            
             <br>
             <a class="c" @click="display_adv_settings()" v-show="!adv_settings_isdisplay">{{$t("settings.button.1")}}</a>
             <a class="c" @click="display_adv_settings()" v-show="adv_settings_isdisplay">{{$t("settings.button.2")}}</a>

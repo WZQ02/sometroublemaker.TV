@@ -19,7 +19,7 @@
 
     const gCI = getCurrentInstance()
 
-    const vid_domain = ['https://www.wzq02.cf/','https://wzq02.cf/','']
+    const vid_domain = ['https://wzq02.top/','https://d.wzq02.top/','']
     const vid_src = ['/live/livestream.m3u8','/live/livestream.flv']
     const mpegts_src_type = ['flv','mpegts','m2ts','mp4','mse']
 
@@ -389,7 +389,7 @@
         <div style="position: relative; top: -8px;">
             <h2>{{$t("live_player.nolive_pmpt.message.1")}}</h2>
         <span>{{$t("live_player.nolive_pmpt.message.2")}}</span><br><br>
-        <button id="promptbtn" @click="oncl_hyperl('https://wzq02.cf/#/tv')">{{$t("live_player.nolive_pmpt.button.1")}}</button>
+        <button id="promptbtn" @click="oncl_hyperl('https://wzq02.top/#/tv')">{{$t("live_player.nolive_pmpt.button.1")}}</button>
         <button id="promptbtn" @click="oncl_hyperl('https://live.bilibili.com/956821')" style="float: right;">{{$t("live_player.nolive_pmpt.button.2")}}</button>
         </div>
     </div></TransitionGroup>

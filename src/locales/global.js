@@ -12,7 +12,7 @@ const stp_glob_i18n = {
                 overview: '概览'
             },
             message: {
-                1: 'sometroublemaker\'s playground 作为 wzq02.cf 的一个扩充而存在。目前该项目整合了 wzq02.cf 的直播页和聊天室功能，以后会考虑整合更多东西进来。',
+                1: 'sometroublemaker\'s playground 作为本站的一个扩充而存在。目前该项目整合了 wzq02.top 原有的直播页和聊天室功能。',
                 2: '本项目也用于笔者上手 Vue 3 框架上的单页面应用开发。'
             },
             button: {
@@ -77,7 +77,6 @@ const stp_glob_i18n = {
                 4: '跟随域名（默认）',
                 5: '直连 ',
                 6: 'CloudFlare 代理线路',
-                7: '部分设置需重载站点后才可生效。',
                 8: '重载站点',
                 9: '自动启用视频画中画',
                 10: '以下为高级设置，一般不建议自行修改。',
@@ -99,18 +98,6 @@ const stp_glob_i18n = {
                 1: 'HLS 视频流地址，如 https://example.com/hls/index.m3u8',
                 2: 'WebSocket 服务器地址，如 wss://example.com/chat',
                 3: 'FLV/MPEG-TS/MP4 视频流地址，如 https://example.com/1.flv'
-            }
-        },
-        testpage: {
-            title: {
-                fun_test: '简单功能测试页，耶'
-            },
-            message: {
-                test: '本地化测试：测试呃呃啊啊'
-            },
-            button: {
-                num_plus_1: '数字加1',
-                popup_test: '弹出通知',
             }
         },
         toasts: {
@@ -148,7 +135,7 @@ const stp_glob_i18n = {
                 overview: 'overview'
             },
             message: {
-                1: 'sometroublemaker\'s playground exists as an extension to wzq02.cf. For now this project had integrated the livestream player and chatroom of wzq02.cf. I might add more features to this thing later.',
+                1: 'sometroublemaker\'s playground exists as an extension to wzq02.top. For now this project had integrated the livestream player and chatroom of wzq02.top.',
                 2: 'This project exists also for me to get my hands on SPA development on the Vue framework.'
             },
             button: {
@@ -210,7 +197,6 @@ const stp_glob_i18n = {
                 4: 'Follow Domain (Default) ',
                 5: 'Direct',
                 6: 'CloudFlare Proxy',
-                7: 'Some of the settings will require reloading the site to apply.',
                 8: 'Reload',
                 9: 'Automatic Picture-in-Picture for video',
                 10: 'The following are advanced settings. It\'s usually not recommended to change these settings.',
@@ -232,18 +218,6 @@ const stp_glob_i18n = {
                 1: 'HLS video stream url, such as https://example.com/hls/index.m3u8',
                 2: 'WebSocket server url, such as wss://example.com/chat',
                 3: 'FLV/MPEG-TS/MP4 stream url, such as https://example.com/1.flv'
-            }
-        },
-        testpage: {
-            title: {
-                fun_test: 'Simple Function Test'
-            },
-            message: {
-                test: 'Localization test: testrdgdhxddh'
-            },
-            button: {
-                num_plus_1: 'Number plus 1',
-                popup_test: 'Notification test',
             }
         },
         toasts: {

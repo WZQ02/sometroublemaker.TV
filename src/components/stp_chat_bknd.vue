@@ -20,7 +20,7 @@
     //上一次从服务器接收到的时间码
     let last_received_time = 0
     //chatroom ws服务的地址
-    const chatroom_defualt_url = 'wss://wzq02.cf/websocketchat'
+    const chatroom_defualt_url = 'wss://wzq02.top/websocketchat'
 
     //向服务器发送信息
     gCI.proxy?.$bus.on('chatroom_send',(e)=>{
