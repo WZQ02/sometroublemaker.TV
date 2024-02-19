@@ -9,6 +9,9 @@ import { createI18n } from 'vue-i18n'
 import { stp_glob_i18n } from './locales/global.js'
 import { load_data } from './store.js'
 
+import { preconfigdata_noparse,load_preconfig } from './scripts/preconfig.js'
+load_preconfig();
+
 //import Wel from './pages/welcome.vue'
 //import Home from './pages/home.vue'
 //import LivePlayer from './pages/live_player.vue'
@@ -20,6 +23,7 @@ const Home = () => import('./pages/home.vue')
 const LivePlayer = () => import('./pages/live_player.vue')
 const ChatRoom = () => import('./pages/chatroom.vue')
 const Settings = () => import('./pages/settings.vue')
+const Dots = () => import('./pages/dots.vue')
 
 import mitt from 'mitt'
 
@@ -30,7 +34,8 @@ const routes = [
     { path: '/home', component: Home, name: Home, meta: {title: '概览 / Overview'} },
     { path: '/player', component: LivePlayer, name: LivePlayer, meta: {title: '放映厅 / Player'} },
     { path: '/chat', component: ChatRoom, name: ChatRoom, meta: {title: '聊天室 / Chatroom'} },
-    { path: '/settings', component: Settings, name: Settings, meta: {title: '设置 / Settings'} }
+    { path: '/settings', component: Settings, name: Settings, meta: {title: '设置 / Settings'} },
+    { path: '/dots', component: Dots, name: Dots, meta: {title: 'Dots'} }
 ]
 const router = createRouter({
     history: createWebHashHistory(),

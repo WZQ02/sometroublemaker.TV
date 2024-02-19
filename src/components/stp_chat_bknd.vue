@@ -21,6 +21,10 @@
     let last_received_time = 0
     //chatroom ws服务的地址
     const chatroom_defualt_url = 'wss://wzq02.top/websocketchat'
+    //当前在线的sid列表
+    let sid_list = {}
+    //dots活动状态
+    let dots_isalive = 0
 
     //向服务器发送信息
     gCI.proxy?.$bus.on('chatroom_send',(e)=>{
@@ -49,6 +53,19 @@
         }
         gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.1.7"))
     })
+
+    gCI.proxy?.$bus.on('dots_activate',()=>{
+        dots_isalive = 1;
+        if (init_finished) {
+            update_dots();
+        }
+    })
+    gCI.proxy?.$bus.on('dots_deactivate',()=>{
+        dots_isalive = 0;
+    })
+    function update_dots() {
+        gCI.proxy?.$bus.emit('dots_update',sid_list)
+    }
 
     //对服务器发送的信息进行格式化
     let format = (str) => {
@@ -215,6 +232,20 @@
             //chatroom活动时，立即呈现信息
             if (JSON.parse(e.data).type == 5) {//接收到心跳包时，不做任何动作
                 return
+            }
+            if (JSON.parse(e.data).type == 11) {//接收sid list时，更新sid list后退出
+                sid_list = JSON.parse(e.data).sid_list
+                console.log("当前sid列表："+JSON.stringify(sid_list))
+                if (dots_isalive) {
+                    update_dots();
+                }
+                return
+            }
+            if (JSON.parse(e.data).type == 0) {//有人退出时更新sid list
+                delete sid_list[JSON.parse(e.data).sid]
+                if (dots_isalive) {
+                    update_dots();
+                }
             }
             console.log(e.data);
             if (chatroom_isalive) {
