@@ -7,6 +7,7 @@
     const all_dots = ref([])
 
     let sl = {}
+    let dots_bg_fade
 
     function gen_dot(id) {
         all_dots.value.push({id: id})
@@ -18,6 +19,15 @@
                 i--
             }
         }
+    }
+    function send_beacon() {
+        gCI.proxy?.$bus.emit('chat_send_beacon')
+    }
+    function dots_bg_fade_timeout() {
+        if (dots_bg_fade) {
+            clearTimeout(dots_bg_fade)
+        }
+        dots_bg_fade = setTimeout(()=>{dots_bg.value.style.backgroundColor = ""},5000)
     }
 
     gCI.proxy?.$bus.on('dots_update',(sid_list)=>{
@@ -38,15 +48,23 @@
         }
         sl = Object.assign({},sid_list)
     })
+    gCI.proxy?.$bus.on('chat_receive_beacon',(sid)=>{
+        let bg_r = Math.floor(atob(sid).slice(1,2).charCodeAt(0)*.15);
+        let bg_g = Math.floor(atob(sid).slice(2,3).charCodeAt(0)*.15);
+        let bg_b = Math.floor(atob(sid).slice(3,4).charCodeAt(0)*.15);
+        dots_bg.value.style.backgroundColor = `rgb(${bg_r},${bg_g},${bg_b})`;
+        dots_bg_fade_timeout()
+    })
 
     onMounted(() => {
         gCI.proxy?.$bus.emit('req_chatserverbknd',1)
-        //gen_dot("00000000")
     })
 
     onDeactivated(() => {
         dots_bg.value.style.opacity = ''
         gCI.proxy?.$bus.emit('dots_deactivate')
+        clearTimeout(dots_bg_fade)
+        dots_bg.value.style.backgroundColor = ""
     })
     onActivated(() => {
         setTimeout(()=>{dots_bg.value.style.opacity = '1'},50)
@@ -56,9 +74,9 @@
 
 <template>
     <TransitionGroup name="app_trans"><div id="dots_container" key="dots_container">
-        <div id="dots_bg" ref="dots_bg">
+        <div id="dots_bg" ref="dots_bg" @click="send_beacon()">
             <TransitionGroup name="dot_fade">
-                <Dot v-for="dot in all_dots" :key="dot.id"/>
+                <Dot v-for="dot in all_dots" :key="dot.id" :id="dot.id" :title="$t('dots.1')+dot.id"/>
             </TransitionGroup>
             </div>
     </div></TransitionGroup>
@@ -76,7 +94,7 @@
     #dots_bg {
         background-color: #000;
         opacity: 0;
-        transition: opacity 1s;
+        transition: 1s;
     }
     .dot_fade-enter-active,
     .dot_fade-leave-active {

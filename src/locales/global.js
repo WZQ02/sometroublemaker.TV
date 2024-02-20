@@ -120,6 +120,9 @@ const stp_glob_i18n = {
                 4: '设置'
             },
             player_underline: '放映厅菜单'
+        },
+        dots: {
+            1: '会话 id：'
         }
     },
     en: {
@@ -240,6 +243,9 @@ const stp_glob_i18n = {
                 4: 'Settings'
             },
             player_underline: 'Player Menu'
+        },
+        dots: {
+            1: 'Session id：'
         }
     }
 }

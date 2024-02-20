@@ -25,6 +25,8 @@
     let sid_list = {}
     //dots活动状态
     let dots_isalive = 0
+    //在线人数统计
+    let online_count = 0
 
     //向服务器发送信息
     gCI.proxy?.$bus.on('chatroom_send',(e)=>{
@@ -47,7 +49,7 @@
         //ws.send(`setUsrName=${e}`);
     })
     gCI.proxy?.$bus.on('chatroom_clean_history',()=>{
-        ws.send(JSON.stringify({type:90}));
+        ws.send(JSON.stringify({type:90}));//清除历史记录
         if (document.querySelector(".prev_msgs")) {
             document.querySelector(".prev_msgs").style.display = "none";
         }
@@ -62,6 +64,9 @@
     })
     gCI.proxy?.$bus.on('dots_deactivate',()=>{
         dots_isalive = 0;
+    })
+    gCI.proxy?.$bus.on('chat_send_beacon',()=>{
+        ws.send(JSON.stringify({type:20}));//发送信标
     })
     function update_dots() {
         gCI.proxy?.$bus.emit('dots_update',sid_list)
@@ -79,10 +84,6 @@
             }
             //记录本次接受的时间码
             last_received_time = convert_time(parseStr.time)
-            //如果chatroom组件活动，告知该组件更新在线人数
-            if (chatroom_isalive) {
-                gCI.proxy?.$bus.emit('chatroomchgroominfo',parseStr.online)
-            }
 		    switch (parseStr.type) {
 			    case 0://用户离线时formatted的class
                     if (chatroom_isshowuserinout) {//根据是否选中“不显示用户进入退出信息”决定是否呈现相关信息
@@ -233,13 +234,23 @@
             if (JSON.parse(e.data).type == 5) {//接收到心跳包时，不做任何动作
                 return
             }
+            if (JSON.parse(e.data).type == 20) {//接收到信标
+                gCI.proxy?.$bus.emit('chat_receive_beacon',JSON.parse(e.data).sid)
+                return
+            }
             if (JSON.parse(e.data).type == 11) {//接收sid list时，更新sid list后退出
                 sid_list = JSON.parse(e.data).sid_list
-                console.log("当前sid列表："+JSON.stringify(sid_list))
+                //console.log("当前sid列表："+JSON.stringify(sid_list))
                 if (dots_isalive) {
                     update_dots();
                 }
                 return
+            }
+            if (JSON.parse(e.data).type == 1) {//有人建立用户名时更新sid list
+                sid_list[JSON.parse(e.data).sid] = JSON.parse(e.data).username
+                if (dots_isalive) {
+                    update_dots();
+                }
             }
             if (JSON.parse(e.data).type == 0) {//有人退出时更新sid list
                 delete sid_list[JSON.parse(e.data).sid]
@@ -247,13 +258,15 @@
                     update_dots();
                 }
             }
-            console.log(e.data);
+            online_count = JSON.parse(e.data).online;//更新在线人数数值
+            console.log(e.data);//如果type不为5,20,11则输出接收到的json到控制台
             if (chatroom_isalive) {
                 gCI.proxy?.$bus.emit('chatroomdisplaymsg',format(e.data))
+                gCI.proxy?.$bus.emit('chatroomchgroominfo',online_count)//如果chatroom组件活动，告知该组件更新在线人数
             } else {
                 //chatroom不活动时，缓存消息到cached_message_list
                 cached_message_list[cached_message_list.length] = format(e.data);
-                console.log("离开聊天室界面期间，共接收到 "+cached_message_list.length+" 条信息。")
+                //console.log("离开聊天室界面期间，共接收到 "+cached_message_list.length+" 条信息。")
             }
         });
         startsendbeat();
@@ -280,6 +293,7 @@
             }
             cached_message_list = []
         }
+        gCI.proxy?.$bus.emit('chatroomchgroominfo',online_count)//更新在线人数
     })
     gCI.proxy?.$bus.on('chatroomdeactivated',()=>{
         chatroom_isalive = 0

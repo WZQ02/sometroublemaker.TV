@@ -66,6 +66,7 @@
     const native_controls_enabled = ref(0);
 
     let live_reload;
+    let hover_show_controls_timeout;
 
     gCI.proxy?.$bus.on('change_pip_setting',function(e){
         allow_pip = e
@@ -115,8 +116,20 @@
     let show_controls = () => {
         if (display_controls.value) {
             display_controls.value = 0;
+            if (hover_show_controls_timeout) {
+                clearTimeout(hover_show_controls_timeout)
+            }
         } else {
             display_controls.value = 1;
+        }
+    }
+    function hover_show_controls(cancel) {
+        if (!display_controls.value) {
+            if (cancel) {
+                clearTimeout(hover_show_controls_timeout)
+            } else {
+                hover_show_controls_timeout = setTimeout(()=>{display_controls.value = 1},1000)
+            }
         }
     }
     let toggle_fullscreen = () => {
@@ -361,7 +374,7 @@
                     <video id="video" ref="video" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0}" :controls="native_controls_enabled"></video>
                 </div>
             </Teleport>
-            <Transition name="fade"><div id="player_underline" v-bind:title="$t('item_title.player_underline')" @click="show_controls()" v-if="!fullscreen"></div></Transition>
+            <Transition name="fade"><div id="player_underline" v-bind:title="$t('item_title.player_underline')" @click="show_controls()" v-if="!fullscreen" @mouseover="hover_show_controls()" @mouseout="hover_show_controls(1)"></div></Transition>
             <Transition name="pl_controls_popup"><div id="player_controls" ref="player_controls" v-show="display_controls" v-bind:class="{fullscreen:fullscreen,folded:controls_folded}" v-on:mouseover="controls_reshow" v-on:mouseout="controls_autohide">
                 <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" class="player_controls_component usrmsg">
                 <button id="reload_stream" @click="live_reload(1)" class="player_controls_component reload iconbutton" v-bind:title="$t('live_player.menu.1')">
