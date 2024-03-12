@@ -122,7 +122,8 @@ const stp_glob_i18n = {
             player_underline: '放映厅菜单'
         },
         dots: {
-            1: '会话 id：'
+            1: '会话 id：',
+            2: '退出演示模式'
         }
     },
     en: {
@@ -245,7 +246,8 @@ const stp_glob_i18n = {
             player_underline: 'Player Menu'
         },
         dots: {
-            1: 'Session id：'
+            1: 'Session id：',
+            2: 'Exit demo mode'
         }
     }
 }

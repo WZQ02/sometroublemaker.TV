@@ -7,7 +7,7 @@
 
     let inter_anim,inter_time
     function dot_move() {
-        dot.value.style.transform = `translate(${window.innerWidth*(Math.random()-.5)*.75}px,${window.innerHeight*(Math.random()-.5)*.75}px)`
+        dot.value.style.transform = `translate(${window.innerWidth*(Math.random()-.5)*.85}px,${window.innerHeight*(Math.random()-.5)*.85}px)`
     }
     function dot_highlight() {
         dot_in.value.style.backgroundColor = "#fff";
@@ -22,23 +22,28 @@
     onMounted(() => {
         dot.value.id = props.id;
         let seeds = [];
-        let id_tostr = atob(props.id);
-        for (let i=0;i<id_tostr.length;i++) {
-            seeds.push(id_tostr.charCodeAt(i)/256)
+        if (props.id) {//根据id生成seeds
+             let id_tostr = atob(props.id);
+            for (let i=0;i<id_tostr.length;i++) {
+                seeds.push(id_tostr.charCodeAt(i))
+            }
+        } else {//id不存在时，另外随机生成seeds
+            seeds = new Uint8Array(6)
+            crypto.getRandomValues(seeds)
         }
-        let dot_size = Math.floor(32 + seeds[0]*64)
+        let dot_size = Math.floor(32 + seeds[0]/4)
         dot.value.style.position = "absolute";
         dot.value.style.width = dot.value.style.height = dot_size+"px";
         dot.value.style.top = dot.value.style.left = "calc(50% - "+dot_size/2+"px)";
-        let dot_r = Math.floor(127 + seeds[1]*127);
-        let dot_g = Math.floor(127 + seeds[2]*127);
-        let dot_b = Math.floor(127 + seeds[3]*127);
-        let dot_a = (0.4 + seeds[4]*0.5);
+        let dot_r = Math.floor(127 + seeds[1]/2);
+        let dot_g = Math.floor(127 + seeds[2]/2);
+        let dot_b = Math.floor(127 + seeds[3]/2);
+        let dot_a = (0.4 + seeds[4]*0.5/256);
         dot.value.style.backgroundColor = `rgba(${dot_r},${dot_g},${dot_b},${dot_a})`;
         dot.value.style.filter = `blur(${(1-dot_a)*dot_size/4}px)`;
         dot_move();
         setTimeout(()=>{dot_move()},16)
-        inter_time = Math.floor(5+seeds[5]*10);
+        inter_time = Math.floor(5+seeds[5]*10/256);
         dot.value.style.transition = inter_time+"s cubic-bezier(0.2, 0, 0.8, 1)"
         inter_anim = setInterval(()=>{dot_move()},inter_time*1000)
     })

@@ -46,6 +46,7 @@ router.beforeEach((to,from,next)=>{
     if (to.meta.title) {
         document.title = to.meta.title
     }
+    app.config.globalProperties.$bus.emit('router_start',to)
     next()
 })
 

@@ -1,10 +1,13 @@
 <script setup>
     import { onMounted,ref,onDeactivated,onActivated,getCurrentInstance } from 'vue';
     import Dot from '../components/dots/dot.vue'
+    import { stp_store } from '../store.js'
 
     const gCI = getCurrentInstance()
     const dots_bg = ref(null)
     const all_dots = ref([])
+    const demo_dots = ref([])
+    const show_exit_demo_btn = ref(0)
 
     let sl = {}
     let dots_bg_fade
@@ -28,6 +31,12 @@
             clearTimeout(dots_bg_fade)
         }
         dots_bg_fade = setTimeout(()=>{dots_bg.value.style.backgroundColor = ""},5000)
+    }
+
+    function exit_demo() {
+        localStorage.removeItem("dots_demo_mode");
+        demo_dots.value = []
+        show_exit_demo_btn.value = 0;
     }
 
     gCI.proxy?.$bus.on('dots_update',(sid_list)=>{
@@ -58,6 +67,17 @@
 
     onMounted(() => {
         gCI.proxy?.$bus.emit('req_chatserverbknd',1)
+        if (stp_store.others.stp_dots_demo_mode.value) {
+            let count = eval(stp_store.others.stp_dots_demo_mode.value)
+            if (!count || count < 1) {
+                exit_demo();
+            } else {
+                for (let i=0;i<count;i++) {
+                    demo_dots.value.push({id: ""})
+                }
+                show_exit_demo_btn.value = 1;
+            }
+        }
     })
 
     onDeactivated(() => {
@@ -77,8 +97,10 @@
         <div id="dots_bg" ref="dots_bg" @click="send_beacon()">
             <TransitionGroup name="dot_fade">
                 <Dot v-for="dot in all_dots" :key="dot.id" :id="dot.id" :title="$t('dots.1')+dot.id"/>
+                <Dot v-for="dot in demo_dots" :key="dot.id" />
             </TransitionGroup>
-            </div>
+        </div>
+        <a class="c" id="exit_dmm_btn" @click="exit_demo()" v-show="show_exit_demo_btn">{{$t('dots.2')}}</a>
     </div></TransitionGroup>
 </template>
 
@@ -95,6 +117,13 @@
         background-color: #000;
         opacity: 0;
         transition: 1s;
+    }
+    #exit_dmm_btn {
+        position: absolute;
+        left: calc(50% - 56px);
+        bottom: 16px;
+        opacity: 1;
+        z-index: 1;
     }
     .dot_fade-enter-active,
     .dot_fade-leave-active {

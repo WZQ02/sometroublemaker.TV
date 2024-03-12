@@ -18,7 +18,7 @@
     height: calc(100% - 32px);
     border-radius: 8px;
     box-shadow: 0 0 16px rgba(0,0,0,0.4);
-    background-color: #252525;
+    background-color: #000;
 }
 #video_container.nodisplay {
     display: none;

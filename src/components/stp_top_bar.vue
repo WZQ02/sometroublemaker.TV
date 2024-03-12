@@ -19,6 +19,8 @@
     const tb_btn = [isselected_1,isselected_2,isselected_3,isselected_4]
     const gCI = getCurrentInstance()
 
+    const loading_state = ref(0)
+
     watch(() => gCI.proxy?.$route,(to,from) => {//监听路由并改变高亮显示的顶栏项目
         let selected
         switch (to.path) {
@@ -42,6 +44,7 @@
                 tb_btn[i].value = 0
             }
         }
+        show_loading_bar(1)
     })
 
     var hide_tb;
@@ -54,6 +57,18 @@
         clearTimeout(hide_tb)
         tb_show.value = 1;
     }
+
+    function show_loading_bar(hide) {
+        if (hide) {
+            loading_state.value = 2;
+            setTimeout(()=>{loading_state.value = 0},1500)
+        } else {
+            if (!loading_state.value) {
+                loading_state.value = 1;
+            }
+        }
+    }
+
     onMounted(() => {
         tb_show.value = 0;
         let swipeshowtb = new Hammer(stp_tb_cont.value)
@@ -67,6 +82,9 @@
         });
         watch(() => stp_store.session.player_fullscreen.value,() => {
             tb_fullscrn.value = stp_store.session.player_fullscreen.value
+        })
+        gCI.proxy?.$bus.on('router_start',()=>{
+            show_loading_bar();
         })
     })
 </script>
@@ -112,4 +130,38 @@
             </router-link>
         </div>
     </div>
+    <div id="stp_loading_bar" v-bind:class="{loading:loading_state==1,loaded:loading_state==2}">
+        <div id="stp_loading_bar_in"></div>
+    </div>
 </template>
+
+<style scoped>
+    #stp_loading_bar {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 0%;
+        height: 4px;
+        transition: none;
+    }
+    #stp_loading_bar.loaded {
+        width: 100%;
+        transition: .5s cubic-bezier(0, 0.75, 0, 1);
+    }
+    #stp_loading_bar.loading {
+        transition: width 15s ease-out;
+        width: 70%;
+    }
+    #stp_loading_bar.loading div {
+        opacity: 1;
+    }
+    #stp_loading_bar_in {
+        width: 100%;
+        height: 100%;
+        border-top-right-radius: 6px;
+        border-bottom-right-radius: 6px;
+        background-color: #48d;
+        opacity: 0;
+        transition: opacity 1.5s ease;
+    }
+</style>
