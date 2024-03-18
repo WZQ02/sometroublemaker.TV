@@ -7,7 +7,7 @@ function load_preconfig() {
             let preconfigdata_noconvert = new URLSearchParams(window.location.search).get('preconfig');
             preconfigdata_noparse = preconfigdata_noconvert.split(";");
             for (let i=0; i<preconfigdata_noparse.length; i++) {
-                let data = preconfigdata_noparse[i].split(':');
+                let data = preconfigdata_noparse[i].split(':::');//改用三冒号，防止预配置内填写url时https:被截断
                 localStorage.setItem(data[0],data[1]);
                 preconfigdata[data[0]] = data[1]
             }

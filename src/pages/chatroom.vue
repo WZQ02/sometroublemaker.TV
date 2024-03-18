@@ -2,7 +2,7 @@
     import '../assets/styles/chatroom.css'
     import { onMounted,ref,getCurrentInstance,onActivated, onDeactivated } from 'vue'
     import SvgIcon from '@jamescoyle/vue-icon'
-    import { mdiInformation } from '@mdi/js'
+    import { mdiInformation,mdiImage } from '@mdi/js'
     import { stp_store } from '../store.js'
 
     const usrmsg = ref(null)
@@ -20,7 +20,10 @@
     const isshowuserinout = ref(null)
     const ismarkdown = ref(null)
     const roominfo = ref(null)
+    const image_upload = ref(null)
     const gCI = getCurrentInstance()
+
+    const image_upload_allowed = ref(0)
 
     let sendusrmsg = () => {
         if (usrmsg.value.value.length <= 0) {
@@ -29,6 +32,8 @@
             gCI.proxy?.$bus.emit('chatroom_clean_history');
             usrmsg.value.value = "";
             content.value.innerHTML = "";
+        } else if (usrmsg.value.value.length > 256000) {
+            gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.3.3"))//msg长度不应超过250k
         } else {
             gCI.proxy?.$bus.emit('chatroom_send',usrmsg.value.value)
 		    usrmsg.value.value = "";
@@ -44,7 +49,9 @@
         let usrNameValue = usrName.value.value;
 	    if (usrNameValue == '') {
             gCI.proxy?.$bus.emit('trigger_popup',dystr(str2c))
-	    } else {
+	    } else if (usrNameValue.length > 50) {//username长度不应超过50
+            gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.3.1"))
+        } else {
             stp_store.chatroom.username.change(usrNameValue);
             let RealusrName = stp_store.chatroom.username.value;
             gCI.proxy?.$bus.emit('chatroom_chgusrname',RealusrName)
@@ -151,6 +158,32 @@
             gCI.proxy?.$bus.emit('chatroomismarkdown_onchange',1)
             ismarkdown.value.checked = 1;
         }
+
+        if (stp_store.chatroom.allow_pic_upload.value) {
+            image_upload_allowed.value = 1;
+        }
+        //监听图片上传事件
+        image_upload.value.addEventListener('change',(e)=>{
+            if (!e.target.files[0]) {
+                return
+            }
+            const file = e.target.files[0]
+            if (file.type.indexOf('image')!=0) {
+                gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.3.4"))//不是图片文件
+                return
+            }
+            const reader = new FileReader();
+            reader.onload = (ev)=>{
+                const b64str = ev.target.result;
+                if (b64str.length > 255995) {
+                    gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.3.5"))//图片尺寸过大
+                } else {
+                    gCI.proxy?.$bus.emit('chatroom_send',`![](${b64str})`)
+                }
+            }
+            reader.readAsDataURL(file)
+            e.target.value = ''
+        })
     })
     onDeactivated(() => {
         gCI.proxy?.$bus.emit('chatroomdeactivated')
@@ -164,7 +197,7 @@
 <template>
     <TransitionGroup name="app_trans"><div id="chatroom_container" ref="chatroom_container" key="chatroom_container">
         <div id="chatcontent" ref="content" name="chatcontent"></div>
-        <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg">
+        <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" maxlength="256000"><!--考虑到发送长文本和base64的需求，文本框限制250KB-->
         <div id="panel1">
             <select id="quoteselector" @change="quotechange();" ref="quoteselector">
                 <option value="(=・ω・=)">(=・ω・=)</option>
@@ -181,11 +214,17 @@
                 <option value="什么意思？">什么意思？</option>
             </select>
             <button id="sendmsg" ref="sendmsg" @click="sendusrmsg();">{{ $t("chatroom.button.send") }}</button>
-            <svg-icon type="mdi" :path=mdiInformation @click="displayinfo();" height="24" width="24"></svg-icon>
+            <label v-bind:title="$t('item_title.chatroom.2')">
+                <svg-icon type="mdi" :path=mdiInformation @click="displayinfo();" height="24" width="24"></svg-icon>
+            </label>
+            <label for="image_upload" v-bind:title="$t('item_title.chatroom.1')" v-show="image_upload_allowed">
+                <svg-icon type="mdi" :path=mdiImage height="24" width="24"></svg-icon>
+                <input type="file" ref="image_upload" id="image_upload" style="display: none;">
+            </label>
         </div>
         <div id="prompb" ref="prompb"></div>
         <div id="askforusername" ref="askforusername_pmpt" class="prompt">
-            <input type="text" v-bind:placeholder="$t('chatroom.input.2')" id="usrName" ref="usrName">
+            <input type="text" v-bind:placeholder="$t('chatroom.input.2')" id="usrName" ref="usrName" maxlength="50">
             <button id="promptbtn" @click="chgusername();" ref="chgUsrName">{{ $t("chatroom.button.confirm") }}</button>
         </div>
         <div id="notice" ref="notice" class="prompt">

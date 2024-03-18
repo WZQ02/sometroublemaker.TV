@@ -116,7 +116,7 @@
 }
 #panel1 svg {
 	float: right;
-    padding: 6px 14px;
+    padding: 6px 14px 6px 0px;
     opacity: 0.25;
     transition: opacity 0.25s;
 }
@@ -199,6 +199,11 @@
 @media screen and (max-width: 800px) {
     #chatroom_container {
         left: 24px;
+    }
+}
+@media screen and (max-width: 400px) {
+    #quoteselector {
+        width: calc(75% - 80px);
     }
 }
 @media (any-hover: hover) {

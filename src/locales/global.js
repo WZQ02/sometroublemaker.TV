@@ -78,7 +78,7 @@ const stp_glob_i18n = {
                 5: '直连 ',
                 6: 'CloudFlare 代理线路',
                 8: '重载站点',
-                9: '自动启用视频画中画',
+                9: '自动启用视频画中画（需要浏览器支持）',
                 10: '以下为高级设置，一般不建议自行修改。',
                 11: '启用高级设置',
                 12: '自定义放映厅视频流地址（将覆盖上方的线路设置，重载视频流后生效）：',
@@ -110,7 +110,14 @@ const stp_glob_i18n = {
                 6: '你不起名字，别人咋认得你是谁啊',
                 7: '已清空消息历史记录。'
             },
-            2: '提示：视频已被静音，请手动取消视频静音状态。'
+            2: '提示：视频已被静音，请手动取消视频静音状态。',
+            3: {
+                1: '先生对不起，咱们是不接受超过 50 字的用户名的...',
+                2: '你的弹幕太长了！删掉一些字再发吧...',
+                3: '你的消息太长了！删掉一些字再发吧...',
+                4: '请上传图片文件！',
+                5: '图片尺寸过大！请将图片压缩至小于 180KB 再发送。'
+            }
         },
         item_title: {
             topbar: {
@@ -119,7 +126,11 @@ const stp_glob_i18n = {
                 3: '聊天室',
                 4: '设置'
             },
-            player_underline: '放映厅菜单'
+            player_underline: '放映厅菜单',
+            chatroom: {
+                1: '上传图片',
+                2: '详情'
+            }
         },
         dots: {
             1: '会话 id：',
@@ -202,7 +213,7 @@ const stp_glob_i18n = {
                 5: 'Direct',
                 6: 'CloudFlare Proxy',
                 8: 'Reload',
-                9: 'Automatic Picture-in-Picture for video',
+                9: 'Automatic Picture-in-Picture for video (Require browser support)',
                 10: 'The following are advanced settings. It\'s usually not recommended to change these settings.',
                 11: 'Enable Advanced Settings',
                 12: 'Custom livestream video url (will override the line setting above, applies after reloading video): ',
@@ -234,7 +245,14 @@ const stp_glob_i18n = {
                 6: 'Name yourself plz',
                 7: 'Message history has been cleared.'
             },
-            2: 'Hint: The video is muted now. You will need to unmute the video manually.'
+            2: 'Hint: The video is muted now. You will need to unmute the video manually.',
+            3: {
+                1: 'Sir, your name is too long. It should be shorter than 50 letters.',
+                2: 'Your comment is too long! Please delete some words and try again...',
+                3: 'Your message is too long! Please delete some words and try again...',
+                4: 'Please upload image file!',
+                5: 'Image size is too large! Please compress the image down to < 180KiB and try again.'
+            }
         },
         item_title: {
             topbar: {
@@ -243,7 +261,11 @@ const stp_glob_i18n = {
                 3: 'Chatroom',
                 4: 'Settings'
             },
-            player_underline: 'Player Menu'
+            player_underline: 'Player Menu',
+            chatroom: {
+                1: 'Upload image',
+                2: 'Show details'
+            }
         },
         dots: {
             1: 'Session id：',

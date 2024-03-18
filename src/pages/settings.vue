@@ -14,7 +14,7 @@
     const ipt8 = ref(null)
     const ipt9 = ref(null)
     const ipt10 = ref(null)
-    const ipt11 = ref(null)
+    //const ipt11 = ref(null)
     const ipt12 = ref(null)
     const ipt13 = ref(null)
     const ipt14 = ref(null)
@@ -56,7 +56,7 @@
         ipt8.value.checked = adv_options_editable.value = stp_store.settings.adv_set_enabled.value;
         ipt9.value.checked = custom_hls_url_type.value = stp_store.adv_settings.enable_mpegts_player.value;
         ipt10.value.checked = stp_store.adv_settings.disallow_auto_reload_video.value;
-        ipt11.value.checked = stp_store.adv_settings.allow_html_in_chat_content.value;
+        //ipt11.value.checked = stp_store.adv_settings.allow_html_in_chat_content.value;
         ipt12.value.checked = stp_store.settings.danmaku_disabled.value;
         ipt13.value.checked = stp_store.adv_settings.player_native_controls.value;
         ipt14.value.checked = stp_store.settings.browser_fullscreen.value;
@@ -186,10 +186,11 @@
                 <input type="checkbox" ref="ipt13" class="settings_checkbox" @click="ipt_select(13)" v-bind:disabled="!adv_options_editable">
                 &nbsp;{{$t("settings.message.18")}}
             </p>
-            <p v-bind:class="{uneditable:!adv_options_editable}">
+            <!--<p v-bind:class="{uneditable:!adv_options_editable}">
                 <input type="checkbox" ref="ipt11" class="settings_checkbox" @click="ipt_select(11)" v-bind:disabled="!adv_options_editable">
                 &nbsp;{{$t("settings.message.16")}}
-            </p>
+            </p>-->
+            <!--已改为始终清理聊天室内容，不显示允许html标签选项-->
             <p v-bind:class="{uneditable:!adv_options_editable}">
                 {{$t("settings.message.12")}}
                 <p>

@@ -3,6 +3,7 @@
     import ReconnectingWebSocket from'reconnecting-websocket'
     import { marked } from 'marked'
     import { stp_store } from '../store.js'
+    import DOMPurify from 'dompurify'
 
     let ws,chat_sendheartbeat,init_finished
     const gCI = getCurrentInstance()
@@ -30,6 +31,10 @@
 
     //向服务器发送信息
     gCI.proxy?.$bus.on('chatroom_send',(e)=>{
+        if (e.length > 256000) {//msg长度不应超过250k
+            gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.3.3"))
+            return
+        }
         let msg = {
             type: 1,
             msg: e
@@ -40,6 +45,10 @@
     })
     //向服务器发送更改用户名信息
     gCI.proxy?.$bus.on('chatroom_chgusrname',(e)=>{
+        if (e.length > 50) {//username长度不应超过50
+            gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.3.1"))
+            return
+        }
         let msg = {
             type: 2,
             username: e
@@ -89,7 +98,7 @@
                     if (chatroom_isshowuserinout) {//根据是否选中“不显示用户进入退出信息”决定是否呈现相关信息
                         formatted.innerHTML = ""
                     } else {
-                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${replaceHTMLtags(parseStr.msg)}</span>`
+                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${DOMPurify.sanitize(parseStr.msg)}</span>`
                         formatted.className = "leave";
                     }
                     is_last_msg_from_user = 0
@@ -98,7 +107,7 @@
                     if (chatroom_isshowuserinout) {
                         formatted.innerHTML = ""
                     } else {
-                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${replaceHTMLtags(parseStr.msg)}</span>`
+                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${DOMPurify.sanitize(parseStr.msg)}</span>`
                         formatted.className = "entry";
                     }
                     is_last_msg_from_user = 0
@@ -107,29 +116,34 @@
                     //单独提取用户名和发言信息
                     let speak_name,speak_cont
                     if (parseStr.username) {//服务器提供了“用户名”信息
-                        speak_name = replaceHTMLtags(parseStr.username)
-                        speak_cont = replaceHTMLtags(parseStr.msg).slice(speak_name.length+2)
+                        speak_name = parseStr.username//这一步先不做sanitize，避免发言信息被不正确截断
+                        speak_cont = parseStr.msg.slice(speak_name.length+2)//这一步先不做sanitize，以避免影响后续markdown转换
                     } else {//服务器没有提供“用户名”信息，使用原来的处理逻辑
-                        speak_name = replaceHTMLtags(parseStr.msg.slice(0,parseStr.msg.indexOf(": ")))
+                        speak_name = DOMPurify.sanitize(parseStr.msg.slice(0,parseStr.msg.indexOf(": ")))
                         if (speak_name == 'undefined') {
                             speak_name = '?'
                         }
-                        speak_cont = replaceHTMLtags(parseStr.msg.slice(parseStr.msg.indexOf(": ")+2))
+                        speak_cont = parseStr.msg.slice(parseStr.msg.indexOf(": ")+2)
                     }
-                    let speak_cont_raw = speak_cont
-                    if (chatroom_ismarkdown) {
-                    } else {
+                    //let speak_cont_raw = speak_cont
+                    if (!chatroom_ismarkdown) {
                         speak_cont = marked.parse(speak_cont)
                     }
+                    speak_name = DOMPurify.sanitize(speak_name)//转换后清理speak_name
+                    speak_cont = DOMPurify.sanitize(speak_cont)//转换后清理speak_cont
                     formatted.innerHTML = formatted.innerHTML + `<span class="speak_name" title="${parseStr.time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
                     //判断是不是自己发言
-                    if (stp_store.chatroom.username.value && replaceHTMLtags(stp_store.chatroom.username.value) == speak_name) {
+                    if (stp_store.chatroom.username.value && DOMPurify.sanitize(stp_store.chatroom.username.value) == speak_name) {
                         formatted.className = "speak isyou";
                     } else {
                         formatted.className = "speak";
                     }
                     is_last_msg_from_user = 1
-                    display_msg_as_danmaku(speak_cont_raw);
+                    //display_msg_as_danmaku(speak_cont_raw);
+                    //创建临时DOM元素，以提取用户发言中的纯文本内容，将其呈现于弹幕
+                    const tempdiv = document.createElement('div')
+                    tempdiv.innerHTML = speak_cont
+                    display_msg_as_danmaku(tempdiv.textContent || tempdiv.innerText || '');
 				    break;
                 case 9://接收到消息记录
                     formatted.innerHTML = ''//清除时间戳
@@ -138,22 +152,22 @@
                         for (let i=0; i<Object.keys(parseStr.prev_msg).length; i++) {
                             const formatted_prev_msg = document.createElement('div');
                             let speak_name,speak_cont,speak_time
-                            speak_time = replaceHTMLtags(parseStr.prev_msg[i].time)
+                            speak_time = DOMPurify.sanitize(parseStr.prev_msg[i].time)
                             if (parseStr.prev_msg[i].username) {
-                                speak_name = replaceHTMLtags(parseStr.prev_msg[i].username)
+                                speak_name = DOMPurify.sanitize(parseStr.prev_msg[i].username)
                             } else {
                                 speak_name = "?"
                             }
-                            speak_cont = replaceHTMLtags(parseStr.prev_msg[i].msg)
-                            if (chatroom_ismarkdown) {
-                            } else {
+                            speak_cont = parseStr.prev_msg[i].msg//同样这一步先不做sanitize
+                            if (!chatroom_ismarkdown) {
                                 speak_cont = marked.parse(speak_cont)
                             }
+                            speak_cont = DOMPurify.sanitize(speak_cont)//转换后清理
                             if (i==0) {
                                 formatted_prev_msg.innerHTML = `<span class="timer" title="${speak_time}">${speak_time}</span><br/>`;
                             }
                             formatted_prev_msg.innerHTML += `<span class="speak_name" title="${speak_time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
-                            if (stp_store.chatroom.username.value && replaceHTMLtags(stp_store.chatroom.username.value) == speak_name) {
+                            if (stp_store.chatroom.username.value && DOMPurify.sanitize(stp_store.chatroom.username.value) == speak_name) {
                                 formatted_prev_msg.className = "speak isyou";
                             } else {
                                 formatted_prev_msg.className = "speak";
@@ -183,13 +197,15 @@
         },55000)
     }
     //防止用户输入的html标签和脚本生效（防xss）
-    let replaceHTMLtags = (e) => {
+    //已弃用，目前改用DOMPurify处理
+    /*let replaceHTMLtags = (e) => {
         if (stp_store.settings.adv_set_enabled.value == 1 && stp_store.adv_settings.allow_html_in_chat_content.value == 1) {
             return e;
         } else {
-            return e.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+            return DOMPurify.sanitize(e);
+            //return e.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
-    }
+    }*/
     //转换服务器提供的时间码，便于计算
     let convert_time = (time) => {
         if (time.indexOf('M') != -1) {//带有 "AM/PM" 后缀

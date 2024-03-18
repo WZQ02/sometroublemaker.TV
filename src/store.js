@@ -130,6 +130,9 @@ const stp_store = reactive({
                 this.value = new_value;
                 localStorage.setItem('ismarkdown',new_value)
             }
+        },
+        allow_pic_upload: {
+            value: 0
         }
     },
     session: {
@@ -163,6 +166,7 @@ function load_data() {
     stp_store.chatroom.username.value = localStorage.getItem('chatUserName');
     stp_store.chatroom.dont_show_userinout.value = eval(localStorage.getItem('isshowuserinout'))||0;
     stp_store.chatroom.markdown_disabled.value = eval(localStorage.getItem('ismarkdown'))||0;
+    stp_store.chatroom.allow_pic_upload.value = eval(localStorage.getItem('allow_pic_upload'))||0;
     stp_store.others.stp_dots_demo_mode.value = localStorage.getItem('dots_demo_mode');
 }
 

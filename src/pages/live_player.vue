@@ -139,16 +139,18 @@
                 setTimeout(()=>{player_switching_fullscrn.value = 0;danmaku.resize();},700);
             }
             stp_store.session.player_fullscreen.toggle();
-            if (fullscreen.value) {
+            if (fullscreen.value) {//退出全屏
                 fullscreen.value = 0;
                 if (document.fullscreenElement) {
                     document.exitFullscreen();
                 }
-            } else {
+            } else {//进入全屏
                 fullscreen.value = 1;
                 if (stp_store.settings.browser_fullscreen.value) {
                     document.body.querySelector('#app').requestFullscreen()
                 }
+                //进入全屏后，若鼠标不移动到底部，则在2.5秒后隐藏底栏
+                controls_autohide();
             }
         }
     } 
@@ -165,6 +167,8 @@
 	    } else if (usrmsg.value.value == "~!@#$%^&*()_+") {
             gCI.proxy?.$bus.emit('chatroom_clean_history');
             usrmsg.value.value = "";
+        } else if (usrmsg.value.value.length > 50) {
+            gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.3.2"))//作为弹幕发送时，msg长度不应超过50
         } else {
             gCI.proxy?.$bus.emit('chatroom_send',usrmsg.value.value)
 		    usrmsg.value.value = "";
@@ -185,6 +189,13 @@
     }
 
     const audio_muted_status = ref(0)
+
+    //用户使用F11退出全屏时，此时如果已启用“浏览器全屏”，则同时退出播放器全屏
+    document.addEventListener('fullscreenchange',()=>{
+        if (!document.fullscreenElement && stp_store.settings.browser_fullscreen.value && fullscreen.value) {
+            toggle_fullscreen()
+        }
+    })
 
     onMounted(() => {
         let videoUrl = '';
@@ -376,7 +387,8 @@
             </Teleport>
             <Transition name="fade"><div id="player_underline" v-bind:title="$t('item_title.player_underline')" @click="show_controls()" v-if="!fullscreen" @mouseover="hover_show_controls()" @mouseout="hover_show_controls(1)"></div></Transition>
             <Transition name="pl_controls_popup"><div id="player_controls" ref="player_controls" v-show="display_controls" v-bind:class="{fullscreen:fullscreen,folded:controls_folded}" v-on:mouseover="controls_reshow" v-on:mouseout="controls_autohide">
-                <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" class="player_controls_component usrmsg">
+                <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" class="player_controls_component usrmsg" maxlength="50">
+                <!--弹幕限50字-->
                 <button id="reload_stream" @click="live_reload(1)" class="player_controls_component reload iconbutton" v-bind:title="$t('live_player.menu.1')">
                     <svg-icon type="mdi" :path=mdiReload></svg-icon>
                 </button>
@@ -433,7 +445,7 @@
 }
 #player_controls.fullscreen.folded {
     top: calc(100% - 16px);
-    opacity: .4;
+    opacity: .2;
 }
 .player_controls_component.usrmsg {
     position: absolute;

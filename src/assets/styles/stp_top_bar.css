@@ -12,7 +12,7 @@
     z-index: 1;
 }
 #stp_tb_container.fullscrn {
-    opacity: 0.2;
+    opacity: 0.15;
 }
 #stp_tb_container.tb_show {
     top: 8px !important;
