@@ -27,7 +27,7 @@ const Dots = () => import('./pages/dots.vue')
 
 import mitt from 'mitt'
 
-console.log("sometroublemaker's playground version "+stp_app_version+". Last updated "+stp_app_date)
+console.log("sometroublemaker.TV version "+stp_app_version+". Last updated "+stp_app_date)
 
 const routes = [
     { path: '/', component: Wel, name: Wel },

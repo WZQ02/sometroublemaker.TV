@@ -47,12 +47,12 @@ a {
     transition: 0.25s;
     font-weight: bold;
     color: #555;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0,0,0,0);
     padding: 6px 8px;
     border-radius: 8px;
 }
 .c:active {
-    filter: brightness(60%);
+    color: #fff !important;
     background-color: #555 !important;
 }
 h4 {
@@ -176,6 +176,10 @@ input[type="radio"] {
     .c {
         color: #ddd;
     }
+    .c:active {
+        color: #222 !important;
+        background-color: #fff !important;
+    }
     h4 {
         color: #aaa;
     }
@@ -229,8 +233,8 @@ input[type="radio"] {
         background-color: rgba(0,0,0,.5);
     }
     .c:hover {
-        color: #fff !important;
-        background-color: #555;
+        color: #222;
+        background-color: rgba(0,0,0,0.15);
     }
     #promptbtn:hover {
         background-color: rgba(0,0,0,0.15);
@@ -242,6 +246,10 @@ input[type="radio"] {
 @media (prefers-color-scheme: dark) and (any-hover: hover) {
     ::-webkit-scrollbar-thumb:hover {
         background-color: rgba(255,255,255,.5);
+    }
+    .c:hover {
+        color: #fff;
+        background-color: rgba(255,255,255,.15);
     }
     #promptbtn:hover {
         background-color: rgba(255,255,255,0.15);

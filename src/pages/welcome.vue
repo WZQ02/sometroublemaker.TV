@@ -12,9 +12,7 @@
 .stp_wel_title {
     display: flex;
     position: relative;
-    /*top: calc(50vh - 128px);*/
     align-items: center;
-    justify-content: center;
     user-select: none;
 }
 #stp_wel_title1 {
@@ -24,6 +22,7 @@
 #stp_wel_title2 {
     font-size: 20px;
     opacity: 0.6;
+    justify-content: center;
 }
 @media screen and (max-width: 540px) {
     #stp_wel_title1 {

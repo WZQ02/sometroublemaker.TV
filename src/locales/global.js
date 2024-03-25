@@ -3,7 +3,7 @@ const stp_glob_i18n = {
         wel: {
             title1: {
                 1: '你来到了',
-                2: 'sometroublemaker\'s playground。'
+                2: 'sometroublemaker. TV。'
             },
             title2: '↑ 使用顶栏以进行导航'
         },
@@ -12,8 +12,8 @@ const stp_glob_i18n = {
                 overview: '概览'
             },
             message: {
-                1: 'sometroublemaker\'s playground 作为本站的一个扩充而存在。目前该项目整合了 wzq02.top 原有的直播页和聊天室功能。',
-                2: '本项目也用于笔者上手 Vue 3 框架上的单页面应用开发。'
+                1: 'sometroublemaker. TV 作为 WZQ\'02 的小站的一个扩充而存在。目前该项目整合了本站原有的直播页和聊天室功能。',
+                2: '本项目也用于笔者上手 Vue.js 框架上的单页面应用开发。'
             },
             button: {
                 1: '直播页 (带聊天室)',
@@ -141,7 +141,7 @@ const stp_glob_i18n = {
         wel: {
             title1: {
                 1: 'You\'re now at',
-                2: 'sometroublemaker\'s playground.'
+                2: 'sometroublemaker. TV.'
             },
             title2: '↑ Use the top bar to navigate'
         },
@@ -150,7 +150,7 @@ const stp_glob_i18n = {
                 overview: 'overview'
             },
             message: {
-                1: 'sometroublemaker\'s playground exists as an extension to wzq02.top. For now this project had integrated the livestream player and chatroom of wzq02.top.',
+                1: 'sometroublemaker. TV exists as an extension to WZQ\'02\'s site. For now this project had integrated the livestream player and chatroom of this site.',
                 2: 'This project exists also for me to get my hands on SPA development on the Vue framework.'
             },
             button: {
