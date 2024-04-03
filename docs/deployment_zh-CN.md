@@ -6,15 +6,7 @@
   - 你可以使用如 [SRS](https://ossrs.net/)、[Nginx-RTMP](https://github.com/arut/nginx-rtmp-module) 这样的媒体服务方案。
 - 聊天室的后端服务器。
   - 聊天室后端服务基于 Node.js 搭建，服务端代码见 [WZQ02/wzq02.github.io](https://github.com/WZQ02/wzq02.github.io) 仓库中 chatroom1 目录下的 server-verbose.js。<br>
-  如需部署，将这个文件放在服务器上的一个空文件夹中，然后在同目录下新建一个 package.json 文件。里面填写：
-  ```json
-  {
-    "dependencies": {
-      "nodejs-websocket": "^1.7.2"
-    }
-  }
-  ```
-  之后在这个目录下执行 ```npm install``` 安装依赖包，安装完后运行 ```node server-verbose.js``` 以启动服务。（服务默认端口号为 8081，可按需修改）
+  如需部署，将这个文件以及同目录下的 package.json 放在服务器上的一个空文件夹中，之后在这个目录下执行 ```npm install``` 安装依赖包，安装完后运行 ```node server-verbose.js``` 以启动服务。（服务默认端口号为 8081，可按需修改）
 - 提供前端页面的 Web 服务器（也可以用 GitHub Pages 或者 Vercel 等网页托管平台）。
 
 当你已经部署完前两项后，你就可以直接在[我的网站这边](http://play.wzq02.top/)测试你部署的后端服务了。需要在[设置页面](http://play.wzq02.top/settings)里启用高级设置，然后在下方的两个输入框里面填写你部署的视频服务器和聊天服务器地址。（如果你是以 HTTPS 协议访问我的网站，则你的后端服务也应该以 HTTPS 协议提供，否则会用不了）

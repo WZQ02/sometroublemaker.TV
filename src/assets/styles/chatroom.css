@@ -143,7 +143,7 @@
 	background-color: #fff;
 }
 #askforusername input {
-    width: 177px;
+    width: calc(100% - 88px);
     top: 0px;
 }
 #askforusername #promptbtn {

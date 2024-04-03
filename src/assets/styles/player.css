@@ -16,7 +16,7 @@
     margin: 16px 16px;
     width: calc(100% - 32px);
     height: calc(100% - 32px);
-    border-radius: 8px;
+    border-radius: 4px;
     box-shadow: 0 0 16px rgba(0,0,0,0.4);
     background-color: #000;
 }
@@ -54,7 +54,7 @@ video.inpage {
     top: calc(100% - 128px);
     background-color: #eeeb;
     backdrop-filter: blur(16px);
-    border-radius: 12px;
+    border-radius: 8px;
     box-shadow: 0 8px 12px rgba(0,0,0,0.45);
     transition: 0.4s cubic-bezier(0.5, 0, 0, 1);
 }
