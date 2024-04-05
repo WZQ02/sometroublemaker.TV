@@ -29,10 +29,10 @@
         let e
         if (cancel) {
             e = ''
-            promptthereisnolive_loaded = 0;
+            promptthereisnolive_loaded2.value = promptthereisnolive_loaded = 0
         } else {
             e = 'block'
-            promptthereisnolive_loaded = 1;
+            promptthereisnolive_loaded2.value = promptthereisnolive_loaded = 1
         }
         prompb.value.style.display = e;
         nolive_pmpt.value.style.display = e;
@@ -67,6 +67,7 @@
     const native_controls_enabled = ref(0)
     const video_buffering_status = ref(0)
     const contextmenu_display = ref(0)
+    const promptthereisnolive_loaded2 = ref(0)
     const context_style = ref("")
     const player_info = ref({
         type: "",
@@ -496,7 +497,7 @@
         <div class="player" key="player" v-bind:class="{fullscreen:fullscreen,switching_fullscrn:player_switching_fullscrn}">
             <Teleport to="body" :disabled="vid_tele_disabled">
                 <div id="video_container" ref="video_container" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0,fullscreen:fullscreen}">
-                    <div id="mdprog_container" v-if="video_buffering_status">
+                    <div id="mdprog_container" v-if="video_buffering_status&&!promptthereisnolive_loaded2">
                         <md-circular-progress indeterminate></md-circular-progress>
                     </div>
                     <video id="video" ref="video" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0}" :controls="native_controls_enabled"></video>
@@ -704,5 +705,8 @@ md-circular-progress {
     backdrop-filter: blur(8px);
     background-color: #fffb;
     box-shadow: 0 4px 16px #0006;
+}
+#nolive_pmpt {
+    z-index: 5;
 }
 </style>
