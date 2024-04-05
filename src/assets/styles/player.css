@@ -1,3 +1,7 @@
+:root {
+    --md-circular-progress-size: 96px;
+    --md-sys-color-primary: #999;
+}
 .player {
     position: absolute;
     left: 50%;

@@ -3,6 +3,7 @@ import { fileURLToPath, URL } from 'node:url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import legacy from '@vitejs/plugin-legacy'
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -30,7 +31,15 @@ export default defineConfig({
          'esnext.global-this',
          'esnext.string.match-all'
      ]
-  })
+  })/*,
+  viteStaticCopy({
+    targets: [
+      {
+        src: './node_modules/mediainfo.js/dist/MediaInfoModule.wasm',
+        dest: './dist',
+      },
+    ],
+  }),*/
   ],
   resolve: {
     alias: {

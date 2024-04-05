@@ -3,7 +3,7 @@ const stp_glob_i18n = {
         wel: {
             title1: {
                 1: '你来到了',
-                2: 'sometroublemaker. TV。'
+                2: '。'
             },
             title2: '↑ 使用顶栏以进行导航'
         },
@@ -12,7 +12,7 @@ const stp_glob_i18n = {
                 overview: '概览'
             },
             message: {
-                1: 'sometroublemaker. TV 作为 WZQ\'02 的小站的一个扩充而存在。目前该项目整合了本站原有的直播页和聊天室功能。',
+                1: '作为 WZQ\'02 的小站的一个扩充而存在。目前该项目整合了本站原有的直播页和聊天室功能。',
                 2: '本项目也用于笔者上手 Vue.js 框架上的单页面应用开发。'
             },
             button: {
@@ -39,6 +39,25 @@ const stp_glob_i18n = {
                 4: '静音',
                 5: '取消静音',
                 6: '退出全屏'
+            },
+            contextmenu: {
+                1: '显示放映厅菜单',
+                2: '播放器信息'
+            },
+            info: {
+                1: '播放器类型：',
+                2: '流媒体 URL：',
+                3: '已缓冲 / 总时长：',
+                4: '缓冲健康度：',
+                5: '未知',
+                6: ' 秒',
+                7: '视频分辨率：',
+                8: '播放器视口尺寸：',
+                9: '视频帧率：',
+                10: '视频编码：',
+                11: '音频编码：',
+                12: '估算的比特率：',
+                13: ' 帧 / 秒'
             }
         },
         chatroom: {
@@ -141,7 +160,7 @@ const stp_glob_i18n = {
         wel: {
             title1: {
                 1: 'You\'re now at',
-                2: 'sometroublemaker. TV.'
+                2: '.'
             },
             title2: '↑ Use the top bar to navigate'
         },
@@ -150,7 +169,7 @@ const stp_glob_i18n = {
                 overview: 'overview'
             },
             message: {
-                1: 'sometroublemaker. TV exists as an extension to WZQ\'02\'s site. For now this project had integrated the livestream player and chatroom of this site.',
+                1: 'exists as an extension to WZQ\'02\'s site. For now this project had integrated the livestream player and chatroom of this site.',
                 2: 'This project exists also for me to get my hands on SPA development on the Vue framework.'
             },
             button: {
@@ -177,6 +196,25 @@ const stp_glob_i18n = {
                 4: 'Mute',
                 5: 'Unmute',
                 6: 'Exit fullscreen'
+            },
+            contextmenu: {
+                1: 'Show Player Menu',
+                2: 'Player Info'
+            },
+            info: {
+                1: 'Player Type: ',
+                2: 'Stream URL: ',
+                3: 'Buffered / Total length: ',
+                4: 'Buffer Health: ',
+                5: 'Unknown',
+                6: ' sec',
+                7: 'Resolution: ',
+                8: 'Viewport Size: ',
+                9: 'Framerate: ',
+                10: 'Video Codec: ',
+                11: 'Audio Codec: ',
+                12: 'Estimated Bitrate: ',
+                13: ' fps'
             }
         },
         chatroom: {

@@ -2,14 +2,15 @@
     import '../assets/styles/player.css'
     import { onMounted,ref,getCurrentInstance, onActivated, onDeactivated, watch } from 'vue'
     import Hls from 'hls.js'
-    //import flvjs from 'flv.js'
     import mpegts from 'mpegts.js'
     import Danmaku from 'danmaku'
-    //import { getCookie } from '../scripts/cookie.js'
     import SvgIcon from '@jamescoyle/vue-icon';
     import { mdiSend,mdiReload,mdiFullscreen,mdiFullscreenExit,mdiVolumeHigh,mdiVolumeMute, mdiConsoleNetwork } from '@mdi/js';
     import { stp_store } from '../store.js'
-
+    import '@material/web/progress/circular-progress.js';
+    import contextMenu from '../components/player/video_contextmenu.vue'
+    //import MediaInfoFactory from 'mediainfo.js'
+    
     const video = ref(null);
     const video_container = ref(null);
     const prompb = ref(null)
@@ -19,7 +20,7 @@
 
     const gCI = getCurrentInstance()
 
-    const vid_domain = ['https://wzq02.top/','https://d.wzq02.top/','']
+    const vid_domain = ['https://wzq02.top','https://d.wzq02.top','']
     const vid_src = ['/live/livestream.m3u8','/live/livestream.flv']
     const mpegts_src_type = ['flv','mpegts','m2ts','mp4','mse']
 
@@ -56,14 +57,34 @@
     let vid_allow_teleport = 0
     const vid_tele_disabled = ref(1)
     let allow_pip = 0
-    let detect_live_status_interval;
-    let detect_live_status_when_playing_interval;
-    let should_trigger_live_reload = 0;
-    const display_controls = ref(0);
-    const fullscreen = ref(0);
-    const controls_folded = ref(0);
-    const player_switching_fullscrn = ref(0);
-    const native_controls_enabled = ref(0);
+    let detect_live_status_interval
+    let detect_live_status_when_playing_interval
+    let should_trigger_live_reload = 0
+    const display_controls = ref(0)
+    const fullscreen = ref(0)
+    const controls_folded = ref(0)
+    const player_switching_fullscrn = ref(0)
+    const native_controls_enabled = ref(0)
+    const video_buffering_status = ref(0)
+    const contextmenu_display = ref(0)
+    const context_style = ref("")
+    const player_info = ref({
+        type: "",
+        domain: "",
+        buffered_length: "",
+        total_length: "",
+        buffer_health: "",
+        res_h: "",
+        res_v: "",
+        framerate: "",
+        vpt_h: "",
+        vpt_v: "",
+        v_codec: "",
+        a_codec: "",
+        bitrate: ""
+    })
+    const show_video_info = ref(0)
+    const show_extra_video_info = ref(0)//使用mpegts播放器时展示额外信息
 
     let live_reload;
     let hover_show_controls_timeout;
@@ -111,6 +132,7 @@
     })
     window.onresize = () => {
         danmaku.resize();
+        getviewportsize();
     }
 
     let show_controls = () => {
@@ -136,7 +158,7 @@
         if (player_switching_fullscrn.value != 1) {
             if (!stp_store.settings.browser_fullscreen.value) {
                 player_switching_fullscrn.value = 1;
-                setTimeout(()=>{player_switching_fullscrn.value = 0;danmaku.resize();},700);
+                setTimeout(()=>{player_switching_fullscrn.value = 0;danmaku.resize()},700);
             }
             stp_store.session.player_fullscreen.toggle();
             if (fullscreen.value) {//退出全屏
@@ -152,6 +174,7 @@
                 //进入全屏后，若鼠标不移动到底部，则在2.5秒后隐藏底栏
                 controls_autohide();
             }
+            setTimeout(()=>{getviewportsize()},700);
         }
     } 
     let toggle_sound = () => {
@@ -196,6 +219,21 @@
             toggle_fullscreen()
         }
     })
+    gCI.proxy?.$bus.on('show_player_menu',()=>{
+        display_controls.value = 1
+        controls_folded.value = 0
+    });
+    gCI.proxy?.$bus.on('show_video_info',()=>{
+        if (show_video_info.value) {
+            show_video_info.value = 0
+        } else {
+            show_video_info.value = 1
+        }
+    });
+    function getviewportsize() {
+        player_info.value.vpt_h = Math.round(video_container.value.offsetWidth * window.devicePixelRatio)
+        player_info.value.vpt_v = Math.round(video_container.value.offsetHeight * window.devicePixelRatio)
+    }
 
     onMounted(() => {
         let videoUrl = '';
@@ -217,22 +255,22 @@
                     videoUrl = vid_domain[2];
                 }
                 if (player_type) {
+                    player_info.value.type = "mpegts"
                     videoUrl += vid_src[1]
                 } else {
+                    player_info.value.type = "hls"
                     videoUrl += vid_src[0]
                 }
             }
+            player_info.value.domain = videoUrl
         }
         get_live_url();
         if (stp_allow_pip == 1) {
             allow_pip = 1;
         }
         let hls,mpegtsplayer,mpegtsplayer_canbedestroyed
-        if (Hls.isSupported()) {
-            hls = new Hls();
-        }
         let load_stream = () => {
-            if (player_type) {
+            if (player_type) {//使用mpegts播放器
                 if (mpegts.getFeatureList().mseLivePlayback) {
                     mpegtsplayer_canbedestroyed = 1;
                     let src_type = mpegts_src_detect(videoUrl)
@@ -243,9 +281,29 @@
                     mpegtsplayer.attachMediaElement(video.value);
                     mpegtsplayer.load();
                     //mpegtsplayer.play();
+                    mpegtsplayer.on(mpegts.Events.MEDIA_INFO,(e)=>{
+                        player_info.value.framerate = Math.round(e.fps*1000)/1000
+                        player_info.value.a_codec = e.audioCodec
+                        //视频编码判断
+                        if (e.videoCodec.indexOf("avc")!=-1) {
+                            player_info.value.v_codec = `H.264 / AVC (${e.videoCodec})`
+                        } else if (e.videoCodec.indexOf("hvc")!=-1) {
+                            player_info.value.v_codec = `H.265 / HEVC (${e.videoCodec})`
+                        } else if (e.videoCodec.indexOf("av01")!=-1) {
+                            player_info.value.v_codec = `AV1 (${e.videoCodec})`
+                        } else {
+                            player_info.value.v_codec = e.videoCodec
+                        }
+                        player_info.value.bitrate = Math.round(e.videoDataRate)
+                        show_extra_video_info.value = 1//显示详细编码信息
+                        //console.log(e)
+                    })
                     play();
                 }
-            } else {
+            } else {//使用hls.js
+                if (Hls.isSupported()) {
+                    hls = new Hls();
+                }
                 hls.loadSource(videoUrl);
                 hls.attachMedia(video.value);
                 hls.on(Hls.Events.MANIFEST_PARSED,() => {
@@ -296,10 +354,13 @@
             //danmaku.clear();
             danmaku.destroy();
             enabledanmaku();
-            if (mpegtsplayer_canbedestroyed) {
+            if (mpegtsplayer_canbedestroyed) {//上次使用的是mpegts，则销毁mpegts实例
                 mpegtsplayer.destroy();
                 mpegtsplayer_canbedestroyed = 0
+            } else {
+                hls.destroy();//否则销毁hls
             }
+            show_extra_video_info.value = 0
             promptthereisnolive(1);
             get_live_url();
             if (redetect) {
@@ -344,16 +405,69 @@
         });
         let swipeshowtb = new Hammer(player_controls.value)
         swipeshowtb.get('swipe').set({ direction: Hammer.DIRECTION_VERTICAL });
-        swipeshowtb.on('swipeup', function() {
+        swipeshowtb.on('swipeup', () => {
             controls_reshow();
             controls_autohide();
         });
-        swipeshowtb.on('swipedown', function() {
+        swipeshowtb.on('swipedown', () => {
             controls_folded.value = 1;
             if (!fullscreen.value) {
                 display_controls.value = 0;
             }
         });
+        //轮询检查视频缓冲状态(坏主意，但暂且这么实现了)并更新player_info数值
+        setInterval(()=>{
+            if (video.value.controls) {
+                video_buffering_status.value = 0
+                return
+            }
+            if (!video.value.buffered.length || (video.value.buffered.end(0) - video.value.currentTime <= 0.2)) {
+                video_buffering_status.value = 1
+            } else {
+                video_buffering_status.value = 0
+            }
+            player_info.value.buffered_length = Math.round(video.value.buffered.end(0)*100)/100
+            player_info.value.total_length = Math.round(video.value.duration*100)/100
+            player_info.value.buffer_health = Math.round((video.value.buffered.end(0) - video.value.currentTime)*100)/100
+        },500)
+        //video右键点击事件
+        video.value.addEventListener('contextmenu',(e)=>{
+            if (video.value.controls) {//启用原生播放器控制时，不阻止右键菜单
+                return
+            }
+            e.preventDefault()
+            contextmenu_display.value = 1;
+            context_style.value = `top:${e.clientY}px;left:${e.clientX}px`
+        })
+        //
+        document.addEventListener('click',()=>{
+            contextmenu_display.value = 0;
+        })
+
+        /* mediainfo.js test code */
+        /*MediaInfoFactory().then((mediainfo)=>{
+            const getSize = () => 100;
+
+            mediainfo.analyzeFile("https://d.wzq02.top/video/sample_1.mp4")
+        })
+        function checkmediainfo() {
+            const fileurl = video.value.src
+            fetch(fileurl)
+            .then((fileContent)=>{
+                console.log(fileContent.size)
+            })
+            .catch((error)=>{
+
+            })
+            //const getSize = file.size
+            //console.log(file,getSize)
+        }*/
+        video.value.addEventListener("loadedmetadata",()=>{
+            player_info.value.res_h = video.value.videoWidth
+            player_info.value.res_v = video.value.videoHeight
+            //player_info.value.framerate = video.value.getVideoPlaybackQuality().frameRate
+        })
+        getviewportsize();
     })
     onDeactivated(() => {
         danmaku.hide();
@@ -382,7 +496,24 @@
         <div class="player" key="player" v-bind:class="{fullscreen:fullscreen,switching_fullscrn:player_switching_fullscrn}">
             <Teleport to="body" :disabled="vid_tele_disabled">
                 <div id="video_container" ref="video_container" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0,fullscreen:fullscreen}">
+                    <div id="mdprog_container" v-if="video_buffering_status">
+                        <md-circular-progress indeterminate></md-circular-progress>
+                    </div>
                     <video id="video" ref="video" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0}" :controls="native_controls_enabled"></video>
+                    <Transition name="fade"><div id="video_info" v-if="show_video_info">
+                        {{ $t('live_player.info.1') }}{{ player_info.type=="hls"&&"HLS"||"MPEG-TS" }}<br>
+                        {{ $t('live_player.info.2') }}{{ player_info.domain }}<br>
+                        {{ $t('live_player.info.7') }}{{ player_info.res_h+" x "+player_info.res_v }}<br>
+                        <div v-if="show_extra_video_info">
+                            {{ player_info.framerate&&$t('live_player.info.9')+player_info.framerate+$t('live_player.info.13')||"" }}<br>
+                            {{ player_info.framerate&&$t('live_player.info.10')+player_info.v_codec+""||"" }}<br>
+                            {{ player_info.framerate&&$t('live_player.info.11')+player_info.a_codec+""||"" }}<br>
+                            {{ (player_info.bitrate>1024&&$t('live_player.info.12')+Math.round(player_info.bitrate/10.24)/100+" Mbps")||(player_info.framerate&&$t('live_player.info.12')+player_info.bitrate+" Kbps")||"" }}
+                        </div>
+                        {{ $t('live_player.info.8') }}{{ player_info.vpt_h+" x "+player_info.vpt_v }}<br>
+                        {{ $t('live_player.info.3') }}{{ player_info.buffered_length+$t('live_player.info.6') }} / {{ player_info.total_length=="Infinity"&&$t('live_player.info.5')||player_info.total_length+$t('live_player.info.6') }}<br>
+                        {{ $t('live_player.info.4') }}{{ player_info.buffer_health+$t('live_player.info.6') }}
+                    </div></Transition>
                 </div>
             </Teleport>
             <Transition name="fade"><div id="player_underline" v-bind:title="$t('item_title.player_underline')" @click="show_controls()" v-if="!fullscreen" @mouseover="hover_show_controls()" @mouseout="hover_show_controls(1)"></div></Transition>
@@ -409,15 +540,20 @@
                 </button>
             </div></Transition>
         </div>
-    <div id="prompb" ref="prompb" key="prompb"></div>
-    <div id="nolive_pmpt" ref="nolive_pmpt" class="prompt" key="nolive_pmpt">
-        <div style="position: relative; top: -8px;">
-            <h2>{{$t("live_player.nolive_pmpt.message.1")}}</h2>
-        <span>{{$t("live_player.nolive_pmpt.message.2")}}</span><br><br>
-        <button id="promptbtn" @click="oncl_hyperl('https://wzq02.top/#/tv')">{{$t("live_player.nolive_pmpt.button.1")}}</button>
-        <button id="promptbtn" @click="oncl_hyperl('https://live.bilibili.com/956821')" style="float: right;">{{$t("live_player.nolive_pmpt.button.2")}}</button>
+        <div id="prompb" ref="prompb" key="prompb"></div>
+        <div id="nolive_pmpt" ref="nolive_pmpt" class="prompt" key="nolive_pmpt">
+            <div style="position: relative; top: -8px;">
+                <h2>{{$t("live_player.nolive_pmpt.message.1")}}</h2>
+                <span>{{$t("live_player.nolive_pmpt.message.2")}}</span><br><br>
+                <button id="promptbtn" @click="oncl_hyperl('https://wzq02.top/#/tv')">{{$t("live_player.nolive_pmpt.button.1")}}</button>
+                <button id="promptbtn" @click="oncl_hyperl('https://live.bilibili.com/956821')" style="float: right;">{{$t("live_player.nolive_pmpt.button.2")}}</button>
+            </div>
         </div>
-    </div></TransitionGroup>
+    </TransitionGroup>
+    <Transition name="fade">
+        <contextMenu v-if="contextmenu_display" :style="context_style"/>
+    </Transition>
+    
 </template>
 
 <style scoped>
@@ -535,10 +671,38 @@
     .player_controls_component.iconbutton svg {
         color: #fff;
     }
+    #video_info {
+        background-color: #222b !important;
+    }
 }
 @media (prefers-color-scheme: dark) and (any-hover: hover) {
     .player_controls_component.iconbutton:hover {
         background-color: #fff4;
     }
+}
+#player_controls {
+    z-index: 3
+}
+#mdprog_container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 2
+}
+md-circular-progress {
+    left: calc(50% - 48px);
+    top: calc(50% - 48px);
+}
+#video_info {
+    position: absolute;
+    top: 0px;
+    z-index: 4;
+    border-radius: 4px;
+    margin: 12px;
+    padding: 12px;
+    font-size: 14px;
+    backdrop-filter: blur(8px);
+    background-color: #fffb;
+    box-shadow: 0 4px 16px #0006;
 }
 </style>

@@ -9,7 +9,7 @@
     transition-property: top,opacity;
     transition-duration: 0.4s;
     transition-timing-function: cubic-bezier(0.5, 0, 0, 1);
-    z-index: 1;
+    z-index: 10;
 }
 #stp_tb_container.fullscrn {
     opacity: 0.15;
