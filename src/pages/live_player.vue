@@ -1,3 +1,4 @@
+<!--这个组件的代码写得又臭又长，你应该不会想看的。It's nasty, but it works.-->
 <script setup>
     import '../assets/styles/player.css'
     import { onMounted,ref,getCurrentInstance, onActivated, onDeactivated, watch } from 'vue'
@@ -20,9 +21,41 @@
 
     const gCI = getCurrentInstance()
 
-    const vid_domain = ['https://wzq02.top','https://d.wzq02.top','']
-    const vid_src = ['/live/livestream.m3u8','/live/livestream.flv']
+    //当无法从api.wzq02.top获取默认直播流url地址时，使用这些参数
+    let vid_domain = ['https://wzq02.top','https://d.wzq02.top','']
+    let vid_src = ['/live/livestream.m3u8','/live/livestream.flv']
     const mpegts_src_type = ['flv','mpegts','m2ts','mp4','mse']
+
+    //默认直播流url地址的json文件网络路径（需自行部署的话请注释掉下面这句）
+    const url_api_url = 'https://api.wzq02.top/stmkl.tv/player_url.json'
+
+    //尝试加载上面的json（目前有一开始始终从vid_domain原始数值检测开播状态的bug，现在不修）
+    if (typeof(url_api_url)!='undefined') {
+        const request = new XMLHttpRequest();
+        request.open("get", url_api_url);
+        request.send();
+        request.onload = () => {
+            if (request.status == 200) {
+                const data = JSON.parse(request.response)
+                let url_altered_status
+                for (let i=0;i<3;i++) {
+                    if (vid_domain[i] != data["vid_domain"][i+1]) {
+                        vid_domain[i] = data["vid_domain"][i+1]
+                        url_altered_status=1
+                    }
+                }
+                for (let i=0;i<2;i++) {
+                    if (vid_src[i] != data["vid_src"][i+1]) {
+                        vid_src[i] = data["vid_src"][i+1]
+                        url_altered_status=1
+                    }
+                }
+                if (url_altered_status && video.value) {
+                    setTimeout(()=>{live_reload(1)},500)
+                }
+            }
+        }
+    }
 
     let promptthereisnolive_loaded = 0;
     let promptthereisnolive = (cancel) => {
@@ -85,7 +118,7 @@
         bitrate: ""
     })
     const show_video_info = ref(0)
-    const show_extra_video_info = ref(0)//使用mpegts播放器时展示额外信息
+    const show_extra_video_info = ref(0)//展示额外信息
 
     let live_reload;
     let hover_show_controls_timeout;
@@ -256,14 +289,17 @@
                     videoUrl = vid_domain[2];
                 }
                 if (player_type) {
-                    player_info.value.type = "mpegts"
                     videoUrl += vid_src[1]
                 } else {
-                    player_info.value.type = "hls"
                     videoUrl += vid_src[0]
                 }
             }
             player_info.value.domain = videoUrl
+            if (player_type) {
+                player_info.value.type = "mpegts"
+            } else {
+                player_info.value.type = "hls"
+            }
         }
         get_live_url();
         if (stp_allow_pip == 1) {
@@ -310,10 +346,33 @@
                 hls.on(Hls.Events.MANIFEST_PARSED,() => {
                     play();
                 });
+                hls.on(Hls.Events.BUFFER_CODECS,(e,f)=>{
+                    if (f.audio) {
+                        player_info.value.a_codec = f.audio.codec
+                        if (f.video) {
+                            //视频编码判断
+                            if (f.video.codec.indexOf("avc")!=-1) {
+                                player_info.value.v_codec = `H.264 / AVC (${f.video.codec})`
+                            } else if (f.video.codec.indexOf("hvc")!=-1) {
+                                player_info.value.v_codec = `H.265 / HEVC (${f.video.codec})`
+                            } else if (f.video.codec.indexOf("av01")!=-1) {
+                                player_info.value.v_codec = `AV1 (${f.video.codec})`
+                            } else {
+                                player_info.value.v_codec = f.video.codec
+                            }
+                            show_extra_video_info.value = 2
+                        } else {
+                            show_extra_video_info.value = 3
+                        }
+                    } else if (f.audiovideo) {//m4s流
+                        player_info.value.v_codec = f.audiovideo.codec
+                        show_extra_video_info.value = 4
+                    }
+                })
             }
         }
         let detect_live_status=(reload_if_back_online)=>{
-            let request = new XMLHttpRequest();
+            const request = new XMLHttpRequest();
             request.open("head", videoUrl);
             request.send();
             request.onload = () => {
@@ -337,7 +396,7 @@
                     request.abort();
                 } else if (promptthereisnolive_loaded) {} else {
                     console.log("无法连接到直播服务器，当前可能无人推送视频流。")
-                    setTimeout(()=>{promptthereisnolive()},250)
+                    promptthereisnolive()
                     if (detect_live_status_when_playing_interval) {
                         clearInterval(detect_live_status_when_playing_interval)
                     }
@@ -427,9 +486,11 @@
             } else {
                 video_buffering_status.value = 0
             }
-            player_info.value.buffered_length = Math.round(video.value.buffered.end(0)*100)/100
-            player_info.value.total_length = Math.round(video.value.duration*100)/100
-            player_info.value.buffer_health = Math.round((video.value.buffered.end(0) - video.value.currentTime)*100)/100
+            try {
+                player_info.value.buffered_length = Math.round(video.value.buffered.end(0)*100)/100
+                player_info.value.total_length = Math.round(video.value.duration*100)/100
+                player_info.value.buffer_health = Math.round((video.value.buffered.end(0) - video.value.currentTime)*100)/100
+            } catch(err) {}
         },500)
         //video右键点击事件
         video.value.addEventListener('contextmenu',(e)=>{
@@ -505,11 +566,21 @@
                         {{ $t('live_player.info.1') }}{{ player_info.type=="hls"&&"HLS"||"MPEG-TS" }}<br>
                         {{ $t('live_player.info.2') }}{{ player_info.domain }}<br>
                         {{ $t('live_player.info.7') }}{{ player_info.res_h+" x "+player_info.res_v }}<br>
-                        <div v-if="show_extra_video_info">
+                        <div v-if="show_extra_video_info==1">
                             {{ player_info.framerate&&$t('live_player.info.9')+player_info.framerate+$t('live_player.info.13')||"" }}<br>
-                            {{ player_info.framerate&&$t('live_player.info.10')+player_info.v_codec+""||"" }}<br>
-                            {{ player_info.framerate&&$t('live_player.info.11')+player_info.a_codec+""||"" }}<br>
-                            {{ (player_info.bitrate>1024&&$t('live_player.info.12')+Math.round(player_info.bitrate/10.24)/100+" Mbps")||(player_info.framerate&&$t('live_player.info.12')+player_info.bitrate+" Kbps")||"" }}
+                            {{ player_info.v_codec&&$t('live_player.info.10')+player_info.v_codec+""||"" }}<br>
+                            {{ player_info.a_codec&&$t('live_player.info.11')+player_info.a_codec+""||"" }}<br>
+                            {{ (player_info.bitrate>1024&&$t('live_player.info.12')+Math.round(player_info.bitrate/10.24)/100+" Mbps")||(player_info.bitrate&&$t('live_player.info.12')+player_info.bitrate+" Kbps")||"" }}
+                        </div>
+                        <div v-if="show_extra_video_info==2"><!--hls播放器，显示音视频编码-->
+                            {{ player_info.v_codec&&$t('live_player.info.10')+player_info.v_codec+""||"" }}<br>
+                            {{ player_info.a_codec&&$t('live_player.info.11')+player_info.a_codec+""||"" }}<br>
+                        </div>
+                        <div v-if="show_extra_video_info==3"><!--hls播放器，仅显示音频编码-->
+                            {{ player_info.a_codec&&$t('live_player.info.11')+player_info.a_codec+""||"" }}<br>
+                        </div>
+                        <div v-if="show_extra_video_info==4"><!--hls播放器，m4s格式-->
+                            {{ player_info.v_codec&&$t('live_player.info.10')+player_info.v_codec+""||"" }}<br>
                         </div>
                         {{ $t('live_player.info.8') }}{{ player_info.vpt_h+" x "+player_info.vpt_v }}<br>
                         {{ $t('live_player.info.3') }}{{ player_info.buffered_length+$t('live_player.info.6') }} / {{ player_info.total_length=="Infinity"&&$t('live_player.info.5')||player_info.total_length+$t('live_player.info.6') }}<br>
