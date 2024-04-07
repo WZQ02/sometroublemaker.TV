@@ -15,6 +15,7 @@
     const tb_show = ref(0)
     const tb_fullscrn = ref(0)
     const stp_tb_cont = ref(0)
+    const tb_fullscrn_inv = ref(0)
 
     const tb_btn = [isselected_1,isselected_2,isselected_3,isselected_4]
     const gCI = getCurrentInstance()
@@ -83,6 +84,9 @@
         watch(() => stp_store.session.player_fullscreen.value,() => {
             tb_fullscrn.value = stp_store.session.player_fullscreen.value
         })
+        watch(() => stp_store.session.player_controls_invisable.value,() => {
+            tb_fullscrn_inv.value = stp_store.session.player_controls_invisable.value
+        })
         gCI.proxy?.$bus.on('router_start',()=>{
             show_loading_bar();
         })
@@ -90,7 +94,7 @@
 </script>
 
 <template>
-    <div id="stp_tb_container" ref="stp_tb_cont" v-bind:class="{tb_show:tb_show,fullscrn:tb_fullscrn}" v-on:mouseover="tb_reshow" v-on:mouseout="tb_autohide">
+    <div id="stp_tb_container" ref="stp_tb_cont" v-bind:class="{tb_show:tb_show,fullscrn:tb_fullscrn,invisable:tb_fullscrn&&tb_fullscrn_inv}" v-on:mouseover="tb_reshow" v-on:mouseout="tb_autohide">
         <div id="stp_tb_main">
             <router-link to="/home">
                 <div class="stp_tb_button" id="stp_t_b_1" v-bind:class="{selected:isselected_1}" v-bind:title="$t('item_title.topbar.1')">

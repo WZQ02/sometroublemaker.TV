@@ -42,7 +42,8 @@ const stp_glob_i18n = {
             },
             contextmenu: {
                 1: '显示放映厅菜单',
-                2: '播放器信息'
+                2: '播放器信息',
+                3: '复制视频帧'
             },
             info: {
                 1: '播放器类型：',
@@ -56,8 +57,9 @@ const stp_glob_i18n = {
                 9: '视频帧率：',
                 10: '视频编码：',
                 11: '音频编码：',
-                12: '估算的比特率：',
-                13: ' 帧 / 秒'
+                12: '估算的码率（可能不准确）：',
+                13: ' 帧 / 秒',
+                14: '瞬时码率（视频 / 音频）：'
             }
         },
         chatroom: {
@@ -107,7 +109,7 @@ const stp_glob_i18n = {
                 16: '聊天室内容允许 HTML 标签（不安全）',
                 17: '不显示弹幕',
                 18: '启用原生播放器控制',
-                19: '启用浏览器全屏'
+                19: '使用浏览器全屏（而非网页全屏）'
             },
             button: {
                 1: '显示高级设置',
@@ -136,6 +138,10 @@ const stp_glob_i18n = {
                 3: '你的消息太长了！删掉一些字再发吧...',
                 4: '请上传图片文件！',
                 5: '图片尺寸过大！请将图片压缩至小于 180KB 再发送。'
+            },
+            4: {
+                1: '已复制视频帧到剪贴板。',
+                2: '视频帧复制失败...'
             }
         },
         item_title: {
@@ -199,7 +205,8 @@ const stp_glob_i18n = {
             },
             contextmenu: {
                 1: 'Show Player Menu',
-                2: 'Player Info'
+                2: 'Player Info',
+                3: 'Copy Frame'
             },
             info: {
                 1: 'Player Type: ',
@@ -213,8 +220,9 @@ const stp_glob_i18n = {
                 9: 'Framerate: ',
                 10: 'Video Codec: ',
                 11: 'Audio Codec: ',
-                12: 'Estimated Bitrate: ',
-                13: ' fps'
+                12: 'Estimated Bitrate (Might be inaccurate): ',
+                13: ' fps',
+                14: 'Realtime Datarate (Video / Audio): '
             }
         },
         chatroom: {
@@ -261,7 +269,7 @@ const stp_glob_i18n = {
                 16: 'Allow HTML tags in chatroom content (not secure)',
                 17: 'Don\'t show comments in video',
                 18: 'Enable native video player controls',
-                19: 'Enable browser fullscreen'
+                19: 'Fullscreen browser when fullscreen video'
             },
             button: {
                 1: 'Display Advanced Settings',
@@ -290,6 +298,10 @@ const stp_glob_i18n = {
                 3: 'Your message is too long! Please delete some words and try again...',
                 4: 'Please upload image file!',
                 5: 'Image size is too large! Please compress the image down to < 180KiB and try again.'
+            },
+            4: {
+                1: 'Video frame copied to clipboard.',
+                2: 'Unable to copy video frame...'
             }
         },
         item_title: {

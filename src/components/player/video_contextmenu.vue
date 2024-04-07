@@ -1,5 +1,5 @@
 <script setup>
-    import { getCurrentInstance } from 'vue'
+    import { getCurrentInstance,ref } from 'vue'
     const gCI = getCurrentInstance()
     function show_player_menu() {
         gCI.proxy?.$bus.emit('show_player_menu',1);
@@ -7,11 +7,15 @@
     function show_video_info() {
         gCI.proxy?.$bus.emit('show_video_info',1);
     }
+    function copy_video_frame() {
+        gCI.proxy?.$bus.emit('copy_video_frame',1);
+    }
 </script>
 
 <template>
     <div id="contextmenu_container">
         <div class="context_item c" @click="show_player_menu()">{{$t('live_player.contextmenu.1')}}</div>
+        <div class="context_item c" @click="copy_video_frame()">{{$t('live_player.contextmenu.3')}}</div>
         <div class="context_item c" @click="show_video_info()">{{$t('live_player.contextmenu.2')}}</div>
     </div>
 </template>

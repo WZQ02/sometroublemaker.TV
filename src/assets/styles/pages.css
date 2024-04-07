@@ -163,6 +163,9 @@ input[type="radio"] {
 #sendmsg:active {
 	background: #047 !important;
 }
+.invisable {
+    opacity: 0 !important;
+}
 @media (prefers-color-scheme: dark) {
     body {
         color: #eeeeee;

@@ -115,13 +115,22 @@
         vpt_v: "",
         v_codec: "",
         a_codec: "",
-        bitrate: ""
+        bitrate: "",
+        act_v_bitrate: "",
+        act_a_bitrate: ""
     })
     const show_video_info = ref(0)
     const show_extra_video_info = ref(0)//展示额外信息
+    const controls_invisable_in_fullscreen = ref(0)
 
     let live_reload;
-    let hover_show_controls_timeout;
+    let hover_show_controls_timeout
+    let controls_invisable_in_fullscreen_timeout
+    let dataratelog = {
+        video_dbc_last: 0,
+        audio_dbc_last: 0
+    }
+    const player_info_refresh_rate = 500 //player_info更新频率，毫秒
 
     gCI.proxy?.$bus.on('change_pip_setting',function(e){
         allow_pip = e
@@ -262,6 +271,22 @@
             show_video_info.value = 0
         } else {
             show_video_info.value = 1
+        }
+    });
+    gCI.proxy?.$bus.on('copy_video_frame',()=>{
+        try {
+            const cv = document.createElement("canvas")
+            cv.width = video.value.videoWidth
+            cv.height = video.value.videoHeight
+            cv.getContext("2d").drawImage(video.value,0,0,cv.width,cv.height)
+            cv.toBlob((blob)=>{
+                const vimg_clipboarditem = new ClipboardItem({'image/png': blob})
+                navigator.clipboard.write([vimg_clipboarditem])
+                gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.4.1"))
+            })
+        } catch(err) {
+            console.log("无法复制视频帧到剪贴板。"+err)
+            gCI.proxy?.$bus.emit('trigger_popup',gCI.proxy?.$t("toasts.4.2"))
         }
     });
     function getviewportsize() {
@@ -491,7 +516,16 @@
                 player_info.value.total_length = Math.round(video.value.duration*100)/100
                 player_info.value.buffer_health = Math.round((video.value.buffered.end(0) - video.value.currentTime)*100)/100
             } catch(err) {}
-        },500)
+            if (video.value.webkitVideoDecodedByteCount) {
+                player_info.value.act_v_bitrate = (video.value.webkitVideoDecodedByteCount - dataratelog.video_dbc_last)*8000/player_info_refresh_rate
+                dataratelog.video_dbc_last = video.value.webkitVideoDecodedByteCount
+            }
+            if (video.value.webkitAudioDecodedByteCount) {
+                player_info.value.act_a_bitrate = (video.value.webkitAudioDecodedByteCount - dataratelog.audio_dbc_last)*8000/player_info_refresh_rate
+                dataratelog.audio_dbc_last = video.value.webkitAudioDecodedByteCount
+            }
+            //console.log(player_info.value.act_v_bitrate/1048576,player_info.value.act_a_bitrate/1048576)
+        },player_info_refresh_rate)
         //video右键点击事件
         video.value.addEventListener('contextmenu',(e)=>{
             if (video.value.controls) {//启用原生播放器控制时，不阻止右键菜单
@@ -530,6 +564,15 @@
             //player_info.value.framerate = video.value.getVideoPlaybackQuality().frameRate
         })
         getviewportsize();
+        document.addEventListener('mousemove',()=>{
+            clearTimeout(controls_invisable_in_fullscreen_timeout)
+            controls_invisable_in_fullscreen.value = 0
+            stp_store.session.player_controls_invisable.change(0)
+            controls_invisable_in_fullscreen_timeout = setTimeout(()=>{
+                controls_invisable_in_fullscreen.value = 1
+                stp_store.session.player_controls_invisable.change(1)
+            },5000)
+        })
     })
     onDeactivated(() => {
         danmaku.hide();
@@ -582,6 +625,7 @@
                         <div v-if="show_extra_video_info==4"><!--hls播放器，m4s格式-->
                             {{ player_info.v_codec&&$t('live_player.info.10')+player_info.v_codec+""||"" }}<br>
                         </div>
+                        {{ $t('live_player.info.14') }}{{ Math.round(player_info.act_v_bitrate/10485.76)/100+" Mbps / "+Math.round(player_info.act_a_bitrate/1024)+" Kbps" }}<br>
                         {{ $t('live_player.info.8') }}{{ player_info.vpt_h+" x "+player_info.vpt_v }}<br>
                         {{ $t('live_player.info.3') }}{{ player_info.buffered_length+$t('live_player.info.6') }} / {{ player_info.total_length=="Infinity"&&$t('live_player.info.5')||player_info.total_length+$t('live_player.info.6') }}<br>
                         {{ $t('live_player.info.4') }}{{ player_info.buffer_health+$t('live_player.info.6') }}
@@ -589,7 +633,7 @@
                 </div>
             </Teleport>
             <Transition name="fade"><div id="player_underline" v-bind:title="$t('item_title.player_underline')" @click="show_controls()" v-if="!fullscreen" @mouseover="hover_show_controls()" @mouseout="hover_show_controls(1)"></div></Transition>
-            <Transition name="pl_controls_popup"><div id="player_controls" ref="player_controls" v-show="display_controls" v-bind:class="{fullscreen:fullscreen,folded:controls_folded}" v-on:mouseover="controls_reshow" v-on:mouseout="controls_autohide">
+            <Transition name="pl_controls_popup"><div id="player_controls" ref="player_controls" v-show="display_controls" v-bind:class="{fullscreen:fullscreen,folded:controls_folded,invisable:controls_invisable_in_fullscreen&&fullscreen}" v-on:mouseover="controls_reshow" v-on:mouseout="controls_autohide">
                 <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" class="player_controls_component usrmsg" maxlength="50">
                 <!--弹幕限50字-->
                 <button id="reload_stream" @click="live_reload(1)" class="player_controls_component reload iconbutton" v-bind:title="$t('live_player.menu.1')">
@@ -653,7 +697,7 @@
 }
 #player_controls.fullscreen.folded {
     top: calc(100% - 16px);
-    opacity: .2;
+    opacity: .25;
 }
 .player_controls_component.usrmsg {
     position: absolute;

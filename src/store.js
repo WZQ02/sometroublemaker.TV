@@ -141,6 +141,12 @@ const stp_store = reactive({
             toggle() {
                 if (this.value) {this.value = 0} else {this.value = 1};
             }
+        },
+        player_controls_invisable: {
+            value: 0,
+            change(value) {
+                this.value = value;
+            }
         }
     },
     others: {
