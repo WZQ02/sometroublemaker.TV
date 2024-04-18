@@ -98,9 +98,11 @@
 	    askforusername();
     }
     //语录选择器
-    let quotechange = () => {
-        let selector = quoteselector.value
-	    usrmsg.value.value = usrmsg.value.value + selector.options[selector.selectedIndex].value
+    function quotechange() {
+        const selector = quoteselector.value
+	    usrmsg.value.value += selector.options[selector.selectedIndex].innerText
+        selector.options[0].innerText = selector.options[selector.selectedIndex].innerText
+        selector.options[0].selected = true
     }
     //将滚动条位置置于底部
     let goBottom = () => {
@@ -200,18 +202,19 @@
         <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" maxlength="256000"><!--考虑到发送长文本和base64的需求，文本框限制250KB-->
         <div id="panel1">
             <select id="quoteselector" @change="quotechange();" ref="quoteselector">
-                <option value="(=・ω・=)">(=・ω・=)</option>
-                <option value="(ﾟДﾟ≡ﾟдﾟ)!?">(ﾟДﾟ≡ﾟдﾟ)!?</option>
-                <option value="(￣3￣)✧">(￣3￣)✧</option>
-                <option value="(≖ ◡ ≖✿)">(≖ ◡ ≖✿)</option>
-                <option value="_(≧∇≦」∠)_">_(≧∇≦」∠)_</option>
-                <option value="━━━∑(ﾟ□ﾟ*川━">━━━∑(ﾟ□ﾟ*川━</option>
-                <option value="(╯°口°)╯(┴—┴">(╯°口°)╯(┴—┴</option>
-                <option value="(-_-#)">(-_-#)</option>
-                <option value="(๑>؂<๑）">(๑>؂&lt;๑）</option>
-                <option value="草">草</option>
-                <option value="呵呵">呵呵</option>
-                <option value="什么意思？">什么意思？</option>
+                <option value="0" style="display:none"></option>
+                <option value="1" selected>(=・ω・=)</option>
+                <option value="2">(ﾟДﾟ≡ﾟдﾟ)!?</option>
+                <option value="3">(￣3￣)✧</option>
+                <option value="4">(≖ ◡ ≖✿)</option>
+                <option value="5">_(≧∇≦」∠)_</option>
+                <option value="6">━━━∑(ﾟ□ﾟ*川━</option>
+                <option value="7">(╯°口°)╯(┴—┴</option>
+                <option value="8">(-_-#)</option>
+                <option value="9">(๑>؂&lt;๑）</option>
+                <option value="10">草</option>
+                <option value="11">呵呵</option>
+                <option value="12">什么意思？</option>
             </select>
             <button id="sendmsg" ref="sendmsg" @click="sendusrmsg();">{{ $t("chatroom.button.send") }}</button>
             <label v-bind:title="$t('item_title.chatroom.2')">

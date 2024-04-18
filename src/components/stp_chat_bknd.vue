@@ -148,6 +148,7 @@
                 case 9://接收到消息记录
                     formatted.innerHTML = ''//清除时间戳
                     formatted.className = "prev_msgs";
+                    let last_recorded_time = 0 //消息记录中上一条显示了时间戳的消息的时间
                     if (parseStr.prev_msg) {
                         for (let i=0; i<Object.keys(parseStr.prev_msg).length; i++) {
                             const formatted_prev_msg = document.createElement('div');
@@ -163,7 +164,8 @@
                                 speak_cont = marked.parse(speak_cont)
                             }
                             speak_cont = DOMPurify.sanitize(speak_cont)//转换后清理
-                            if (i==0) {
+                            if (convert_time(speak_time) - last_recorded_time >= 3600) {//记录间隔超过1小时则显示时间信息
+                                last_recorded_time = convert_time(speak_time)
                                 formatted_prev_msg.innerHTML = `<span class="timer" title="${speak_time}">${speak_time}</span><br/>`;
                             }
                             formatted_prev_msg.innerHTML += `<span class="speak_name" title="${speak_time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
@@ -208,13 +210,17 @@
     }*/
     //转换服务器提供的时间码，便于计算
     let convert_time = (time) => {
-        if (time.indexOf('M') != -1) {//带有 "AM/PM" 后缀
-            time = time.slice(0,-3)
+        if (typeof(new Date().getTime)!="undefined") {
+            return new Date(time).getTime()/1000 //改用unix时间戳
+        } else { //new Date().getTime不兼容的处理，只考虑时间不考虑日期
+            if (time.indexOf('M') != -1) {//带有 "AM/PM" 后缀
+                time = time.slice(0,-3)
+            }
+            let hh = Math.ceil(time.slice(-8,-6))
+            let mm = Math.ceil(time.slice(-5,-3))
+            let ss = Math.ceil(time.slice(-2))
+            return hh*3600+mm*60+ss
         }
-        let hh = Math.ceil(time.slice(-8,-6))
-        let mm = Math.ceil(time.slice(-5,-3))
-        let ss = Math.ceil(time.slice(-2))
-        return hh*3600+mm*60+ss
     }
     let remove_date = (time) => {
         if (time.indexOf('M') != -1) {

@@ -6,7 +6,7 @@
     import mpegts from 'mpegts.js'
     import Danmaku from 'danmaku'
     import SvgIcon from '@jamescoyle/vue-icon';
-    import { mdiSend,mdiReload,mdiFullscreen,mdiFullscreenExit,mdiVolumeHigh,mdiVolumeMute, mdiConsoleNetwork } from '@mdi/js';
+    import { mdiSend,mdiReload,mdiFullscreen,mdiFullscreenExit,mdiVolumeHigh,mdiVolumeMute } from '@mdi/js';
     import { stp_store } from '../store.js'
     import '@material/web/progress/circular-progress.js';
     import contextMenu from '../components/player/video_contextmenu.vue'
@@ -20,6 +20,7 @@
     const player_controls = ref(null)
 
     const gCI = getCurrentInstance()
+    let custom_live_title = ''
 
     //当无法从api.wzq02.top获取默认直播流url地址时，使用这些参数
     let vid_domain = ['https://wzq02.top','https://d.wzq02.top','']
@@ -53,6 +54,10 @@
                 if (url_altered_status && video.value) {
                     setTimeout(()=>{live_reload(1)},500)
                 }
+                if (data["custom_live_title"]) {
+                    custom_live_title = data["custom_live_title"]
+                }
+                custom_live_title!=""&&(document.title=custom_live_title)
             }
         }
     }
@@ -130,7 +135,9 @@
         video_dbc_last: 0,
         audio_dbc_last: 0
     }
+    let trigger_reload_times = 4 //播放期间如果(trigger_reload_times-1)*5秒内未接受到视频信息，则自动重载
     const player_info_refresh_rate = 500 //player_info更新频率，毫秒
+    const show_webkit_bitrate = ref(0)
 
     gCI.proxy?.$bus.on('change_pip_setting',function(e){
         allow_pip = e
@@ -263,8 +270,20 @@
         }
     })
     gCI.proxy?.$bus.on('show_player_menu',()=>{
-        display_controls.value = 1
-        controls_folded.value = 0
+        if (fullscreen.value) {
+            if (controls_folded.value) {
+                controls_folded.value = 0
+            } else {
+                controls_folded.value = 1
+            }
+            controls_invisable_in_fullscreen.value = 0
+        } else {
+            if (display_controls.value) {
+                display_controls.value = 0
+            } else {
+                display_controls.value = 1
+            }
+        }   
     });
     gCI.proxy?.$bus.on('show_video_info',()=>{
         if (show_video_info.value) {
@@ -460,13 +479,13 @@
                 time_minus_buffered = video.value.buffered.end(0) - video.value.currentTime;
                 if (time_minus_buffered <= 0.2) {
                     should_trigger_live_reload++;
-                    if (should_trigger_live_reload >= 7) {
+                    if (should_trigger_live_reload >= trigger_reload_times) {
                         should_trigger_live_reload = 0;
                         clearTimeout(detect_live_status_when_playing_interval);
                         detect_live_status_when_playing_interval = 0;
                         detect_live_status(1);
                     } else {
-                        console.log("视频连接似乎已断开。若在 "+(35 - should_trigger_live_reload*5)+" 秒后不恢复，则将尝试重连服务器...")
+                        console.log("视频连接似乎已断开。若在 "+(trigger_reload_times - should_trigger_live_reload)*5+" 秒后不恢复，则将尝试重连服务器...")
                     }
                 } else {
                     should_trigger_live_reload = 0;
@@ -517,14 +536,16 @@
                 player_info.value.buffer_health = Math.round((video.value.buffered.end(0) - video.value.currentTime)*100)/100
             } catch(err) {}
             if (video.value.webkitVideoDecodedByteCount) {
-                player_info.value.act_v_bitrate = (video.value.webkitVideoDecodedByteCount - dataratelog.video_dbc_last)*8000/player_info_refresh_rate
+                show_webkit_bitrate.value = 1
+                let a = (video.value.webkitVideoDecodedByteCount - dataratelog.video_dbc_last)*8000/player_info_refresh_rate
+                player_info.value.act_v_bitrate = a>0&&a||0
                 dataratelog.video_dbc_last = video.value.webkitVideoDecodedByteCount
             }
             if (video.value.webkitAudioDecodedByteCount) {
-                player_info.value.act_a_bitrate = (video.value.webkitAudioDecodedByteCount - dataratelog.audio_dbc_last)*8000/player_info_refresh_rate
+                let b = (video.value.webkitAudioDecodedByteCount - dataratelog.audio_dbc_last)*8000/player_info_refresh_rate
+                player_info.value.act_a_bitrate = b>0&&b||0
                 dataratelog.audio_dbc_last = video.value.webkitAudioDecodedByteCount
             }
-            //console.log(player_info.value.act_v_bitrate/1048576,player_info.value.act_a_bitrate/1048576)
         },player_info_refresh_rate)
         //video右键点击事件
         video.value.addEventListener('contextmenu',(e)=>{
@@ -593,6 +614,8 @@
         if (document.pictureInPictureElement) {//退出画中画
             document.exitPictureInPicture();
         }
+        setTimeout(()=>{getviewportsize()},100)
+        custom_live_title!=""&&(document.title=custom_live_title)
     })
 </script>
 
@@ -625,7 +648,9 @@
                         <div v-if="show_extra_video_info==4"><!--hls播放器，m4s格式-->
                             {{ player_info.v_codec&&$t('live_player.info.10')+player_info.v_codec+""||"" }}<br>
                         </div>
-                        {{ $t('live_player.info.14') }}{{ Math.round(player_info.act_v_bitrate/10485.76)/100+" Mbps / "+Math.round(player_info.act_a_bitrate/1024)+" Kbps" }}<br>
+                        <span v-if="show_webkit_bitrate">
+                            {{ $t('live_player.info.14') }}{{ Math.round(player_info.act_v_bitrate/10485.76)/100+" Mbps / "+Math.round(player_info.act_a_bitrate/1024)+" Kbps" }}<br>
+                        </span>
                         {{ $t('live_player.info.8') }}{{ player_info.vpt_h+" x "+player_info.vpt_v }}<br>
                         {{ $t('live_player.info.3') }}{{ player_info.buffered_length+$t('live_player.info.6') }} / {{ player_info.total_length=="Infinity"&&$t('live_player.info.5')||player_info.total_length+$t('live_player.info.6') }}<br>
                         {{ $t('live_player.info.4') }}{{ player_info.buffer_health+$t('live_player.info.6') }}

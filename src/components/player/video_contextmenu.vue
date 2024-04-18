@@ -25,7 +25,6 @@
     position: absolute;
     left: 0px;
     top: 0px;
-    width: 160px;
     background-color: rgba(255,255,255,.8);
     border-radius: 8px;
     backdrop-filter: blur(8px);
@@ -43,6 +42,7 @@
     font-weight: normal;
     font-size: 15px;
     line-height: 32px;
+    white-space: nowrap;
 }
 @media (prefers-color-scheme: dark) {
     #contextmenu_container {

@@ -41,7 +41,7 @@ const stp_glob_i18n = {
                 6: '退出全屏'
             },
             contextmenu: {
-                1: '显示放映厅菜单',
+                1: '显示 / 隐藏放映厅菜单',
                 2: '播放器信息',
                 3: '复制视频帧'
             },
@@ -204,7 +204,7 @@ const stp_glob_i18n = {
                 6: 'Exit fullscreen'
             },
             contextmenu: {
-                1: 'Show Player Menu',
+                1: 'Show / Hide Player Menu',
                 2: 'Player Info',
                 3: 'Copy Frame'
             },
