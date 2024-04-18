@@ -202,8 +202,8 @@
         <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" maxlength="256000"><!--考虑到发送长文本和base64的需求，文本框限制250KB-->
         <div id="panel1">
             <select id="quoteselector" @change="quotechange();" ref="quoteselector">
-                <option value="0" style="display:none"></option>
-                <option value="1" selected>(=・ω・=)</option>
+                <option value="0" style="display:none" selected>(=・ω・=)</option>
+                <option value="1">(=・ω・=)</option>
                 <option value="2">(ﾟДﾟ≡ﾟдﾟ)!?</option>
                 <option value="3">(￣3￣)✧</option>
                 <option value="4">(≖ ◡ ≖✿)</option>
