@@ -8,9 +8,13 @@ import { createI18n } from 'vue-i18n'
 
 import { stp_glob_i18n } from './locales/global.js'
 import { load_data } from './store.js'
+load_data()
 
-import { preconfigdata_noparse,load_preconfig } from './scripts/preconfig.js'
-load_preconfig();
+import { load_preconfig } from './scripts/preconfig.js'
+load_preconfig()
+
+import { thirdpartydeployadjusts } from './scripts/vercel.js'
+thirdpartydeployadjusts()
 
 //import Wel from './pages/welcome.vue'
 //import Home from './pages/home.vue'
@@ -59,8 +63,6 @@ if (stp_lang == 1) {
 } else {
     navi_lang = (navigator.language || 'zh').toLocaleLowerCase()
 }
-
-load_data()
 
 const i18n = createI18n({
     legacy: false,

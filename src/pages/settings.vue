@@ -4,6 +4,8 @@
     const { locale } = useI18n()
     import { stp_store } from '../store.js'
 
+    import { thirdpartydeployadjusts2 } from '../scripts/vercel.js'
+
     const ipt1 = ref(null)
     const ipt2 = ref(null)
     const ipt3 = ref(null)
@@ -18,6 +20,7 @@
     const ipt12 = ref(null)
     const ipt13 = ref(null)
     const ipt14 = ref(null)
+    const ipt4_text = ref(null)
     const advanced_settings = ref(null)
     const custom_hls_url = ref("")
     const custom_ws_url = ref("")
@@ -132,6 +135,8 @@
         watch(() => custom_ws_url.value,() => {
             stp_store.adv_settings.custom_ws_url.change(custom_ws_url.value)
         })
+        thirdpartydeployadjusts2(ipt4.value)
+        thirdpartydeployadjusts2(ipt4_text.value)
     })
 </script>
 
@@ -147,7 +152,7 @@
             </p>
             <p>
                 {{$t("settings.message.3")}}
-                <input type="radio" ref="ipt4" name="live_lin" value="1" @click="ipt_select(4)">{{$t("settings.message.4")}}
+                <input type="radio" ref="ipt4" name="live_lin" value="1" @click="ipt_select(4)"><span ref="ipt4_text">{{$t("settings.message.4")}}</span>
                 <input type="radio" ref="ipt5" name="live_lin" value="2" @click="ipt_select(5)">{{$t("settings.message.5")}}&nbsp;
                 <input type="radio" ref="ipt6" name="live_lin" value="3" @click="ipt_select(6)">{{$t("settings.message.6")}}
             </p>

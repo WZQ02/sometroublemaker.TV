@@ -24,6 +24,10 @@
     const gCI = getCurrentInstance()
 
     const image_upload_allowed = ref(0)
+    const allow_auto_gobottom = ref(1)//允许自动滚动到底部
+    const glow_show = ref(0)//窗体底部发光，提示用户有新消息
+
+    let scroll_height_before_unmount
 
     let sendusrmsg = () => {
         if (usrmsg.value.value.length <= 0) {
@@ -37,6 +41,7 @@
         } else {
             gCI.proxy?.$bus.emit('chatroom_send',usrmsg.value.value)
 		    usrmsg.value.value = "";
+            allow_auto_gobottom.value = 1
 	    }
     }
     let askforusername = () => {
@@ -105,8 +110,13 @@
         selector.options[0].selected = true
     }
     //将滚动条位置置于底部
-    let goBottom = () => {
-        content.value.scrollTop = content.value.scrollHeight;
+    function goBottom(force) {
+        if (allow_auto_gobottom.value || force) {
+            content.value.scrollTop = content.value.scrollHeight
+            glow_show.value = 0
+        } else {
+            glow_show.value = 1
+        }
     }
 
     //生成随机数改变chatroom页面的部分字符串
@@ -186,19 +196,38 @@
             reader.readAsDataURL(file)
             e.target.value = ''
         })
+        content.value.addEventListener('scroll',()=>{
+            if (content.value.scrollHeight - content.value.scrollTop - content.value.clientHeight < 120) {
+                allow_auto_gobottom.value = 1
+                glow_show.value = 0
+            } else {
+                allow_auto_gobottom.value = 0
+            }
+        })
     })
     onDeactivated(() => {
         gCI.proxy?.$bus.emit('chatroomdeactivated')
+        scroll_height_before_unmount = content.value.scrollTop
     })
     onActivated(() => {
         gCI.proxy?.$bus.emit('chatroomactivated');
-        goBottom()
+        if (scroll_height_before_unmount) {
+            content.value.style = "scroll-behavior:auto"
+            content.value.scrollTop = scroll_height_before_unmount
+            goBottom()
+            content.value.style = ""
+        }
     })
 </script>
 
 <template>
     <TransitionGroup name="app_trans"><div id="chatroom_container" ref="chatroom_container" key="chatroom_container">
         <div id="chatcontent" ref="content" name="chatcontent"></div>
+        <Transition name="fade" v-show="glow_show">
+            <div id="newmsgglow">
+                <div id="newmsgglow_click" @click="goBottom(1)"></div>
+            </div>
+        </Transition>
         <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" maxlength="256000"><!--考虑到发送长文本和base64的需求，文本框限制250KB-->
         <div id="panel1">
             <select id="quoteselector" @change="quotechange();" ref="quoteselector">
@@ -207,7 +236,7 @@
                 <option value="2">(ﾟДﾟ≡ﾟдﾟ)!?</option>
                 <option value="3">(￣3￣)✧</option>
                 <option value="4">(≖ ◡ ≖✿)</option>
-                <option value="5">_(≧∇≦」∠)_</option>
+                <option value="5">(≧∇≦」∠)_</option>
                 <option value="6">━━━∑(ﾟ□ﾟ*川━</option>
                 <option value="7">(╯°口°)╯(┴—┴</option>
                 <option value="8">(-_-#)</option>
@@ -249,4 +278,54 @@
 </template>
 
 <style>
+#chatcontent {
+    scroll-behavior: smooth;
+}
+#newmsgglow {
+    position: absolute;
+    width: 60%;
+    left: 20%;
+    height: 48px;
+    background-color: rgb(64,136,184);
+    border-radius: 100%;
+    filter: blur(48px);
+    clip-path: inset(-300% -100% 48px -100%);
+    pointer-events: none;
+    opacity: .8;
+    animation: glow_anim 4s infinite;
+}
+#newmsgglow_click {
+    position: relative;
+    width: 100%;
+    height: 36px;
+    top: -36px;
+    pointer-events: auto;
+    cursor: pointer;
+    background-color: rgb(64,136,184);
+    border-radius: 100%;
+    opacity: 0;
+    transition: opacity .4s;
+}
+#newmsgglow_click:hover {
+    opacity: .6;
+}
+@media (prefers-color-scheme: dark) {
+    #newmsgglow {
+        opacity: .4;
+    }
+    #newmsgglow_click:hover {
+        opacity: .4;
+    }
+}
+@keyframes glow_anim {
+    0% {
+        background-color: rgb(64,136,184);
+    }
+    50% {
+        background-color: rgb(216, 240, 255);
+    }
+    100% {
+        background-color: rgb(64,136,184);
+    }
+}
 </style>

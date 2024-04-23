@@ -312,6 +312,10 @@
         player_info.value.vpt_h = Math.round(video_container.value.offsetWidth * window.devicePixelRatio)
         player_info.value.vpt_v = Math.round(video_container.value.offsetHeight * window.devicePixelRatio)
     }
+    function getvideores() { //获取视频分辨率
+        player_info.value.res_h = video.value.videoWidth
+        player_info.value.res_v = video.value.videoHeight
+    }
 
     onMounted(() => {
         let videoUrl = '';
@@ -412,6 +416,9 @@
                         player_info.value.v_codec = f.audiovideo.codec
                         show_extra_video_info.value = 4
                     }
+                })
+                hls.on(Hls.Events.LEVEL_SWITCHED,()=>{
+                    setTimeout(()=>{getvideores()},2000)//level切换时，2秒后刷新视频分辨率数据
                 })
             }
         }
@@ -580,9 +587,7 @@
             //console.log(file,getSize)
         }*/
         video.value.addEventListener("loadedmetadata",()=>{
-            player_info.value.res_h = video.value.videoWidth
-            player_info.value.res_v = video.value.videoHeight
-            //player_info.value.framerate = video.value.getVideoPlaybackQuality().frameRate
+            getvideores()
         })
         getviewportsize();
         document.addEventListener('mousemove',()=>{
