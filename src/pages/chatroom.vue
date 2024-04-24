@@ -132,7 +132,7 @@
     //呈现接受的消息
     gCI.proxy?.$bus.on('chatroomdisplaymsg',(e)=>{
         content.value.appendChild(e);
-        goBottom()
+        setTimeout(()=>{goBottom()},50)
     })
 
     onMounted(() => {
@@ -152,6 +152,7 @@
         //回车发送
         usrmsg.value.addEventListener('keydown',(e) => {
 	        if (e.keyCode == 13) {
+                e.preventDefault()
 		        sendusrmsg();
 	        }
         });
@@ -214,7 +215,7 @@
         if (scroll_height_before_unmount) {
             content.value.style = "scroll-behavior:auto"
             content.value.scrollTop = scroll_height_before_unmount
-            goBottom()
+            //goBottom()
             content.value.style = ""
         }
     })
@@ -228,7 +229,8 @@
                 <div id="newmsgglow_click" @click="goBottom(1)"></div>
             </div>
         </Transition>
-        <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" maxlength="256000"><!--考虑到发送长文本和base64的需求，文本框限制250KB-->
+        <!--<input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" maxlength="256000">考虑到发送长文本和base64的需求，文本框限制250KB-->
+        <textarea v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" maxlength="256000"></textarea>
         <div id="panel1">
             <select id="quoteselector" @change="quotechange();" ref="quoteselector">
                 <option value="0" style="display:none" selected>(=・ω・=)</option>

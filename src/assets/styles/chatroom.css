@@ -98,19 +98,22 @@
     text-decoration: underline;
 }
 #chatcontent code {
+    display: block;
     font-family: "Consolas", "Courier New", monospace;
     font-size: 16px;
+    color: #fff;
     background-color: #111;
     padding: 6px;
     border-radius: 4px;
+    border: 2px #444 solid;
 }
-#chatroom_container input {
+#chatroom_container input,#chatroom_container textarea {
     top: 16px;
 }
 #panel1 {
 	width: 100%;
     position: relative;
-    top: 28px;
+    top: 24px;
 	height: 36px;
 	user-select: none;
 }
@@ -158,6 +161,19 @@
     top: 2px !important;
     left: -6px;
 }
+ul,ol {
+    margin: 0px;
+    line-height: 50%;
+}
+ul li,ol li {
+    line-height: 100%;
+}
+blockquote {
+    margin: 0px;
+    padding: 10px 10px;
+    background-color: rgba(0,0,0,.07);
+    border-radius: 4px;
+}
 @media (prefers-color-scheme: dark) {
     #chatroom_container {
         background-color: #282828;
@@ -188,6 +204,9 @@
     }
     #quoteselector:focus {
         background-color: #111;
+    }
+    blockquote {
+        background-color: rgba(255,255,255,.07);
     }
 }
 @media screen and (min-height: 960px) {

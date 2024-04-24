@@ -8,10 +8,10 @@ import { createI18n } from 'vue-i18n'
 
 import { stp_glob_i18n } from './locales/global.js'
 import { load_data } from './store.js'
-load_data()
 
 import { load_preconfig } from './scripts/preconfig.js'
 load_preconfig()
+load_data()
 
 import { thirdpartydeployadjusts } from './scripts/vercel.js'
 thirdpartydeployadjusts()

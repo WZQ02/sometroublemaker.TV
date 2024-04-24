@@ -131,7 +131,13 @@
                     }
                     speak_name = DOMPurify.sanitize(speak_name)//转换后清理speak_name
                     speak_cont = DOMPurify.sanitize(speak_cont)//转换后清理speak_cont
-                    formatted.innerHTML = formatted.innerHTML + `<span class="speak_name" title="${parseStr.time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
+                    //将换行符转换为HTML格式
+                    speak_cont = speak_cont.replace(/\n/g, '<br>')
+                    //删除多余的换行符
+                    if (speak_cont.slice(-4)=="<br>") {
+                        speak_cont = speak_cont.slice(0,-4)
+                    }
+                    formatted.innerHTML += `<span class="speak_name" title="${parseStr.time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
                     //判断是不是自己发言
                     if (stp_store.chatroom.username.value && DOMPurify.sanitize(stp_store.chatroom.username.value) == speak_name) {
                         formatted.className = "speak isyou";
@@ -145,6 +151,7 @@
                     tempdiv.innerHTML = speak_cont
                     display_msg_as_danmaku(tempdiv.textContent || tempdiv.innerText || '');
 				    break;
+                    
                 case 9://接收到消息记录
                     formatted.innerHTML = ''//清除时间戳
                     formatted.className = "prev_msgs";
@@ -164,6 +171,11 @@
                                 speak_cont = marked.parse(speak_cont)
                             }
                             speak_cont = DOMPurify.sanitize(speak_cont)//转换后清理
+                            //将换行符转换为HTML格式，并删除多余的换行符
+                            speak_cont = speak_cont.replace(/\n/g, '<br>')
+                            if (speak_cont.slice(-4)=="<br>") {
+                                speak_cont = speak_cont.slice(0,-4)
+                            }
                             if (convert_time(speak_time) - last_recorded_time >= 3600) {//记录间隔超过1小时则显示时间信息
                                 last_recorded_time = convert_time(speak_time)
                                 formatted_prev_msg.innerHTML = `<span class="timer" title="${speak_time}">${speak_time}</span><br/>`;

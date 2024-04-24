@@ -76,7 +76,11 @@ p {
 s {
     opacity: 0.4;
 }
-input[type="text"] {
+textarea {
+    resize: none;
+    height: 24px;
+}
+input[type="text"],textarea {
 	font-size: 14px;
     position: relative;
 	width: calc(100% - 24px);
@@ -89,7 +93,7 @@ input[type="text"] {
     background-color: #ddd;
     transition: 0.25s;
 }
-input[type="text"]:focus {
+input[type="text"]:focus,textarea:focus {
     background-color: #fff;
 }
 input[type="radio"] {
@@ -195,11 +199,11 @@ input[type="radio"] {
     ::-webkit-scrollbar-thumb:active {
         background-color: rgba(255,255,255,.75) !important;
     }
-    input[type="text"] {
+    input[type="text"],textarea {
         color: #ccc;
         background-color: #333;
     }
-    input[type="text"]:focus {
+    input[type="text"]:focus,textarea:focus {
         background-color: #111;
     }
     .prompt {
