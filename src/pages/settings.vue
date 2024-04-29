@@ -3,7 +3,6 @@
     import { useI18n } from 'vue-i18n'
     const { locale } = useI18n()
     import { stp_store } from '../store.js'
-
     import { thirdpartydeployadjusts2 } from '../scripts/vercel.js'
 
     const ipt1 = ref(null)
@@ -22,6 +21,8 @@
     const ipt14 = ref(null)
     const ipt4_text = ref(null)
     const advanced_settings = ref(null)
+    const sel1 = ref(null)
+    const sel2 = ref(null)
     const custom_hls_url = ref("")
     const custom_ws_url = ref("")
     const custom_hls_url_type = ref(0)
@@ -35,24 +36,30 @@
     function init() {
         switch (stp_store.settings.stp_lang.value) {
             case 1:
-                ipt2.value.checked = 1;
+                //ipt2.value.checked = 1;
+                sel1.value.value = 2;
                 break
             case 2:
-                ipt3.value.checked = 1;
+                //ipt3.value.checked = 1;
+                sel1.value.value = 3;
                 break
             default:
-                ipt1.value.checked = 1;
+                sel1.value.value = 1;
+                //ipt1.value.checked = 1;
                 //break//既不是1也不是2就勾选ipt1
         }
         switch (stp_store.settings.stp_live_lin.value) {
             case 1:
-                ipt5.value.checked = 1;
+                //ipt5.value.checked = 1;
+                sel2.value.value = 5;
                 break
             case 2:
-                ipt6.value.checked = 1;
+                //ipt6.value.checked = 1;
+                sel2.value.value = 6;
                 break
             default:
-                ipt4.value.checked = 1;
+                //ipt4.value.checked = 1;
+                sel2.value.value = 4;
                 //break
         }
         ipt7.value.checked = stp_store.settings.stp_allow_pip.value;
@@ -124,6 +131,17 @@
         }
     }
 
+    function ipt_handler(value) {
+        switch (value) {
+            case 1:
+                ipt_select(Number(sel1.value.value))
+                break
+            case 2:
+                ipt_select(Number(sel2.value.value))
+                break
+        }
+    }
+
     onMounted(() => {
         init();
         if (adv_options_editable.value == 0) {
@@ -144,29 +162,64 @@
     <TransitionGroup name="app_trans"><div id="container" key="home_container">
         <h1>{{$t("settings.title")}}</h1>
         <div id="settings_options">
-            <p>
+            <!--<p>
                 {{$t("settings.message.1")}}
                 <input type="radio" ref="ipt1" name="lang_setting" value="1" @click="ipt_select(1)">{{$t("settings.message.2")}}
                 <input type="radio" ref="ipt2" name="lang_setting" value="2" @click="ipt_select(2)">简体中文&nbsp;
                 <input type="radio" ref="ipt3" value="3" name="lang_setting" @click="ipt_select(3)">English
-            </p>
+            </p>-->
             <p>
+                <span class="select_cont">
+                    <div class="title">{{$t("settings.message.1")}}</div>
+                    <select class="settings_sel" ref="sel1" @change="ipt_handler(1)">
+                        <option value="1">{{$t("settings.message.2")}}</option>
+                        <option value="2">简体中文</option>
+                        <option value="3">English</option>
+                    </select>
+                </span>
+            </p>
+            <!--<p>
                 {{$t("settings.message.3")}}
                 <input type="radio" ref="ipt4" name="live_lin" value="1" @click="ipt_select(4)"><span ref="ipt4_text">{{$t("settings.message.4")}}</span>
                 <input type="radio" ref="ipt5" name="live_lin" value="2" @click="ipt_select(5)">{{$t("settings.message.5")}}&nbsp;
                 <input type="radio" ref="ipt6" name="live_lin" value="3" @click="ipt_select(6)">{{$t("settings.message.6")}}
+            </p>-->
+            <p>
+                <span class="select_cont">
+                    <div class="title">{{$t("settings.message.3")}}</div>
+                    <select class="settings_sel" ref="sel2" @change="ipt_handler(2)">
+                        <option value="4">{{$t("settings.message.4")}}</option>
+                        <option value="5">{{$t("settings.message.5")}}</option>
+                        <option value="6">{{$t("settings.message.6")}}</option>
+                    </select>
+                </span>
             </p>
             <p>
-                <input type="checkbox" ref="ipt7" class="settings_checkbox" @click="ipt_select(7)">
-                &nbsp;{{$t("settings.message.9")}}
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.9")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt7" class="settings_checkbox" @click="ipt_select(7)">
+                        <span class="slider"></span>
+                    </label>
+                </span>
             </p>
             <p>
-                <input type="checkbox" ref="ipt14" class="settings_checkbox" @click="ipt_select(14)">
-                &nbsp;{{$t("settings.message.19")}}
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.19")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt14" class="settings_checkbox" @click="ipt_select(14)">
+                        <span class="slider"></span>
+                    </label>
+                </span>
             </p>
             <p>
-                <input type="checkbox" ref="ipt12" class="settings_checkbox" @click="ipt_select(12)">
-                &nbsp;{{$t("settings.message.17")}}
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.17")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt12" class="settings_checkbox" @click="ipt_select(12)">
+                        <span class="slider"></span>
+                    </label>
+                </span>
             </p>
             
             <br>
@@ -174,22 +227,42 @@
             <a class="c" @click="display_adv_settings()" v-show="adv_settings_isdisplay">{{$t("settings.button.2")}}</a>
         </div><br>
         <div id="advanced_settings" ref="advanced_settings">
-            <p>{{$t("settings.message.10")}}</p>
+            <hr style="opacity: .2;"><p style="font-weight: bold;opacity: .6;">{{$t("settings.message.10")}}</p>
             <p>
-                <input type="checkbox" ref="ipt8" class="settings_checkbox" @click="ipt_select(8)">
-                &nbsp;{{$t("settings.message.11")}}
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.11")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt8" class="settings_checkbox" @click="ipt_select(8)">
+                        <span class="slider"></span>
+                    </label>
+                </span>
             </p>
             <p v-bind:class="{uneditable:!adv_options_editable}">
-                <input type="checkbox" ref="ipt10" class="settings_checkbox" @click="ipt_select(10)" v-bind:disabled="!adv_options_editable">
-                &nbsp;{{$t("settings.message.15")}}
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.15")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt10" class="settings_checkbox" @click="ipt_select(10)" v-bind:disabled="!adv_options_editable">
+                        <span class="slider"></span>
+                    </label>
+                </span>
             </p>
             <p v-bind:class="{uneditable:!adv_options_editable}">
-                <input type="checkbox" ref="ipt9" class="settings_checkbox" @click="ipt_select(9)" v-bind:disabled="!adv_options_editable">
-                &nbsp;{{$t("settings.message.14")}}
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.14")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt9" class="settings_checkbox" @click="ipt_select(9)" v-bind:disabled="!adv_options_editable">
+                        <span class="slider"></span>
+                    </label>
+                </span>
             </p>
             <p v-bind:class="{uneditable:!adv_options_editable}">
-                <input type="checkbox" ref="ipt13" class="settings_checkbox" @click="ipt_select(13)" v-bind:disabled="!adv_options_editable">
-                &nbsp;{{$t("settings.message.18")}}
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.18")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt13" class="settings_checkbox" @click="ipt_select(13)" v-bind:disabled="!adv_options_editable">
+                        <span class="slider"></span>
+                    </label>
+                </span>
             </p>
             <!--<p v-bind:class="{uneditable:!adv_options_editable}">
                 <input type="checkbox" ref="ipt11" class="settings_checkbox" @click="ipt_select(11)" v-bind:disabled="!adv_options_editable">
@@ -219,5 +292,22 @@
 }
 #advanced_settings p.uneditable {
     opacity: 0.25;
+}
+.select_cont {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+.settings_sel {
+    position: absolute;
+    font-size: 15px;
+    width: 200px;
+    height: 32px;
+    top: -2px;
+    right: 0px;
+}
+.select_cont div.title {
+    line-height: 28px;
+    max-width: calc(100% - 200px);
 }
 </style>

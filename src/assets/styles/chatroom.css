@@ -126,30 +126,12 @@
 #panel1 svg:active {
 	opacity: 1 !important;
 }
-#quoteselector {
-	-webkit-appearance: none;
-   	-moz-appearance: none;
-   	appearance: none;
-   	text-align: left;
-   	position: relative;
-   	top: 4px;
-	width: 160px;
-	height: 28px;
-	padding: 0px 4px;
-	border: 0px;
-	border-radius: 14px;
-	outline: none;
-    background-color: #ddd;
-	transition: background-color 0.4s;
-}
-#quoteselector:focus {
-	background-color: #fff;
-}
 #askforusername input {
     width: calc(100% - 88px);
     top: 0px;
 }
 #askforusername #promptbtn {
+    width: 56px;
     left: 8px;
     top: 1px;
 }
@@ -174,6 +156,11 @@ blockquote {
     background-color: rgba(0,0,0,.07);
     border-radius: 4px;
 }
+#quoteselector {
+    top: 4px;
+    width: 160px;
+    height: 28px;
+}
 @media (prefers-color-scheme: dark) {
     #chatroom_container {
         background-color: #282828;
@@ -197,13 +184,6 @@ blockquote {
     #chatcontent div.isyou div .speak_cont {
         color: #ddd;
         background-color: #047;
-    }
-    #quoteselector {
-        color: #aaa;
-        background-color: #333;
-    }
-    #quoteselector:focus {
-        background-color: #111;
     }
     blockquote {
         background-color: rgba(255,255,255,.07);

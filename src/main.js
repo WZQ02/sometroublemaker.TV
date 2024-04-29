@@ -1,4 +1,5 @@
 import './assets/styles/pages.css'
+import './assets/styles/slider.css'
 import { stp_app_date,stp_app_version } from './assets/json/ver.json'
 
 import { createApp } from 'vue'
@@ -16,6 +17,8 @@ load_data()
 import { thirdpartydeployadjusts } from './scripts/vercel.js'
 thirdpartydeployadjusts()
 
+import { app_name } from './assets/json/app_name.json'
+
 //import Wel from './pages/welcome.vue'
 //import Home from './pages/home.vue'
 //import LivePlayer from './pages/live_player.vue'
@@ -31,7 +34,7 @@ const Dots = () => import('./pages/dots.vue')
 
 import mitt from 'mitt'
 
-console.log("sometroublemaker.TV version "+stp_app_version+". Last updated "+stp_app_date)
+console.log(app_name+" version "+stp_app_version+". Last updated "+stp_app_date)
 
 const routes = [
     { path: '/', component: Wel, name: Wel },

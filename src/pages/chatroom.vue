@@ -270,10 +270,24 @@
             <button id="promptbtn" @click="closeprompt();">{{ $t("chatroom.button.ok_got_it") }}</button>
         </div>
         <div id="info" ref="info" class="prompt">
-            {{ $t("chatroom.message.6") }}<span id="currentusername" ref="currentusername" style="font-weight: bold;"></span>&nbsp;&nbsp;<button id="promptbtn" @click="alterusrname();">{{ $t("chatroom.button.change") }}</button><br><br>
-            {{ $t("chatroom.message.7") }}<span id="roominfo" ref="roominfo" style="font-weight: bold;"></span><br><br>
-            <input type="checkbox" class="chat_infochkbx" name="isshowuserinout" ref="isshowuserinout" @click="isshowuserinout_store()"><span>{{ $t("chatroom.message.8") }}</span><br><br>
-            <input type="checkbox" class="chat_infochkbx" name="ismarkdown" ref="ismarkdown" @click="ismarkdown_store()"><span>{{ $t("chatroom.message.9") }}</span><br><br>
+            <p style="margin-top: 0px;">{{ $t("chatroom.message.6") }}<span id="currentusername" ref="currentusername" style="font-weight: bold;"></span>&nbsp;&nbsp;<button id="promptbtn" @click="alterusrname();">{{ $t("chatroom.button.change") }}</button></p>
+            <p>{{ $t("chatroom.message.7") }}<span id="roominfo" ref="roominfo" style="font-weight: bold;"></span></p>
+            <!--<input type="checkbox" class="chat_infochkbx" name="isshowuserinout" ref="isshowuserinout" @click="isshowuserinout_store()"><span>{{ $t("chatroom.message.8") }}</span><br><br>-->
+            <p><span class="switch_cont">
+                <div class="title">{{$t("chatroom.message.8")}}</div>
+                <label class="switch">
+                    <input type="checkbox" ref="isshowuserinout" @click="isshowuserinout_store()">
+                    <span class="slider"></span>
+                </label>
+            </span></p>
+            <!--<input type="checkbox" class="chat_infochkbx" name="ismarkdown" ref="ismarkdown" @click="ismarkdown_store()"><span>{{ $t("chatroom.message.9") }}</span><br><br>-->
+            <p><span class="switch_cont">
+                <div class="title">{{$t("chatroom.message.9")}}</div>
+                <label class="switch">
+                    <input type="checkbox" ref="ismarkdown" @click="ismarkdown_store()">
+                    <span class="slider"></span>
+                </label>
+            </span></p>
             <button id="promptbtn" @click="closeprompt();">{{ $t("chatroom.button.got_it") }}</button>
         </div>
     </div></TransitionGroup>

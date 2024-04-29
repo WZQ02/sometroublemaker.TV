@@ -92,9 +92,9 @@ const stp_glob_i18n = {
         settings: {
             title: '设置',
             message: {
-                1: '语言：',
+                1: '显示语言',
                 2: '跟随系统（默认）',
-                3: '放映厅线路：',
+                3: '放映厅线路',
                 4: '跟随域名（默认）',
                 5: '直连 ',
                 6: 'CloudFlare 代理线路',
@@ -252,9 +252,9 @@ const stp_glob_i18n = {
         settings: {
             title: 'Settings',
             message: {
-                1: 'Language: ',
+                1: 'Display Language',
                 2: 'System Language (Default) ',
-                3: 'Livestream line: ',
+                3: 'Livestream line',
                 4: 'Follow Domain (Default) ',
                 5: 'Direct',
                 6: 'CloudFlare Proxy',

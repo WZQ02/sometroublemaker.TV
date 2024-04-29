@@ -170,6 +170,25 @@ input[type="radio"] {
 .invisable {
     opacity: 0 !important;
 }
+select {
+   	text-align: left;
+   	position: relative;
+   	top: 0px;
+    appearance: none;
+	padding: 0px 4px;
+	border: 0px;
+	border-radius: 14px;
+	outline: none;
+    background-color: #ddd;
+	transition: background-color 0.4s;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><title>chevron-down</title><path d='M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z' /></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.2rem top 55%;
+    background-size: 1.2rem auto;
+}
+select:focus {
+	background-color: #fff;
+}
 @media (prefers-color-scheme: dark) {
     body {
         color: #eeeeee;
@@ -223,6 +242,14 @@ input[type="radio"] {
     }
     #sendmsg:active {
         background: #024 !important;
+    }
+    select {
+        color: #aaa;
+        background-color: #333;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'><title>chevron-down</title><path d='M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z' /></svg>");
+    }
+    select:focus {
+        background-color: #111;
     }
 }
 @media screen and (max-width: 900px) {
