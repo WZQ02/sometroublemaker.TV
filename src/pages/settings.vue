@@ -154,7 +154,6 @@
             stp_store.adv_settings.custom_ws_url.change(custom_ws_url.value)
         })
         thirdpartydeployadjusts2(ipt4.value)
-        thirdpartydeployadjusts2(ipt4_text.value)
     })
 </script>
 
@@ -188,7 +187,7 @@
                 <span class="select_cont">
                     <div class="title">{{$t("settings.message.3")}}</div>
                     <select class="settings_sel" ref="sel2" @change="ipt_handler(2)">
-                        <option value="4">{{$t("settings.message.4")}}</option>
+                        <option value="4" ref="ipt4">{{$t("settings.message.4")}}</option>
                         <option value="5">{{$t("settings.message.5")}}</option>
                         <option value="6">{{$t("settings.message.6")}}</option>
                     </select>
