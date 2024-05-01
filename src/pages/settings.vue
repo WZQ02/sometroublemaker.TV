@@ -5,12 +5,12 @@
     import { stp_store } from '../store.js'
     import { thirdpartydeployadjusts2 } from '../scripts/vercel.js'
 
-    const ipt1 = ref(null)
-    const ipt2 = ref(null)
-    const ipt3 = ref(null)
+    //const ipt1 = ref(null)
+    //const ipt2 = ref(null)
+    //const ipt3 = ref(null)
     const ipt4 = ref(null)
-    const ipt5 = ref(null)
-    const ipt6 = ref(null)
+    //const ipt5 = ref(null)
+    //const ipt6 = ref(null)
     const ipt7 = ref(null)
     const ipt8 = ref(null)
     const ipt9 = ref(null)
@@ -19,7 +19,8 @@
     const ipt12 = ref(null)
     const ipt13 = ref(null)
     const ipt14 = ref(null)
-    const ipt4_text = ref(null)
+    const ipt15 = ref(null)
+    //const ipt4_text = ref(null)
     const advanced_settings = ref(null)
     const sel1 = ref(null)
     const sel2 = ref(null)
@@ -70,6 +71,7 @@
         ipt12.value.checked = stp_store.settings.danmaku_disabled.value;
         ipt13.value.checked = stp_store.adv_settings.player_native_controls.value;
         ipt14.value.checked = stp_store.settings.browser_fullscreen.value;
+        ipt15.value.checked = stp_store.settings.danmaku_showname.value;
         custom_hls_url.value = stp_store.adv_settings.custom_hls_url.value;
         custom_ws_url.value = stp_store.adv_settings.custom_ws_url.value;
     }
@@ -117,6 +119,10 @@
                 break
             case 14:
                 stp_store.settings.browser_fullscreen.toggle();
+                break
+            case 15:
+                gCI.proxy?.$bus.emit('dm_showname_toggle',ipt15.value.checked)
+                stp_store.settings.danmaku_showname.toggle();
                 break
         }
     }
@@ -220,7 +226,15 @@
                     </label>
                 </span>
             </p>
-            
+            <p v-bind:class="{uneditable:stp_store.settings.danmaku_disabled.value}">
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.20")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt15" class="settings_checkbox" @click="ipt_select(15)" v-bind:disabled="stp_store.settings.danmaku_disabled.value">
+                        <span class="slider"></span>
+                    </label>
+                </span>
+            </p>
             <br>
             <a class="c" @click="display_adv_settings()" v-show="!adv_settings_isdisplay">{{$t("settings.button.1")}}</a>
             <a class="c" @click="display_adv_settings()" v-show="adv_settings_isdisplay">{{$t("settings.button.2")}}</a>
@@ -286,10 +300,10 @@
 #settings_options,#advanced_settings {
     animation: appear .6s ease 1;
 }
-#advanced_settings p {
+p {
     transition: 0.25s;
 }
-#advanced_settings p.uneditable {
+p.uneditable {
     opacity: 0.25;
 }
 .select_cont {

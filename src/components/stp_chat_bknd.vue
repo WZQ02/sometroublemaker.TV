@@ -28,6 +28,8 @@
     let dots_isalive = 0
     //在线人数统计
     let online_count = 0
+    //弹幕是否显示发送者昵称
+    let danmaku_showname = 0
 
     //向服务器发送信息
     gCI.proxy?.$bus.on('chatroom_send',(e)=>{
@@ -80,6 +82,17 @@
     function update_dots() {
         gCI.proxy?.$bus.emit('dots_update',sid_list)
     }
+
+    if (stp_store.settings.danmaku_showname.value) {
+        danmaku_showname = 1
+    }
+    gCI.proxy?.$bus.on('dm_showname_toggle',(checked)=>{
+        if (checked) {
+            danmaku_showname = 1
+        } else {
+            danmaku_showname = 0
+        }
+    })
 
     //对服务器发送的信息进行格式化
     let format = (str) => {
@@ -149,6 +162,9 @@
                     //创建临时DOM元素，以提取用户发言中的纯文本内容，将其呈现于弹幕
                     const tempdiv = document.createElement('div')
                     tempdiv.innerHTML = speak_cont
+                    if (danmaku_showname) {
+                        tempdiv.innerHTML = speak_name+": "+tempdiv.innerHTML
+                    }
                     display_msg_as_danmaku(tempdiv.textContent || tempdiv.innerText || '');
 				    break;
                     
