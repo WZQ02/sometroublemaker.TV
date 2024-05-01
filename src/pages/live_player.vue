@@ -127,6 +127,7 @@
     const show_video_info = ref(0)
     const show_extra_video_info = ref(0)//展示额外信息
     const controls_invisable_in_fullscreen = ref(0)
+    const msg_onfocus = ref(0)//usrmsg获得焦点时，强制显示播放器菜单
 
     let live_reload;
     let hover_show_controls_timeout
@@ -599,6 +600,12 @@
                 stp_store.session.player_controls_invisable.change(1)
             },5000)
         })
+        usrmsg.value.addEventListener('focus',()=>{
+            msg_onfocus.value = 1
+        })
+        usrmsg.value.addEventListener('blur',()=>{
+            msg_onfocus.value = 0
+        })
     })
     onDeactivated(() => {
         danmaku.hide();
@@ -663,7 +670,7 @@
                 </div>
             </Teleport>
             <Transition name="fade"><div id="player_underline" v-bind:title="$t('item_title.player_underline')" @click="show_controls()" v-if="!fullscreen" @mouseover="hover_show_controls()" @mouseout="hover_show_controls(1)"></div></Transition>
-            <Transition name="pl_controls_popup"><div id="player_controls" ref="player_controls" v-show="display_controls" v-bind:class="{fullscreen:fullscreen,folded:controls_folded,invisable:controls_invisable_in_fullscreen&&fullscreen}" v-on:mouseover="controls_reshow" v-on:mouseout="controls_autohide">
+            <Transition name="pl_controls_popup"><div id="player_controls" ref="player_controls" v-show="display_controls" v-bind:class="{fullscreen:fullscreen,folded:controls_folded&&!msg_onfocus,invisable:controls_invisable_in_fullscreen&&fullscreen&&controls_folded&&!msg_onfocus}" v-on:mouseover="controls_reshow" v-on:mouseout="controls_autohide">
                 <input type="text" v-bind:placeholder="$t('chatroom.input.1')" id="usrmsg" ref="usrmsg" class="player_controls_component usrmsg" maxlength="50">
                 <!--弹幕限50字-->
                 <button id="reload_stream" @click="live_reload(1)" class="player_controls_component reload iconbutton" v-bind:title="$t('live_player.menu.1')">
