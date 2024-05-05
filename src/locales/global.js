@@ -110,7 +110,8 @@ const stp_glob_i18n = {
                 17: '不显示弹幕',
                 18: '启用原生播放器控制',
                 19: '使用浏览器全屏（而非网页全屏）',
-                20: '弹幕显示发送者昵称'
+                20: '弹幕显示发送者昵称',
+                21: '背景显示视频画面'
             },
             button: {
                 1: '显示高级设置',
@@ -271,7 +272,8 @@ const stp_glob_i18n = {
                 17: 'Don\'t show comments in video',
                 18: 'Enable native video player controls',
                 19: 'Fullscreen browser when fullscreen video',
-                20: 'Show name in video comments'
+                20: 'Show name in video comments',
+                21: 'Show video as background'
             },
             button: {
                 1: 'Display Advanced Settings',

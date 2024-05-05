@@ -60,6 +60,15 @@ const stp_store = reactive({
                 this.value = new_value;
                 localStorage.setItem('adv_set_enabled',new_value)
             }
+        },
+        show_vid_as_bg: {
+            value: 0,
+            toggle() {
+                let new_value;
+                if (this.value) {new_value = 0} else {new_value = 1};
+                this.value = new_value;
+                localStorage.setItem('show_vid_as_bg',new_value)
+            }
         }
     },
     adv_settings: {
@@ -172,6 +181,7 @@ function load_data() {
     stp_store.settings.danmaku_disabled.value = eval(localStorage.getItem('danmaku_disabled'))||0;
     stp_store.settings.adv_set_enabled.value = eval(localStorage.getItem('adv_set_enabled'))||0;
     stp_store.settings.danmaku_showname.value = eval(localStorage.getItem('danmaku_showname'))||0;
+    stp_store.settings.show_vid_as_bg.value = eval(localStorage.getItem('show_vid_as_bg'))||0;
     stp_store.adv_settings.disallow_auto_reload_video.value = eval(localStorage.getItem('disallow_auto_reload_video'))||0;
     stp_store.adv_settings.enable_mpegts_player.value = eval(localStorage.getItem('enable_mpegts_player'))||0;
     stp_store.adv_settings.player_native_controls.value = eval(localStorage.getItem('player_native_controls'))||0;

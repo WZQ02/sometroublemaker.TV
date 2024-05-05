@@ -8,6 +8,13 @@ body {
     user-select: none;
     overflow: hidden;
 }
+#pseudo_background {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: -10;
+    overflow: hidden;
+}
 body,#pseudo_background {
     width: 100vw;
     height: 100vh;

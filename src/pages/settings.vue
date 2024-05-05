@@ -20,6 +20,7 @@
     const ipt13 = ref(null)
     const ipt14 = ref(null)
     const ipt15 = ref(null)
+    const ipt16 = ref(null)
     //const ipt4_text = ref(null)
     const advanced_settings = ref(null)
     const sel1 = ref(null)
@@ -72,6 +73,7 @@
         ipt13.value.checked = stp_store.adv_settings.player_native_controls.value;
         ipt14.value.checked = stp_store.settings.browser_fullscreen.value;
         ipt15.value.checked = stp_store.settings.danmaku_showname.value;
+        ipt16.value.checked = stp_store.settings.show_vid_as_bg.value;
         custom_hls_url.value = stp_store.adv_settings.custom_hls_url.value;
         custom_ws_url.value = stp_store.adv_settings.custom_ws_url.value;
     }
@@ -123,6 +125,10 @@
             case 15:
                 gCI.proxy?.$bus.emit('dm_showname_toggle',ipt15.value.checked)
                 stp_store.settings.danmaku_showname.toggle();
+                break
+            case 16:
+                gCI.proxy?.$bus.emit('show_vid_as_bg_toggle',ipt16.value.checked)
+                stp_store.settings.show_vid_as_bg.toggle();
                 break
         }
     }
@@ -231,6 +237,15 @@
                     <div class="title">{{$t("settings.message.20")}}</div>
                     <label class="switch">
                         <input type="checkbox" ref="ipt15" class="settings_checkbox" @click="ipt_select(15)" v-bind:disabled="stp_store.settings.danmaku_disabled.value">
+                        <span class="slider"></span>
+                    </label>
+                </span>
+            </p>
+            <p>
+                <span class="switch_cont">
+                    <div class="title">{{$t("settings.message.21")}}</div>
+                    <label class="switch">
+                        <input type="checkbox" ref="ipt16" class="settings_checkbox" @click="ipt_select(16)">
                         <span class="slider"></span>
                     </label>
                 </span>

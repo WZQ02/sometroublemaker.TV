@@ -1,0 +1,26 @@
+.vbg #container {
+    background-color: #fffb;
+}
+.vbg #chatroom_container {
+    background-color: #eeeb;
+}
+.vbg #chatcontent {
+    background-color: #ccc4;
+}
+.vbg #container,.vbg #chatroom_container {
+    backdrop-filter: blur(16px);
+}
+.vbg #dots_bg {
+    background-color: #0007 !important;
+}
+@media (prefers-color-scheme: dark) {
+    .vbg #container {
+        background-color: #202020bb;
+    }
+    .vbg #chatroom_container {
+        background-color: #282828bb;
+    }
+    .vbg #chatcontent {
+        background-color: #2224;
+    }
+}
