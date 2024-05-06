@@ -9,6 +9,9 @@
     //const cv_display = ref(cv_dis_condition0.value&&cv_dis_condition1.value)
     const gCI = getCurrentInstance()
 
+    let vbg_first_time = 0
+    let sva
+    const bg_framerate = 24
     const app = document.getElementById('app')
 
     watch(() => gCI.proxy?.$route,(to) => {//监听路由，如果在video页面则指定cv_dis_condition0为0
@@ -22,18 +25,10 @@
     if (stp_store.settings.show_vid_as_bg.value) {
         cv_dis_condition1.value = 1
         app.classList.add('vbg')
+        vbg_first_time = 1
     } else {
         cv_dis_condition1.value = 0
     }
-    gCI.proxy?.$bus.on('show_vid_as_bg_toggle',(e)=>{
-        if (e) {
-            cv_dis_condition1.value = 1
-            app.classList.add('vbg')
-        } else {
-            cv_dis_condition1.value = 0
-            app.classList.remove('vbg')
-        }
-    })
 
     onMounted(() => {
         const ctx = cv.value.getContext('2d')
@@ -47,12 +42,12 @@
             adjustcvsize()
         }*/
         /* load video frame on canvas, each .04s */
-        function showvidasbg(cancel) {
+        function showvidasbg(cancel,framerate) {
             if (cancel) {
                 clearInterval(sva)
                 return
             }
-            let sva = setInterval(()=>{
+            sva = setInterval(()=>{
                 if (!(cv_dis_condition0.value&&cv_dis_condition1.value)) {
                     return
                 }
@@ -68,11 +63,13 @@
                     }
                 } catch(err) {
                     cv_dis_condition2.value = 0
-                    //console.log(err)
                 }
-            },40)
+                //console.log("show_active")
+            },1000/framerate)
         }
-        showvidasbg()
+        if (vbg_first_time) {
+            showvidasbg(0,bg_framerate)
+        }
 
         function adjustcvsize() {
             const cv_ar = cv.value.width/cv.value.height
@@ -82,17 +79,30 @@
                 cv.value.style.height = '100%'
                 cv.value.style.width = 'auto'
                 cv.value.style.left = `${(1-cv_ar/win_ar)*50}%`
+                cv.value.style.top = '0px'
             //反之
             } else {
                 cv.value.style.width = '100%'
                 cv.value.style.height = 'auto'
                 cv.value.style.top = `${(1-win_ar/cv_ar)*50}%`
+                cv.value.style.left = '0px'
             }
-            //console.log(cv.value.width,cv.value.height,cv_ar,win_ar)
         }
 
         window.addEventListener('resize',()=>{
             adjustcvsize()
+        })
+
+        gCI.proxy?.$bus.on('show_vid_as_bg_toggle',(e)=>{
+            if (e) {
+                cv_dis_condition1.value = 1
+                app.classList.add('vbg')
+                showvidasbg(0,bg_framerate)
+            } else {
+                cv_dis_condition1.value = 0
+                app.classList.remove('vbg')
+                showvidasbg(1)
+            }
         })
     })
 </script>

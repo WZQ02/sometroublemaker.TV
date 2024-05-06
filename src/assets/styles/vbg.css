@@ -5,7 +5,7 @@
     background-color: #eeeb;
 }
 .vbg #chatcontent {
-    background-color: #ccc4;
+    background-color: #0002;
 }
 .vbg #container,.vbg #chatroom_container {
     backdrop-filter: blur(16px);
@@ -19,8 +19,5 @@
     }
     .vbg #chatroom_container {
         background-color: #282828bb;
-    }
-    .vbg #chatcontent {
-        background-color: #2224;
     }
 }

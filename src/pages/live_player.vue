@@ -81,6 +81,11 @@
     let play = () => {
         video.value.muted = true;
         video.value.play();
+        //如果用户手动触发过静音，则不检查
+        if (manual_mute) {
+            audio_muted_status.value = 1
+            return
+        }
         //检测是否允许自动播放
         const ctx = new AudioContext();
         const canautoplay = ctx.state == 'running';
@@ -98,6 +103,7 @@
     let detect_live_status_interval
     let detect_live_status_when_playing_interval
     let should_trigger_live_reload = 0
+    let manual_mute = 0//用户手动启用了静音
     const display_controls = ref(0)
     const fullscreen = ref(0)
     const controls_folded = ref(0)
@@ -230,9 +236,9 @@
     } 
     let toggle_sound = () => {
         if (video.value.muted) {
-            video.value.muted = audio_muted_status.value = 0;
+            manual_mute = video.value.muted = audio_muted_status.value = 0;
         } else {
-            video.value.muted = audio_muted_status.value = 1;
+            manual_mute = video.value.muted = audio_muted_status.value = 1;
         }
     }
     let sendusrmsg = () => {
