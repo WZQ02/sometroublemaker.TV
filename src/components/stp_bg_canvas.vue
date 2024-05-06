@@ -11,7 +11,8 @@
 
     let vbg_first_time = 0
     let sva
-    const bg_framerate = 24
+    let bg_framerate = Number(stp_store.adv_settings.vid_bg_framerate.value)||24
+
     const app = document.getElementById('app')
 
     watch(() => gCI.proxy?.$route,(to) => {//监听路由，如果在video页面则指定cv_dis_condition0为0
@@ -54,11 +55,13 @@
                 try {
                     const video = document.getElementById('video')
                     if (video.readyState) {
-                        cv.value.width = video.videoWidth
-                        cv.value.height = video.videoHeight
+                        if ((cv.value.width != video.videoWidth)||(cv.value.height != video.videoHeight)) {
+                            cv.value.width = video.videoWidth
+                            cv.value.height = video.videoHeight
+                            adjustcvsize()
+                        }
                         ctx.drawImage(video,0,0)
                         //ctx.filter = "blur(16px)"
-                        adjustcvsize()
                         cv_dis_condition2.value = 1
                     }
                 } catch(err) {

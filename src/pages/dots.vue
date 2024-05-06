@@ -68,7 +68,7 @@
     onMounted(() => {
         gCI.proxy?.$bus.emit('req_chatserverbknd',1)
         if (stp_store.others.stp_dots_demo_mode.value) {
-            let count = eval(stp_store.others.stp_dots_demo_mode.value)
+            let count = Number(stp_store.others.stp_dots_demo_mode.value)
             if (!count || count < 1) {
                 exit_demo();
             } else {
