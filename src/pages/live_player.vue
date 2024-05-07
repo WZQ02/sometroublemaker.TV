@@ -443,7 +443,7 @@
                     if (detect_live_status_interval) {
                         clearInterval(detect_live_status_interval)
                     }
-                    if (detect_live_status_when_playing_interval) {} else {
+                    if (!detect_live_status_when_playing_interval) {
                         detect_live_status_when_playing_interval = setInterval(()=>{detect_live_status_when_playing()},5000)
                     }
                     if (player_type) {
@@ -452,15 +452,19 @@
                         console.log("当前播放器类型：hls.js")
                     }
                     request.abort();
-                } else if (promptthereisnolive_loaded) {} else {
+                } else if (!promptthereisnolive_loaded) {
                     console.log("无法连接到直播服务器，当前可能无人推送视频流。")
                     promptthereisnolive()
                     if (detect_live_status_when_playing_interval) {
                         clearInterval(detect_live_status_when_playing_interval)
                     }
+                    if (detect_live_status_interval) {
+                        clearInterval(detect_live_status_interval)
+                    }
                     detect_live_status_interval = setInterval(()=>{
                         if (get_if_reload_isallowed()) {
                             detect_live_status(1)
+                            //console.log("detect_live_status_interval triggered")
                         }
                     },10000)
                 }
