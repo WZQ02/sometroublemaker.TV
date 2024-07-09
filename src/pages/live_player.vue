@@ -347,7 +347,7 @@
     function v_codec_label(codec) {//视频编码判断
         if (codec.indexOf("avc")!=-1) {
             return `H.264 / AVC (${codec})`
-        } else if (codec.indexOf("hvc")!=-1) {
+        } else if (codec.indexOf("hvc")!=-1 || codec.indexOf("hev")!=-1) {
             return `H.265 / HEVC (${codec})`
         } else if (codec.indexOf("av01")!=-1) {
             return `AV1 (${codec})`
@@ -451,14 +451,30 @@
                     }
                 })
                 dashplayer.on(MediaPlayer.events["PLAYBACK_METADATA_LOADED"],()=>{
-                    let v_codecstring = dashplayer.getCurrentTrackFor("video").codec
-                    let v_codecinfo = v_codecstring.slice(v_codecstring.indexOf('codecs=')+7).slice(1,-1)
-                    player_info.value.v_codec = v_codec_label(v_codecinfo)
-                    let a_codecstring = dashplayer.getCurrentTrackFor("audio").codec
-                    let a_codecinfo = a_codecstring.slice(a_codecstring.indexOf('codecs=')+7).slice(1,-1)
-                    player_info.value.a_codec = a_codecinfo
-                    show_extra_video_info.value = 2
                     //console.log(dashplayer.getCurrentTrackFor("video"))
+                    let v_codecstring,v_codecinfo,a_codecstring,a_codecinfo,hasvideo
+                    if (dashplayer.getCurrentTrackFor("video")) {
+                        hasvideo = 1
+                        v_codecstring = dashplayer.getCurrentTrackFor("video")["codec"]
+                        v_codecinfo = v_codecstring.slice(v_codecstring.indexOf('codecs=')+7).slice(1,-1)
+                        player_info.value.v_codec = v_codec_label(v_codecinfo)
+                    }
+                    if (dashplayer.getCurrentTrackFor("audio")) {
+                        a_codecstring = dashplayer.getCurrentTrackFor("audio")["codec"]
+                        a_codecinfo = a_codecstring.slice(a_codecstring.indexOf('codecs=')+7).slice(1,-1)
+                        player_info.value.a_codec = a_codecinfo
+                        if (hasvideo) {
+                            show_extra_video_info.value = 2
+                        } else {
+                            show_extra_video_info.value = 3
+                        }
+                    } else {
+                        if (hasvideo) {
+                            show_extra_video_info.value = 4
+                        } else {
+                            show_extra_video_info.value = 0
+                        }
+                    }
                 })
                 //质量切换时更新视频分辨率数值
                 dashplayer.on(MediaPlayer.events["QUALITY_CHANGE_RENDERED"],()=>{
