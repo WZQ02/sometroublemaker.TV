@@ -124,6 +124,13 @@ const stp_store = reactive({
         },
         vid_bg_framerate: {
             value: null
+        },
+        stream_type: {
+            value: 0,
+            toggle(value) {
+                this.value = value;
+                localStorage.setItem('stream_type',value);
+            }
         }
     },
     chatroom: {
@@ -193,6 +200,7 @@ function load_data() {
     stp_store.adv_settings.custom_hls_url.value = localStorage.getItem('custom_hls_url');
     stp_store.adv_settings.custom_ws_url.value = localStorage.getItem('custom_ws_url');
     stp_store.adv_settings.vid_bg_framerate.value = localStorage.getItem('vid_bg_framerate');
+    stp_store.adv_settings.stream_type.value = Number(localStorage.getItem('stream_type'));
     stp_store.chatroom.username.value = localStorage.getItem('chatUserName');
     stp_store.chatroom.dont_show_userinout.value = Number(localStorage.getItem('isshowuserinout'));
     stp_store.chatroom.markdown_disabled.value = Number(localStorage.getItem('ismarkdown'));

@@ -10,6 +10,7 @@
     import { stp_store } from '../store.js'
     import '@material/web/progress/circular-progress.js';
     import contextMenu from '../components/player/video_contextmenu.vue'
+    import { MediaPlayer } from 'dashjs'
     //import MediaInfoFactory from 'mediainfo.js'
     
     const video = ref(null);
@@ -24,8 +25,10 @@
 
     //当无法从api.wzq02.top获取默认直播流url地址时，使用这些参数
     let vid_domain = ['https://wzq02.top','https://d.wzq02.top','']
-    let vid_src = ['/live/livestream.m3u8','/live/livestream.flv']
+    let vid_src = ['/live/livestream.m3u8','/live/livestream.flv','/live/livestream.mpd']
     const mpegts_src_type = ['flv','mpegts','m2ts','mp4','mse']
+    //串流名称中所有可能的扩展名
+    const possible_src_type = ['m3u8','flv','ts','mts','m2t','mp4','m4v','mpd']
 
     //默认直播流url地址的json文件网络路径（需自行部署的话请注释掉下面这句）
     const url_api_url = 'https://api.wzq02.top/stmkl.tv/player_url.json'
@@ -146,6 +149,13 @@
     const player_info_refresh_rate = 500 //player_info更新频率，毫秒
     const show_webkit_bitrate = ref(0)
 
+    let videoUrl = '';
+    let stp_live_lin;
+    let stp_allow_pip;
+    //let player_type;//0为hls播放器，1为mpegts（弃用）
+    let player_typ2;//新版type，根据串流名称自动选择播放器类型，默认hls（0或undefined），根据需要切换为mpegts（1）或dash（2）
+    let last_used_player_typ2;//上次使用的播放器类型，销毁实例时使用
+
     gCI.proxy?.$bus.on('change_pip_setting',function(e){
         allow_pip = e
     })
@@ -164,6 +174,15 @@
             return 3
         } else {
             return 4
+        }
+    }
+    function src_type_detect_for_player_type(url) {
+        if (url.indexOf(possible_src_type[0]) != -1) {
+            player_typ2 = 0
+        } else if (url.indexOf(possible_src_type[1]) != -1 || url.indexOf(possible_src_type[2]) != -1 || url.indexOf(possible_src_type[3]) != -1 || url.indexOf(possible_src_type[4]) != -1 || url.indexOf(possible_src_type[5]) != -1 || url.indexOf(possible_src_type[6]) != -1) {
+            player_typ2 = 1
+        } else if (url.indexOf(possible_src_type[7]) != -1) {
+            player_typ2 = 2
         }
     }
     let get_if_reload_isallowed = () => {
@@ -323,16 +342,27 @@
         player_info.value.res_h = video.value.videoWidth
         player_info.value.res_v = video.value.videoHeight
     }
+    function v_codec_label(codec) {//视频编码判断
+        if (codec.indexOf("avc")!=-1) {
+            return `H.264 / AVC (${codec})`
+        } else if (codec.indexOf("hvc")!=-1) {
+            return `H.265 / HEVC (${codec})`
+        } else if (codec.indexOf("av01")!=-1) {
+            return `AV1 (${codec})`
+        } else {
+            return codec
+        }
+    }
 
     onMounted(() => {
-        let videoUrl = '';
-        let stp_live_lin;
-        let stp_allow_pip;
-        let player_type;//0为hls播放器，1为mpegts
-        let get_live_url=()=>{
+        function get_live_url() {
             stp_live_lin = stp_store.settings.stp_live_lin.value;
             stp_allow_pip = stp_store.settings.stp_allow_pip.value;
-            player_type = (stp_store.settings.adv_set_enabled.value && stp_store.adv_settings.enable_mpegts_player.value)?1:0
+            //player_type = (stp_store.settings.adv_set_enabled.value && stp_store.adv_settings.enable_mpegts_player.value)?1:0
+            let st = 0
+            if (stp_store.settings.adv_set_enabled.value) {
+                st = stp_store.adv_settings.stream_type.value
+            }
             if (stp_store.settings.adv_set_enabled.value && stp_store.adv_settings.custom_hls_url.value) {
                 videoUrl = stp_store.adv_settings.custom_hls_url.value;
             } else {
@@ -343,15 +373,20 @@
                 } else {
                     videoUrl = vid_domain[2];
                 }
-                if (player_type) {
+                /*if (player_type) {
                     videoUrl += vid_src[1]
                 } else {
                     videoUrl += vid_src[0]
-                }
+                }*/
+                videoUrl += vid_src[st]
             }
             player_info.value.domain = videoUrl
-            if (player_type) {
+            src_type_detect_for_player_type(videoUrl)
+            //console.log(player_typ2)
+            if (player_typ2 == 1) {
                 player_info.value.type = "mpegts"
+            } else if (player_typ2 == 2) {
+                player_info.value.type = "dash"
             } else {
                 player_info.value.type = "hls"
             }
@@ -360,11 +395,12 @@
         if (stp_allow_pip == 1) {
             allow_pip = 1;
         }
-        let hls,mpegtsplayer,mpegtsplayer_canbedestroyed
+        let hls,mpegtsplayer,dashplayer
         let load_stream = () => {
-            if (player_type) {//使用mpegts播放器
+            last_used_player_typ2 = player_typ2
+            if (player_typ2 == 1) {//使用mpegts播放器
                 if (mpegts.getFeatureList().mseLivePlayback) {
-                    mpegtsplayer_canbedestroyed = 1;
+                    //mpegtsplayer_canbedestroyed = 1;
                     let src_type = mpegts_src_detect(videoUrl)
                     mpegtsplayer = mpegts.createPlayer({
                         type: mpegts_src_type[src_type],
@@ -376,8 +412,8 @@
                     mpegtsplayer.on(mpegts.Events.MEDIA_INFO,(e)=>{
                         player_info.value.framerate = Math.round(e.fps*1000)/1000
                         player_info.value.a_codec = e.audioCodec
-                        //视频编码判断
-                        if (e.videoCodec.indexOf("avc")!=-1) {
+                        //视频编码判断（已改为外置function）
+                        /*if (e.videoCodec.indexOf("avc")!=-1) {
                             player_info.value.v_codec = `H.264 / AVC (${e.videoCodec})`
                         } else if (e.videoCodec.indexOf("hvc")!=-1) {
                             player_info.value.v_codec = `H.265 / HEVC (${e.videoCodec})`
@@ -385,13 +421,47 @@
                             player_info.value.v_codec = `AV1 (${e.videoCodec})`
                         } else {
                             player_info.value.v_codec = e.videoCodec
-                        }
+                        }*/
+                        player_info.value.v_codec = v_codec_label(e.videoCodec)
                         player_info.value.bitrate = Math.round(e.videoDataRate)
                         show_extra_video_info.value = 1//显示详细编码信息
                         //console.log(e)
                     })
                     play();
                 }
+            } else if (player_typ2 == 2) {//dash.js
+                dashplayer = MediaPlayer().create()
+                dashplayer.initialize(video.value,videoUrl,true)
+                /*dashplayer.on(MediaPlayer.events["CAN_PLAY"],(e)=>{
+                    play();
+                })*/
+                dashplayer.on(MediaPlayer.events["PLAYBACK_NOT_ALLOWED"],()=>{
+                    play();
+                })
+                dashplayer.on(MediaPlayer.events["BUFFER_LEVEL_UPDATED"],(e)=>{
+                    //console.log(e)
+                    if (e.mediaType == 'video') {
+                        //处理服务器切片不当导致缓冲异常的情况
+                        if (e.bufferLevel > 4294966) {
+                            live_reload(1)
+                        }
+                        player_info.value.buffer_health = Math.round(e.bufferLevel*100)/100
+                    }
+                })
+                dashplayer.on(MediaPlayer.events["PLAYBACK_METADATA_LOADED"],()=>{
+                    let v_codecstring = dashplayer.getCurrentTrackFor("video").codec
+                    let v_codecinfo = v_codecstring.slice(v_codecstring.indexOf('codecs=')+7).slice(1,-1)
+                    player_info.value.v_codec = v_codec_label(v_codecinfo)
+                    let a_codecstring = dashplayer.getCurrentTrackFor("audio").codec
+                    let a_codecinfo = a_codecstring.slice(a_codecstring.indexOf('codecs=')+7).slice(1,-1)
+                    player_info.value.a_codec = a_codecinfo
+                    show_extra_video_info.value = 2
+                    //console.log(dashplayer.getCurrentTrackFor("video"))
+                })
+                //质量切换时更新视频分辨率数值
+                dashplayer.on(MediaPlayer.events["QUALITY_CHANGE_RENDERED"],()=>{
+                    getvideores()
+                })
             } else {//使用hls.js
                 if (Hls.isSupported()) {
                     hls = new Hls();
@@ -406,7 +476,7 @@
                         player_info.value.a_codec = f.audio.codec
                         if (f.video) {
                             //视频编码判断
-                            if (f.video.codec.indexOf("avc")!=-1) {
+                            /*if (f.video.codec.indexOf("avc")!=-1) {
                                 player_info.value.v_codec = `H.264 / AVC (${f.video.codec})`
                             } else if (f.video.codec.indexOf("hvc")!=-1) {
                                 player_info.value.v_codec = `H.265 / HEVC (${f.video.codec})`
@@ -414,7 +484,8 @@
                                 player_info.value.v_codec = `AV1 (${f.video.codec})`
                             } else {
                                 player_info.value.v_codec = f.video.codec
-                            }
+                            }*/
+                            player_info.value.v_codec = v_codec_label(f.video.codec)
                             show_extra_video_info.value = 2
                         } else {
                             show_extra_video_info.value = 3
@@ -424,8 +495,9 @@
                         show_extra_video_info.value = 4
                     }
                 })
+                //level切换时，2秒后刷新视频分辨率数据
                 hls.on(Hls.Events.LEVEL_SWITCHED,()=>{
-                    setTimeout(()=>{getvideores()},2000)//level切换时，2秒后刷新视频分辨率数据
+                    setTimeout(()=>{getvideores()},2000)
                 })
             }
         }
@@ -446,8 +518,10 @@
                     if (!detect_live_status_when_playing_interval) {
                         detect_live_status_when_playing_interval = setInterval(()=>{detect_live_status_when_playing()},5000)
                     }
-                    if (player_type) {
+                    if (player_typ2 == 1) {
                         console.log("当前播放器类型：mpegts.js")
+                    } else if (player_typ2 == 2) {
+                        console.log("当前播放器类型：dash.js")
                     } else {
                         console.log("当前播放器类型：hls.js")
                     }
@@ -476,9 +550,11 @@
             //danmaku.clear();
             danmaku.destroy();
             enabledanmaku();
-            if (mpegtsplayer_canbedestroyed) {//上次使用的是mpegts，则销毁mpegts实例
+            if (last_used_player_typ2 == 1) {//上次使用的是mpegts，则销毁mpegts实例
                 mpegtsplayer.destroy();
-                mpegtsplayer_canbedestroyed = 0
+                //mpegtsplayer_canbedestroyed = 0
+            } else if (last_used_player_typ2 == 2) {//销毁dash
+                dashplayer.destroy();
             } else {
                 hls.destroy();//否则销毁hls
             }
@@ -551,7 +627,9 @@
             try {
                 player_info.value.buffered_length = Math.round(video.value.buffered.end(0)*100)/100
                 player_info.value.total_length = Math.round(video.value.duration*100)/100
-                player_info.value.buffer_health = Math.round((video.value.buffered.end(0) - video.value.currentTime)*100)/100
+                if (player_typ2 != 2) {
+                    player_info.value.buffer_health = Math.round((video.value.buffered.end(0) - video.value.currentTime)*100)/100
+                }
             } catch(err) {}
             if (video.value.webkitVideoDecodedByteCount) {
                 show_webkit_bitrate.value = 1
@@ -651,7 +729,7 @@
                     </div>
                     <video id="video" ref="video" v-bind:class="{inpage:vid_tele_disabled,nodisplay:vid_tele_disabled==0}" :controls="native_controls_enabled"></video>
                     <Transition name="fade"><div id="video_info" v-if="show_video_info">
-                        {{ $t('live_player.info.1') }}{{ player_info.type=="hls"&&"HLS"||"MPEG-TS" }}<br>
+                        {{ $t('live_player.info.1') }}{{ player_info.type=="mpegts"&&"MPEG-TS"||player_info.type=="dash"&&"MPEG-DASH"||"HLS" }}<br>
                         {{ $t('live_player.info.2') }}{{ player_info.domain }}<br>
                         {{ $t('live_player.info.7') }}{{ player_info.res_h+" x "+player_info.res_v }}<br>
                         <div v-if="show_extra_video_info==1">

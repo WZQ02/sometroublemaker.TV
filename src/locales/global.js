@@ -104,23 +104,27 @@ const stp_glob_i18n = {
                 11: '启用高级设置',
                 12: '自定义放映厅视频流地址（将覆盖上方的线路设置，重载视频流后生效）',
                 13: '自定义聊天室地址（刷新后生效）',
-                14: '使用 mpegts.js 播放器（延迟更低，但不稳定）',
+                14: '',
                 15: '禁用自动重载视频',
-                16: '聊天室内容允许 HTML 标签（不安全）',
+                16: '',
                 17: '不显示弹幕',
                 18: '启用原生播放器控制',
                 19: '使用浏览器全屏（而非网页全屏）',
                 20: '弹幕显示发送者昵称',
-                21: '背景显示视频画面'
+                21: '背景显示视频画面',
+                22: '视频流类型（使用自定义视频流时不生效）',
+                23: 'HLS（默认）',
+                24: 'HTTP-FLV（低延迟，但较不稳定）',
+                25: 'DASH（实验性）'
             },
             button: {
                 1: '显示高级设置',
                 2: '隐藏高级设置'
             },
             input: {
-                1: 'HLS 视频流地址，如 https://example.com/hls/index.m3u8',
+                1: '视频地址，可以是 HLS/FLV/MTS/MP4/DASH 视频流地址，如 https://example.com/index.m3u8',
                 2: 'WebSocket 服务器地址，如 wss://example.com/chat',
-                3: 'FLV/MPEG-TS/MP4 视频流地址，如 https://example.com/1.flv'
+                3: ''
             }
         },
         toasts: {
@@ -266,23 +270,27 @@ const stp_glob_i18n = {
                 11: 'Enable Advanced Settings',
                 12: 'Custom livestream video url (will override the line setting above, applies after reloading video)',
                 13: 'Custom chatroom url (applies after refreshing page)',
-                14: 'Use mpegts.js Player (Lower latency, but less stable)',
+                14: '',
                 15: 'Disable automatic video reload',
-                16: 'Allow HTML tags in chatroom content (not secure)',
+                16: '',
                 17: 'Don\'t show comments in video',
                 18: 'Enable native video player controls',
                 19: 'Fullscreen browser when fullscreen video',
                 20: 'Show name in video comments',
-                21: 'Show video as background'
+                21: 'Show video as background',
+                22: 'Video stream type (doesn\'t apply when using custom stream url)',
+                23: 'HLS (default)',
+                24: 'HTTP-FLV (lower latency, but less stable)',
+                25: 'DASH (experimental)'
             },
             button: {
                 1: 'Display Advanced Settings',
                 2: 'Hide Advanced Settings'
             },
             input: {
-                1: 'HLS video stream url, such as https://example.com/hls/index.m3u8',
+                1: 'Video url, can be HLS/FLV/MTS/MP4/DASH stream url, such as https://example.com/index.m3u8',
                 2: 'WebSocket server url, such as wss://example.com/chat',
-                3: 'FLV/MPEG-TS/MP4 stream url, such as https://example.com/1.flv'
+                3: ''
             }
         },
         toasts: {

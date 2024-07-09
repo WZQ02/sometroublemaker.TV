@@ -13,7 +13,7 @@
     //const ipt6 = ref(null)
     const ipt7 = ref(null)
     const ipt8 = ref(null)
-    const ipt9 = ref(null)
+    //const ipt9 = ref(null)
     const ipt10 = ref(null)
     //const ipt11 = ref(null)
     const ipt12 = ref(null)
@@ -25,9 +25,10 @@
     const advanced_settings = ref(null)
     const sel1 = ref(null)
     const sel2 = ref(null)
+    const sel3 = ref(null)
     const custom_hls_url = ref("")
     const custom_ws_url = ref("")
-    const custom_hls_url_type = ref(0)
+    //const custom_hls_url_type = ref(0)
 
     const gCI = getCurrentInstance()
     const adv_options_editable = ref(null);
@@ -64,9 +65,20 @@
                 sel2.value.value = 4;
                 //break
         }
+        switch (stp_store.adv_settings.stream_type.value) {
+            case 1:
+                sel3.value.value = 18;
+                break
+            case 2:
+                sel3.value.value = 19;
+                break
+            default:
+                sel3.value.value = 17;
+                //break
+        }
         ipt7.value.checked = stp_store.settings.stp_allow_pip.value;
         ipt8.value.checked = adv_options_editable.value = stp_store.settings.adv_set_enabled.value;
-        ipt9.value.checked = custom_hls_url_type.value = stp_store.adv_settings.enable_mpegts_player.value;
+        //ipt9.value.checked = custom_hls_url_type.value = stp_store.adv_settings.enable_mpegts_player.value;
         ipt10.value.checked = stp_store.adv_settings.disallow_auto_reload_video.value;
         //ipt11.value.checked = stp_store.adv_settings.allow_html_in_chat_content.value;
         ipt12.value.checked = stp_store.settings.danmaku_disabled.value;
@@ -82,6 +94,8 @@
             stp_store.settings.stp_lang.toggle(id-1);
         } else if (id <= 6) {
             stp_store.settings.stp_live_lin.toggle(id-4);
+        } else if (id >= 17 && id <= 19) {
+            stp_store.adv_settings.stream_type.toggle(id-17);
         }
         switch (id) {
             case 1:
@@ -103,14 +117,14 @@
                 adv_options_editable.value = ipt8.value.checked?1:0
                 break
             case 9:
-                stp_store.adv_settings.enable_mpegts_player.toggle();
-                custom_hls_url_type.value = ipt9.value.checked?1:0
+                //stp_store.adv_settings.enable_mpegts_player.toggle();
+                //custom_hls_url_type.value = ipt9.value.checked?1:0
                 break
             case 10:
                 stp_store.adv_settings.disallow_auto_reload_video.toggle();
                 break
             case 11:
-                stp_store.adv_settings.allow_html_in_chat_content.toggle();
+                //stp_store.adv_settings.allow_html_in_chat_content.toggle();
                 break
             case 12:
                 stp_store.settings.danmaku_disabled.toggle();
@@ -129,6 +143,12 @@
             case 16:
                 gCI.proxy?.$bus.emit('show_vid_as_bg_toggle',ipt16.value.checked)
                 stp_store.settings.show_vid_as_bg.toggle();
+                break
+            case 17:
+                break
+            case 18:
+                break
+            case 19:
                 break
         }
     }
@@ -150,6 +170,9 @@
                 break
             case 2:
                 ipt_select(Number(sel2.value.value))
+                break
+            case 3:
+                ipt_select(Number(sel3.value.value))
                 break
         }
     }
@@ -266,6 +289,16 @@
                 </span>
             </p>
             <p v-bind:class="{uneditable:!adv_options_editable}">
+                <span class="select_cont">
+                    <div class="title">{{$t("settings.message.22")}}</div>
+                    <select class="settings_sel" ref="sel3" @change="ipt_handler(3)" v-bind:disabled="!adv_options_editable">
+                        <option value="17">{{$t("settings.message.23")}}</option>
+                        <option value="18">{{$t("settings.message.24")}}</option>
+                        <option value="19">{{$t("settings.message.25")}}</option>
+                    </select>
+                </span>
+            </p>
+            <p v-bind:class="{uneditable:!adv_options_editable}">
                 <span class="switch_cont">
                     <div class="title">{{$t("settings.message.15")}}</div>
                     <label class="switch">
@@ -274,7 +307,7 @@
                     </label>
                 </span>
             </p>
-            <p v-bind:class="{uneditable:!adv_options_editable}">
+            <!--<p v-bind:class="{uneditable:!adv_options_editable}">
                 <span class="switch_cont">
                     <div class="title">{{$t("settings.message.14")}}</div>
                     <label class="switch">
@@ -282,7 +315,7 @@
                         <span class="slider"></span>
                     </label>
                 </span>
-            </p>
+            </p>-->
             <p v-bind:class="{uneditable:!adv_options_editable}">
                 <span class="switch_cont">
                     <div class="title">{{$t("settings.message.18")}}</div>
@@ -300,8 +333,8 @@
             <p v-bind:class="{uneditable:!adv_options_editable}">
                 {{$t("settings.message.12")}}
                 <p>
-                    <input type="text" v-show="!custom_hls_url_type" v-bind:placeholder="$t('settings.input.1')" v-model="custom_hls_url" v-bind:disabled="!adv_options_editable">
-                    <input type="text" v-show="custom_hls_url_type" v-bind:placeholder="$t('settings.input.3')" v-model="custom_hls_url" v-bind:disabled="!adv_options_editable">
+                    <input type="text" v-bind:placeholder="$t('settings.input.1')" v-model="custom_hls_url" v-bind:disabled="!adv_options_editable">
+                    <!--<input type="text" v-show="custom_hls_url_type" v-bind:placeholder="$t('settings.input.3')" v-model="custom_hls_url" v-bind:disabled="!adv_options_editable">-->
                 </p>
             </p>
             <p v-bind:class="{uneditable:!adv_options_editable}">

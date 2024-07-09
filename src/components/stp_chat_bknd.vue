@@ -111,7 +111,7 @@
                     if (chatroom_isshowuserinout) {//根据是否选中“不显示用户进入退出信息”决定是否呈现相关信息
                         formatted.innerHTML = ""
                     } else {
-                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${DOMPurify.sanitize(parseStr.msg)}</span>`
+                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${cleanmsg(parseStr.msg)}</span>`
                         formatted.className = "leave";
                     }
                     is_last_msg_from_user = 0
@@ -120,7 +120,7 @@
                     if (chatroom_isshowuserinout) {
                         formatted.innerHTML = ""
                     } else {
-                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${DOMPurify.sanitize(parseStr.msg)}</span>`
+                        formatted.innerHTML = formatted.innerHTML + `<span class="msg">${cleanmsg(parseStr.msg)}</span>`
                         formatted.className = "entry";
                     }
                     is_last_msg_from_user = 0
@@ -132,7 +132,7 @@
                         speak_name = parseStr.username//这一步先不做sanitize，避免发言信息被不正确截断
                         speak_cont = parseStr.msg.slice(speak_name.length+2)//这一步先不做sanitize，以避免影响后续markdown转换
                     } else {//服务器没有提供“用户名”信息，使用原来的处理逻辑
-                        speak_name = DOMPurify.sanitize(parseStr.msg.slice(0,parseStr.msg.indexOf(": ")))
+                        speak_name = cleanmsg(parseStr.msg.slice(0,parseStr.msg.indexOf(": ")))
                         if (speak_name == 'undefined') {
                             speak_name = '?'
                         }
@@ -142,8 +142,8 @@
                     if (!chatroom_ismarkdown) {
                         speak_cont = marked.parse(speak_cont)
                     }
-                    speak_name = DOMPurify.sanitize(speak_name)//转换后清理speak_name
-                    speak_cont = DOMPurify.sanitize(speak_cont)//转换后清理speak_cont
+                    speak_name = cleanmsg(speak_name)//转换后清理speak_name
+                    speak_cont = cleanmsg(speak_cont)//转换后清理speak_cont
                     //将换行符转换为HTML格式
                     speak_cont = speak_cont.replace(/\n/g, '<br>')
                     //删除多余的换行符
@@ -152,7 +152,7 @@
                     }
                     formatted.innerHTML += `<span class="speak_name" title="${parseStr.time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
                     //判断是不是自己发言
-                    if (stp_store.chatroom.username.value && DOMPurify.sanitize(stp_store.chatroom.username.value) == speak_name) {
+                    if (stp_store.chatroom.username.value && cleanmsg(stp_store.chatroom.username.value) == speak_name) {
                         formatted.className = "speak isyou";
                     } else {
                         formatted.className = "speak";
@@ -176,9 +176,9 @@
                         for (let i=0; i<Object.keys(parseStr.prev_msg).length; i++) {
                             const formatted_prev_msg = document.createElement('div');
                             let speak_name,speak_cont,speak_time
-                            speak_time = DOMPurify.sanitize(parseStr.prev_msg[i].time)
+                            speak_time = cleanmsg(parseStr.prev_msg[i].time)
                             if (parseStr.prev_msg[i].username) {
-                                speak_name = DOMPurify.sanitize(parseStr.prev_msg[i].username)
+                                speak_name = cleanmsg(parseStr.prev_msg[i].username)
                             } else {
                                 speak_name = "?"
                             }
@@ -186,7 +186,7 @@
                             if (!chatroom_ismarkdown) {
                                 speak_cont = marked.parse(speak_cont)
                             }
-                            speak_cont = DOMPurify.sanitize(speak_cont)//转换后清理
+                            speak_cont = cleanmsg(speak_cont)//转换后清理
                             //将换行符转换为HTML格式，并删除多余的换行符
                             speak_cont = speak_cont.replace(/\n/g, '<br>')
                             if (speak_cont.slice(-4)=="<br>") {
@@ -197,7 +197,7 @@
                                 formatted_prev_msg.innerHTML = `<span class="timer" title="${speak_time}">${speak_time}</span><br/>`;
                             }
                             formatted_prev_msg.innerHTML += `<span class="speak_name" title="${speak_time}">${speak_name}</span><br><div class="speak_cont_contain"><span class="speak_cont">${speak_cont}</span></div>`
-                            if (stp_store.chatroom.username.value && DOMPurify.sanitize(stp_store.chatroom.username.value) == speak_name) {
+                            if (stp_store.chatroom.username.value && cleanmsg(stp_store.chatroom.username.value) == speak_name) {
                                 formatted_prev_msg.className = "speak isyou";
                             } else {
                                 formatted_prev_msg.className = "speak";
@@ -232,10 +232,14 @@
         if (stp_store.settings.adv_set_enabled.value == 1 && stp_store.adv_settings.allow_html_in_chat_content.value == 1) {
             return e;
         } else {
-            return DOMPurify.sanitize(e);
+            return cleanmsg(e);
             //return e.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
     }*/
+    //DOMPurify封装
+    function cleanmsg(msg) {
+        return DOMPurify.sanitize(msg, {FORBID_TAGS: ['style']})//清理<style>标签，防止用户乱修改样式
+    }
     //转换服务器提供的时间码，便于计算
     let convert_time = (time) => {
         if (typeof(new Date().getTime)!="undefined") {

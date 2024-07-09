@@ -98,7 +98,6 @@
     text-decoration: underline;
 }
 #chatcontent code {
-    display: block;
     font-family: "Consolas", "Courier New", monospace;
     font-size: 16px;
     color: #fff;
@@ -106,6 +105,9 @@
     padding: 6px;
     border-radius: 4px;
     border: 2px #444 solid;
+}
+#chatcontent pre code {
+    display: block;
 }
 #chatroom_container input,#chatroom_container textarea {
     top: 16px;
