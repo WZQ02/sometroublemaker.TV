@@ -164,24 +164,26 @@
     })
     //gCI.proxy?.$bus.on('live_reload',live_reload())
     let mpegts_src_detect = (url) => {
-        if (url.indexOf('.flv') != -1) {
+        const fn2 = new URL(url).pathname.split("/").pop().slice(-5)
+        if (fn2.indexOf('.flv') != -1) {
             return 0
-        } else if (url.indexOf('.mts') != -1 || url.indexOf('.ts') != -1) {
+        } else if (fn2.indexOf('.mts') != -1 || fn2.indexOf('.ts') != -1) {
             return 1
-        } else if (url.indexOf('.m2t') != -1) {
+        } else if (fn2.indexOf('.m2t') != -1) {
             return 2
-        } else if (url.indexOf('.mp4') != -1 || url.indexOf('.m4v') != -1) {
+        } else if (fn2.indexOf('.mp4') != -1 || fn2.indexOf('.m4v') != -1) {
             return 3
         } else {
             return 4
         }
     }
     function src_type_detect_for_player_type(url) {
-        if (url.indexOf(possible_src_type[0]) != -1) {
+        const fn2 = new URL(url).pathname.split("/").pop().slice(-5)
+        if (fn2.indexOf(possible_src_type[0]) != -1) {
             player_typ2 = 0
-        } else if (url.indexOf(possible_src_type[1]) != -1 || url.indexOf(possible_src_type[2]) != -1 || url.indexOf(possible_src_type[3]) != -1 || url.indexOf(possible_src_type[4]) != -1 || url.indexOf(possible_src_type[5]) != -1 || url.indexOf(possible_src_type[6]) != -1) {
+        } else if (fn2.indexOf(possible_src_type[1]) != -1 || fn2.indexOf(possible_src_type[2]) != -1 || fn2.indexOf(possible_src_type[3]) != -1 || fn2.indexOf(possible_src_type[4]) != -1 || fn2.indexOf(possible_src_type[5]) != -1 || fn2.indexOf(possible_src_type[6]) != -1) {
             player_typ2 = 1
-        } else if (url.indexOf(possible_src_type[7]) != -1) {
+        } else if (fn2.indexOf(possible_src_type[7]) != -1) {
             player_typ2 = 2
         }
     }
