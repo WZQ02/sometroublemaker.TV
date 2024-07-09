@@ -164,7 +164,15 @@
     })
     //gCI.proxy?.$bus.on('live_reload',live_reload())
     let mpegts_src_detect = (url) => {
-        const fn2 = new URL(url).pathname.split("/").pop().slice(-5)
+        let fn1,fn2
+        try {
+            let a = new URL(url)
+            fn1 = a.pathname.split("/").pop()
+        } catch(err) {
+            fn1 = url
+        }
+        fn2 = fn1.slice(-5)
+        //const fn2 = new URL(url).pathname.split("/").pop().slice(-5)
         if (fn2.indexOf('.flv') != -1) {
             return 0
         } else if (fn2.indexOf('.mts') != -1 || fn2.indexOf('.ts') != -1) {
@@ -178,7 +186,15 @@
         }
     }
     function src_type_detect_for_player_type(url) {
-        const fn2 = new URL(url).pathname.split("/").pop().slice(-5)
+        let fn1,fn2
+        try {
+            let a = new URL(url)
+            fn1 = a.pathname.split("/").pop()
+        } catch(err) {
+            fn1 = url
+        }
+        fn2 = fn1.slice(-5)
+        //const fn2 = new URL(url).pathname.split("/").pop().slice(-5)
         if (fn2.indexOf(possible_src_type[0]) != -1) {
             player_typ2 = 0
         } else if (fn2.indexOf(possible_src_type[1]) != -1 || fn2.indexOf(possible_src_type[2]) != -1 || fn2.indexOf(possible_src_type[3]) != -1 || fn2.indexOf(possible_src_type[4]) != -1 || fn2.indexOf(possible_src_type[5]) != -1 || fn2.indexOf(possible_src_type[6]) != -1) {
